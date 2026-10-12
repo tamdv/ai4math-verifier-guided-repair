@@ -1,0 +1,49 @@
+{
+  "run_id": "queue-bench-tier1_small-fifo-20261010174450-61f90e",
+  "timestamp": "2026-10-10T17:44:50.957523+00:00",
+  "git_commit": "feature/worker-queue",
+  "data_version": "benchmark-tier1_small-50-items",
+  "machine": {
+    "os": "Windows-10-10.0.26200-SP0",
+    "cpu": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+    "python": "3.11.17",
+    "ram_mb": 36.3
+  },
+  "parameters": {
+    "scale_tier": "tier1_small",
+    "total_candidates": 50,
+    "queue_discipline": "fifo",
+    "num_workers": 4,
+    "max_retry_attempts": 3,
+    "timeout_per_attempt_sec": 15.0,
+    "seed": 42,
+    "backend": "redis"
+  },
+  "seed": 42,
+  "timeout": 15,
+  "metrics": {
+    "total_samples": 50,
+    "repaired_count": 49,
+    "repair_success_rate": 0.98,
+    "throughput_qps": 33.29,
+    "turnaround_p50_ms": 24.36,
+    "turnaround_p95_ms": 33.52,
+    "queue_wait_p50_ms": 748.65,
+    "queue_wait_p95_ms": 1421.21,
+    "enqueue_qps": 1574.01,
+    "peak_ram_mb": 36.3,
+    "delta_ram_mb": 14.17,
+    "dlq_count": 1,
+    "verifier_metrics": {
+      "total_verified": 53,
+      "success_count": 49,
+      "timeout_count": 0,
+      "success_rate": 0.9245,
+      "num_workers": 4,
+      "latency_p50_ms": 5.42,
+      "latency_p95_ms": 5.64
+    }
+  },
+  "status": "SUCCESS",
+  "log_path": "logs/queue-bench-tier1_small-fifo-20261010174450-61f90e.log"
+}
