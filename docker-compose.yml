@@ -1,12 +1,65 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: int4418_group6_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --save 60 1
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - ai4math_net
+
   verifier_worker:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: int4418_group6_verifier
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PYTHONUNBUFFERED=1
     volumes:
       - .:/workspace
     working_dir: /workspace
     command: python3 src/baseline_repair.py --data data_sample/error_dataset_50.json
+    networks:
+      - ai4math_net
+
+  queue_benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: int4418_group6_queue_bench
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: python3 scripts/run_queue_benchmark.py --tiers
+    networks:
+      - ai4math_net
+
+networks:
+  ai4math_net:
+    driver: bridge
+
+volumes:
+  redis_data:
+

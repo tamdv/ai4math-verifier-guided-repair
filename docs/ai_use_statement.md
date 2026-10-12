@@ -7,36 +7,36 @@
 
 ## 1. Bảng số liệu định lượng tổng hợp (Quantitative Summary)
 
-* **Tổng số phiên/hạng mục AI hỗ trợ:** `20`
-* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~2565` dòng
+* **Tổng số phiên/hạng mục AI hỗ trợ:** `21`
+* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~3815` dòng
 * **Cơ chế kiểm chứng bắt buộc:** 100% mã nguồn được xác minh qua unit test tự động và trình kiểm chứng Lean 4; không chấp nhận mã chưa kiểm chứng.
 
 ### Phân bổ theo loại tác vụ:
 | Loại tác vụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Code Generation | 2 | 10.0% |
-| Docs | 2 | 10.0% |
-| Code | 2 | 10.0% |
-| Workspace Setup | 1 | 5.0% |
-| Governance & Harness | 1 | 5.0% |
-| Academic Proposal | 1 | 5.0% |
-| Taxonomy Design | 1 | 5.0% |
-| Dataset Curation | 1 | 5.0% |
-| Baseline Implementation | 1 | 5.0% |
-| Testing & QA | 1 | 5.0% |
-| Team Roster & Governance | 1 | 5.0% |
-| Team Role Adjustment | 1 | 5.0% |
-| Environment & Tooling | 1 | 5.0% |
-| Lean 4 Interactive Verification | 1 | 5.0% |
-| Data Contract & Replayable Store | 1 | 5.0% |
-| System Architecture Documentation | 1 | 5.0% |
-| Architecture Refinement | 1 | 5.0% |
+| Code | 3 | 14.3% |
+| Code Generation | 2 | 9.5% |
+| Docs | 2 | 9.5% |
+| Workspace Setup | 1 | 4.8% |
+| Governance & Harness | 1 | 4.8% |
+| Academic Proposal | 1 | 4.8% |
+| Taxonomy Design | 1 | 4.8% |
+| Dataset Curation | 1 | 4.8% |
+| Baseline Implementation | 1 | 4.8% |
+| Testing & QA | 1 | 4.8% |
+| Team Roster & Governance | 1 | 4.8% |
+| Team Role Adjustment | 1 | 4.8% |
+| Environment & Tooling | 1 | 4.8% |
+| Lean 4 Interactive Verification | 1 | 4.8% |
+| Data Contract & Replayable Store | 1 | 4.8% |
+| System Architecture Documentation | 1 | 4.8% |
+| Architecture Refinement | 1 | 4.8% |
 
 ### Phân bổ theo mô hình / công cụ AI:
 | Mô hình / Công cụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Claude Code / Antigravity | 19 | 95.0% |
-| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 5.0% |
+| Claude Code / Antigravity | 20 | 95.2% |
+| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 4.8% |
 
 ---
 
@@ -64,6 +64,7 @@
 | 2026-09-11 12:46 | Week 2 | Claude Code / Antigravity | Code | Thực thi và kiểm thử baseline repair trên error dataset mẫu | Kiểm thử thành công qua baseline script | Mekdala Nounou | ✅ VERIFIED |
 | 2026-09-12 07:48 | Week 4 | Claude Code / Antigravity | Code Generation | Cài đặt module Rule-based Repair Engine (src/rule_repair.py) gồm 4 luật R1-R4, bảng tra cứu configs/mathlib_import_table.json, bộ unit test và script đánh giá Rule Coverage | 17/17 test cases pass trong tests/test_rule_repair.py, 26/26 toàn bộ unittest pass, đo đạc Rule Coverage đạt 48.0% với latency P95=0.069ms | Lam Thanh Trung | ✅ VERIFIED |
 | 2026-09-14 13:44 | Week 1 | GitHub Copilot (MAI-Code-1.1-Flash) | Code | Fix baseline runtime dependency failure and validate repo tests | python -m unittest discover -s tests -v | Khamsing OUTHAIHUENG | ✅ VERIFIED |
+| 2026-10-10 17:30 | Week 6 | Claude Code / Antigravity | Code | Setup Redis Queue, Verifier Worker Pool, Bounded Controller, and Scalability Benchmark | 14 unit tests pass, 3-tier queue benchmark pass | Trần Quang Đức Dũng | ✅ VERIFIED |
 
 ---
 
