@@ -19,6 +19,7 @@ Usage:
 import argparse
 import collections
 import csv
+import gzip
 import json
 import statistics
 from pathlib import Path
@@ -61,11 +62,29 @@ def style() -> None:
     })
 
 
+def backfill_service_latency(rec: dict[str, Any], raw_dir: Path) -> None:
+    """Recomputes service P50/P95 from the per-sample log for records written before
+    run_experiment.py reported them (the log keeps each sample's `wall_ms`)."""
+    m = rec["metrics"]
+    if "service_p95_ms" in m:
+        return
+    log = raw_dir / "logs" / f"{rec['run_id']}.jsonl.gz"
+    if not log.exists():
+        return
+    with gzip.open(log, "rt", encoding="utf-8") as f:
+        walls = sorted(e["wall_ms"] for e in map(json.loads, f) if "wall_ms" in e)
+    if walls:
+        m["service_p50_ms"] = walls[min(int(len(walls) * 0.5), len(walls) - 1)]
+        m["service_p95_ms"] = walls[min(int(len(walls) * 0.95), len(walls) - 1)]
+        m["service_backfilled_from_log"] = True
+
+
 def load_runs(raw_dir: Path) -> list[dict[str, Any]]:
     runs = []
     for path in sorted(raw_dir.glob("run_exp-*.json")):
         rec = json.loads(path.read_text(encoding="utf-8"))
         if rec.get("status") in ("SUCCESS", "PARTIAL"):
+            backfill_service_latency(rec, raw_dir)
             runs.append(rec)
     return runs
 
