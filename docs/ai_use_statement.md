@@ -7,36 +7,37 @@
 
 ## 1. Bảng số liệu định lượng tổng hợp (Quantitative Summary)
 
-* **Tổng số phiên/hạng mục AI hỗ trợ:** `20`
-* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~2565` dòng
+* **Tổng số phiên/hạng mục AI hỗ trợ:** `24`
+* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~5615` dòng
 * **Cơ chế kiểm chứng bắt buộc:** 100% mã nguồn được xác minh qua unit test tự động và trình kiểm chứng Lean 4; không chấp nhận mã chưa kiểm chứng.
 
 ### Phân bổ theo loại tác vụ:
 | Loại tác vụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Code Generation | 2 | 10.0% |
-| Docs | 2 | 10.0% |
-| Code | 2 | 10.0% |
-| Workspace Setup | 1 | 5.0% |
-| Governance & Harness | 1 | 5.0% |
-| Academic Proposal | 1 | 5.0% |
-| Taxonomy Design | 1 | 5.0% |
-| Dataset Curation | 1 | 5.0% |
-| Baseline Implementation | 1 | 5.0% |
-| Testing & QA | 1 | 5.0% |
-| Team Roster & Governance | 1 | 5.0% |
-| Team Role Adjustment | 1 | 5.0% |
-| Environment & Tooling | 1 | 5.0% |
-| Lean 4 Interactive Verification | 1 | 5.0% |
-| Data Contract & Replayable Store | 1 | 5.0% |
-| System Architecture Documentation | 1 | 5.0% |
-| Architecture Refinement | 1 | 5.0% |
+| Code | 6 | 25.0% |
+| Code Generation | 2 | 8.3% |
+| Docs | 2 | 8.3% |
+| Workspace Setup | 1 | 4.2% |
+| Governance & Harness | 1 | 4.2% |
+| Academic Proposal | 1 | 4.2% |
+| Taxonomy Design | 1 | 4.2% |
+| Dataset Curation | 1 | 4.2% |
+| Baseline Implementation | 1 | 4.2% |
+| Testing & QA | 1 | 4.2% |
+| Team Roster & Governance | 1 | 4.2% |
+| Team Role Adjustment | 1 | 4.2% |
+| Environment & Tooling | 1 | 4.2% |
+| Lean 4 Interactive Verification | 1 | 4.2% |
+| Data Contract & Replayable Store | 1 | 4.2% |
+| System Architecture Documentation | 1 | 4.2% |
+| Architecture Refinement | 1 | 4.2% |
 
 ### Phân bổ theo mô hình / công cụ AI:
 | Mô hình / Công cụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Claude Code / Antigravity | 19 | 95.0% |
-| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 5.0% |
+| Claude Code / Antigravity | 19 | 79.2% |
+| Claude Opus 5.5 | 4 | 16.7% |
+| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 4.2% |
 
 ---
 
@@ -64,6 +65,10 @@
 | 2026-09-11 12:46 | Week 2 | Claude Code / Antigravity | Code | Thực thi và kiểm thử baseline repair trên error dataset mẫu | Kiểm thử thành công qua baseline script | Mekdala Nounou | ✅ VERIFIED |
 | 2026-09-12 07:48 | Week 4 | Claude Code / Antigravity | Code Generation | Cài đặt module Rule-based Repair Engine (src/rule_repair.py) gồm 4 luật R1-R4, bảng tra cứu configs/mathlib_import_table.json, bộ unit test và script đánh giá Rule Coverage | 17/17 test cases pass trong tests/test_rule_repair.py, 26/26 toàn bộ unittest pass, đo đạc Rule Coverage đạt 48.0% với latency P95=0.069ms | Lam Thanh Trung | ✅ VERIFIED |
 | 2026-09-14 13:44 | Week 1 | GitHub Copilot (MAI-Code-1.1-Flash) | Code | Fix baseline runtime dependency failure and validate repo tests | python -m unittest discover -s tests -v | Khamsing OUTHAIHUENG | ✅ VERIFIED |
+| 2026-10-15 09:08 | Week 5 | Claude Opus 5.5 | Code | Lean 4 verifier wrapper (src/lean_verifier.py), 9 unit tests, --verify mode for rule experiment; real compile_rate 20% vs 48% rule hit rate | unittest 35/35 pass; real Lean 4.35.0 compile on 50-sample dataset | Dao Van Tam | ✅ VERIFIED |
+| 2026-10-15 09:17 | Week 5 | Claude Opus 5.5 | Code | Mathlib Lake workspace (lean_ws, gitignored), scripts/relabel_dataset.py + 2 tests, AI-vs-human task checklist; relabel shows 15/50 labels agree with real Lean | unittest 37/37 pass; real Lean 4.35.0 + Mathlib compile on 50 samples | Dao Van Tam | ✅ VERIFIED |
+| 2026-10-16 07:28 | Week 6 (Day 1) | Claude Opus 5.5 | Code | Lean REPL verifier (500-1000x faster than cold lean), verifier pool, seed builder from Goedel Lean-workbook proofs, 9 mutation operators, parser v0.2 (+TAC_07, real Lean messages), full-file rules R0/R5-R7, semantic auditor, LLM repair (blind/diagnostic) + Gemini client, bounded repair pipeline, experiment runner with provenance | pytest 82/82; REPL vs cold Lean agree on 74/74 checks; real Lean 4.35 + Mathlib runs | Dao Van Tam | ✅ VERIFIED |
+| 2026-10-16 07:36 | Week 6 (Day 1) | Claude Opus 5.5 | Code | Cost control: CostGuard (monthly/run hard caps, ledger), SQLite response cache, pre-run estimator with VND, comment stripping preserving line/column (cost option C) | pytest 88/88 incl. cap-blocks-before-call and cache-hit-free tests | Dao Van Tam | ✅ VERIFIED |
 
 ---
 
