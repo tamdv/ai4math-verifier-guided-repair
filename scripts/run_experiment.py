@@ -216,6 +216,11 @@ def main() -> None:
         metrics["cache_hits"], metrics["cache_misses"] = cache.hits, cache.misses
     metrics["peak_rss_mb"] = round(mem.peak_mb, 1)
     metrics["worker_startup_ms"] = pool.startup_ms
+    # Steady-state throughput: exclude the one-off Mathlib import of the workers.
+    startup_s = max(pool.startup_ms, default=0.0) / 1000
+    steady = wall - startup_s
+    metrics["throughput_excl_startup_per_s"] = (
+        round(len(outcomes) / steady, 3) if steady > 0 else None)
     status = "SUCCESS" if errors == 0 else ("BUDGET_EXCEEDED" if budget_hit else "PARTIAL")
     path = write_run_record(
         f"exp-{args.strategy}-b{args.budget}-w{args.workers}",

@@ -8,7 +8,7 @@ Pipeline:
    diagnostics via LeanErrorParser, not from the operator.
 3. Add natural errors (seed proofs broken by Lean/Mathlib drift).
 4. Deduplicate by SHA-256, assign train/holdout by seed (70/30, no seed leaks
-   across splits), and write nested tiers (1K subset of 10K subset of all).
+   across splits), and write nested tiers (100 < 1K < 10K < all).
 
 Usage:
     python3 scripts/generate_error_dataset.py --workers 2 --max-per-seed 5
@@ -163,7 +163,8 @@ def main() -> None:
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    tiers = {"all": records, "10k": records[:10000], "1k": records[:1000]}
+    # Nested scale tiers, one order of magnitude apart (100 -> 1K -> 10K).
+    tiers = {"all": records, "10k": records[:10000], "1k": records[:1000], "100": records[:100]}
     checksums = {}
     for name, rows in tiers.items():
         path = out_dir / f"errors_{name}.jsonl"
