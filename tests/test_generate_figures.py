@@ -1,5 +1,6 @@
 """Smoke test for figure generation using SYNTHETIC run records (not real results)."""
 
+import gzip
 import json
 import random
 import tempfile
@@ -59,6 +60,20 @@ class TestGenerateFigures(unittest.TestCase):
             table = (out / "table_ablation.md").read_text()
             self.assertIn("hybrid", table)
             self.assertEqual(len((out / "table_scale.csv").read_text().splitlines()), 10)
+
+    def test_service_latency_backfilled_from_log(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            raw = Path(tmp)
+            (raw / "logs").mkdir()
+            rec = {"run_id": "exp-old", "status": "SUCCESS", "parameters": {},
+                   "metrics": {"latency_p95_ms": 1.0}}
+            (raw / "run_exp-old.json").write_text(json.dumps(rec))
+            with gzip.open(raw / "logs" / "exp-old.jsonl.gz", "wt") as f:
+                for ms in range(1, 101):
+                    f.write(json.dumps({"wall_ms": float(ms)}) + "\n")
+            m = load_runs(raw)[0]["metrics"]
+            self.assertEqual((m["service_p50_ms"], m["service_p95_ms"]), (51.0, 96.0))
+            self.assertTrue(m["service_backfilled_from_log"])
 
     def test_no_runs_no_figures(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
