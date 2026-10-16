@@ -89,6 +89,7 @@ def summarize(outcomes: list[tuple[RepairOutcome, dict[str, Any], float]], wall_
     n = len(outcomes)
     succ = [o for o, _, _ in outcomes if o.success]
     e2e = [o.wall_ms + wait for o, _, wait in outcomes]
+    service = [o.wall_ms for o, _, _ in outcomes]
     waits = [wait for _, _, wait in outcomes]
     inp = sum(a.input_tokens for o, _, _ in outcomes for a in o.attempts)
     out = sum(a.output_tokens for o, _, _ in outcomes for a in o.attempts)
@@ -115,6 +116,10 @@ def summarize(outcomes: list[tuple[RepairOutcome, dict[str, Any], float]], wall_
         "tokens_per_success": round((inp + out + think) / len(succ), 1) if succ else None,
         "cost_usd": cost,
         "cost_per_success_usd": round(cost / len(succ), 6) if succ and cost else None,
+        # service = time a worker spends on one sample (repair attempts + Lean checks);
+        # latency = service + queue wait (end-to-end sojourn in a batch run).
+        "service_p50_ms": round(percentile(service, 0.5), 1),
+        "service_p95_ms": round(percentile(service, 0.95), 1),
         "latency_p50_ms": round(percentile(e2e, 0.5), 1),
         "latency_p95_ms": round(percentile(e2e, 0.95), 1),
         "queue_wait_p50_ms": round(percentile(waits, 0.5), 1),
@@ -234,7 +239,7 @@ def main() -> None:
     )
     print(json.dumps({k: metrics[k] for k in (
         "n_samples", "repair_success_rate", "compile_rate", "attempts_per_sample",
-        "latency_p50_ms", "latency_p95_ms", "throughput_samples_per_s", "cost_usd",
+        "service_p50_ms", "service_p95_ms", "latency_p95_ms", "throughput_samples_per_s", "cost_usd",
         "peak_rss_mb")}, ensure_ascii=False))
     if guard:
         print(f"[$$] real spend this run ${guard.run_spent:.4f} ({guard.calls} paid calls); "

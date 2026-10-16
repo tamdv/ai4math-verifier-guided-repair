@@ -20,7 +20,7 @@ echo "=== [2/5] Mathlib cache + Lean REPL (pinned by lean_ws/lake-manifest.json)
 (cd lean_ws && lake exe cache get && lake build repl)
 
 echo "=== [3/5] Python dependencies"
-pip install -q google-genai pyyaml psutil pyarrow pytest
+pip install -q google-genai pyyaml psutil pyarrow pytest matplotlib
 
 echo "=== [4/5] Source data (checksum-verified)"
 bash scripts/download_data.sh
