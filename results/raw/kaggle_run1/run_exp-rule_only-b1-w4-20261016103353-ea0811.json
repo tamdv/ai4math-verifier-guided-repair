@@ -1,0 +1,126 @@
+{
+  "run_id": "exp-rule_only-b1-w4-20261016103353-ea0811",
+  "timestamp": "2026-10-16T10:39:15.584253+00:00",
+  "git_commit": "a4baa002dc931ffa7f4412d7d9769ca6fd8d84da",
+  "data_version": "errors_1k.jsonl",
+  "machine": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "cpu_count": 4,
+    "ram_gb": 31.3
+  },
+  "software": {
+    "python": "3.13.15",
+    "lean": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+  },
+  "parameters": {
+    "data": "data/errors/errors_1k.jsonl",
+    "split": "all",
+    "limit": 0,
+    "strategy": "rule_only",
+    "budget": 1,
+    "wall_budget": 300.0,
+    "workers": 4,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "prompt_version": "repair_v1",
+    "timeout": 60.0,
+    "seed": 42,
+    "repeat_index": 2,
+    "tag": "scale",
+    "run_cap": null,
+    "keep_comments": false,
+    "no_cache": false,
+    "log_path": "results/raw/logs/exp-rule_only-b1-w4-20261016103353-ea0811.jsonl.gz"
+  },
+  "seed": 42,
+  "timeout": 60.0,
+  "metrics": {
+    "n_samples": 1000,
+    "repair_success_rate": 0.254,
+    "compile_rate": 0.263,
+    "semantic_pass_given_compiled": 0.9658,
+    "attempts_per_sample": 0.629,
+    "llm_calls": 0,
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tokens_thinking": 0,
+    "tokens_per_success": 0.0,
+    "cost_usd": 0.0,
+    "cost_per_success_usd": null,
+    "latency_p50_ms": 164063.9,
+    "latency_p95_ms": 278884.0,
+    "queue_wait_p50_ms": 160163.9,
+    "queue_wait_p95_ms": 276331.1,
+    "throughput_samples_per_s": 3.106,
+    "wall_time_s": 322.0,
+    "stop_reasons": {
+      "no_rule": 371,
+      "budget_exhausted": 375,
+      "success": 254
+    },
+    "success_by_category": {
+      "ID_03": {
+        "success": 1,
+        "n": 105,
+        "rate": 0.0095
+      },
+      "IMP_02": {
+        "success": 127,
+        "n": 127,
+        "rate": 1.0
+      },
+      "SEM_06": {
+        "success": 0,
+        "n": 153,
+        "rate": 0.0
+      },
+      "SYN_01": {
+        "success": 25,
+        "n": 279,
+        "rate": 0.0896
+      },
+      "TAC_07": {
+        "success": 2,
+        "n": 214,
+        "rate": 0.0093
+      },
+      "TMO_05": {
+        "success": 99,
+        "n": 102,
+        "rate": 0.9706
+      },
+      "TYP_04": {
+        "success": 0,
+        "n": 16,
+        "rate": 0.0
+      },
+      "UNK_99": {
+        "success": 0,
+        "n": 4,
+        "rate": 0.0
+      }
+    },
+    "success_by_source": {
+      "synthetic": {
+        "success": 251,
+        "n": 934
+      },
+      "natural": {
+        "success": 3,
+        "n": 66
+      }
+    },
+    "worker_errors": 0,
+    "budget_refusals": 0,
+    "peak_rss_mb": 34501.1,
+    "worker_startup_ms": [
+      19432.9,
+      19466.7,
+      20303.4,
+      23361.9
+    ],
+    "throughput_excl_startup_per_s": 3.349
+  },
+  "status": "SUCCESS"
+}

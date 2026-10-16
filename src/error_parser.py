@@ -81,7 +81,9 @@ _RULES: list[tuple[tuple[str, ...], ErrorCategory, RepairRoute]] = [
         ("unsolved goals", "linarith failed", "nlinarith failed", "omega could not prove",
          "could not prove", "failed to prove", "made no progress", "tactic `", "tactic '",
          "is false", "positivity failed", "ring failed", "no goals to be proved",
-         "failed with a nested error", "not a valid", "contradiction failed"),
+         "failed with a nested error", "not a valid", "contradiction failed",
+         "not a positivity goal", "no goals to be solved", "has not been provided",
+         "interval_cases failed", "nlinarith failed", "decide failed"),
         ErrorCategory.TACTIC_FAILURE,
         RepairRoute.LLM_REPAIR,
     ),
@@ -99,6 +101,10 @@ _MATHLIB_MARKERS = re.compile(
     r"|\blinarith\b|\bpolyrith\b|\bsq_nonneg\b|\bmul_pos\b"
 )
 _IMPORT_LINE = re.compile(r"^\s*import\s", re.MULTILINE)
+
+
+def _is_consequence(message: str) -> bool:
+    return message.lower().startswith("unsolved goals")
 
 
 class LeanErrorParser:
@@ -155,8 +161,16 @@ class LeanErrorParser:
     def primary(
         cls, diagnostics: list[dict[str, Any]], code: str | None = None
     ) -> DiagnosticRecord | None:
-        """Classifies the first error (or, failing that, the first sorry warning)."""
+        """Classifies the root-cause error (or, failing that, the first sorry warning).
+
+        `unsolved goals` is reported at the declaration (an earlier position) as a
+        *consequence* of a broken tactic below it, so it only wins when it is the
+        sole kind of error.
+        """
         errors = [d for d in diagnostics if d.get("severity") == "error"]
+        causes = [d for d in errors if not _is_consequence(d.get("message", ""))]
+        if causes:
+            errors = causes
         if errors:
             first = min(errors, key=lambda d: (d.get("line") or 0, d.get("column") or 0))
             return cls.parse_diagnostic(first, code)

@@ -53,6 +53,9 @@ class TestRealLeanMessages(unittest.TestCase):
         ("omega could not prove the goal:\nNo usable constraints found.", "TAC_07"),
         ("Tactic `decide` proved that the proposition\n  7 < 5\nis false", "TAC_07"),
         ("declaration uses `sorry`", "SEM_06"),
+        ("not a positivity goal", "TAC_07"),
+        ("No goals to be solved", "TAC_07"),
+        ("Alternative `succ` has not been provided", "TAC_07"),
     ]
 
     def test_cases(self):
@@ -77,6 +80,16 @@ class TestRealLeanMessages(unittest.TestCase):
         self.assertEqual(LeanErrorParser.primary(diags[:1]).category,
                          ErrorCategory.SEMANTIC_MISMATCH)
         self.assertIsNone(LeanErrorParser.primary([]))
+
+    def test_unsolved_goals_is_a_consequence(self):
+        # Real Kaggle case: misspelt tactic at line 17, `unsolved goals` at the declaration.
+        diags = [
+            {"severity": "error", "line": 17, "column": 31, "message": "unknown tactic"},
+            {"severity": "error", "line": 9, "column": 147, "message": "unsolved goals\nx : ℝ"},
+        ]
+        self.assertEqual(LeanErrorParser.primary(diags).category, ErrorCategory.UNKNOWN_IDENTIFIER)
+        only = [diags[1]]
+        self.assertEqual(LeanErrorParser.primary(only).category, ErrorCategory.TACTIC_FAILURE)
 
 
 if __name__ == "__main__":
