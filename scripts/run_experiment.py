@@ -35,10 +35,16 @@ PRICES_PATH = Path(__file__).resolve().parent.parent / "configs" / "llm_prices.y
 
 
 class PeakMemory:
-    """Samples RSS of this process and all descendants (REPL workers) every 0.5 s."""
+    """Samples memory of this process and all descendants (REPL workers) every 0.5 s.
+
+    `peak_mb` sums RSS, which counts the Mathlib .olean files that all workers mmap
+    once per worker (over-estimate). `peak_uss_mb` sums USS (pages unique to each
+    process) plus the largest shared remainder once: the realistic footprint.
+    """
 
     def __init__(self) -> None:
         self.peak_mb = 0.0
+        self.peak_uss_mb = 0.0
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._loop, daemon=True)
 
@@ -47,13 +53,21 @@ class PeakMemory:
 
         me = psutil.Process()
         while not self._stop.is_set():
-            total = 0
+            total = uss = shared_max = 0
             for p in [me, *me.children(recursive=True)]:
                 try:
-                    total += p.memory_info().rss
+                    rss = p.memory_info().rss
+                    total += rss
+                    try:
+                        u = p.memory_full_info().uss
+                    except (psutil.Error, AttributeError):
+                        u = rss
+                    uss += u
+                    shared_max = max(shared_max, rss - u)
                 except psutil.Error:
                     pass
             self.peak_mb = max(self.peak_mb, total / 2**20)
+            self.peak_uss_mb = max(self.peak_uss_mb, (uss + shared_max) / 2**20)
             self._stop.wait(0.5)
 
     def __enter__(self) -> "PeakMemory":
@@ -220,6 +234,7 @@ def main() -> None:
     if cache:
         metrics["cache_hits"], metrics["cache_misses"] = cache.hits, cache.misses
     metrics["peak_rss_mb"] = round(mem.peak_mb, 1)
+    metrics["peak_uss_mb"] = round(mem.peak_uss_mb, 1)
     metrics["worker_startup_ms"] = pool.startup_ms
     # Steady-state throughput: exclude the one-off Mathlib import of the workers.
     startup_s = max(pool.startup_ms, default=0.0) / 1000
