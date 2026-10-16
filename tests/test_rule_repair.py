@@ -160,3 +160,38 @@ class TestRuleRepairEngine(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 
+
+
+class TestFullFileRules(unittest.TestCase):
+    """R0, R5-R7: rules for complete Lean files (from real Lean 4.35 failures)."""
+
+    def setUp(self) -> None:
+        self.engine = RuleRepairEngine()
+
+    def test_r0_restore_imports(self) -> None:
+        code = "open Real\ntheorem t (x : ℝ) : 0 ≤ x ^ 2 := by positivity\n"
+        res = self.engine.repair_file(code, "IMP_02", "Unknown identifier `x`")
+        self.assertEqual(res.rule_applied, "R0_restore_mathlib_import")
+        self.assertTrue(res.repaired_code.startswith("import Mathlib\nimport Aesop\n\nopen Real"))
+
+    def test_r5_renames_only_root_names(self) -> None:
+        code = "rw [div_le_iff (by positivity), Foo.le_div_iff, le_div_iff₀ h]"
+        res = self.engine.repair_file(code, "ID_03", "Unknown identifier `div_le_iff`")
+        self.assertEqual(res.rule_applied, "R5_mathlib_rename")
+        self.assertIn("div_le_iff₀ (by positivity)", res.repaired_code)
+        self.assertIn("Foo.le_div_iff,", res.repaired_code)
+        self.assertNotIn("₀₀", res.repaired_code)
+
+    def test_r6_big_operator(self) -> None:
+        code = "theorem t : ∑ i in Finset.range 3, i = 3 := by decide"
+        res = self.engine.repair_file(code, "SYN_01", "unexpected token 'in'; expected ','")
+        self.assertEqual(res.repaired_code, "theorem t : ∑ i ∈ Finset.range 3, i = 3 := by decide")
+
+    def test_r7_heartbeats(self) -> None:
+        code = "set_option maxHeartbeats 500 in\ntheorem t : True := trivial"
+        res = self.engine.repair_file(code, "TMO_05", "maximum number of heartbeats")
+        self.assertIn("maxHeartbeats 400000", res.repaired_code)
+
+    def test_no_rule_returns_none(self) -> None:
+        self.assertIsNone(self.engine.repair_file("theorem t : True := by simp", "TAC_07",
+                                                  "unsolved goals"))
