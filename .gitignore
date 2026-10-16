@@ -90,3 +90,7 @@ logs/
 *.log
 *.tmp
 scratch/
+
+# Lean / Mathlib workspace (multi-GB, rebuilt via lake)
+lean_ws/.lake/
+.lake/
