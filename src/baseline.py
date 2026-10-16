@@ -42,7 +42,7 @@ def _generate_exponential_samples(scale=5.0, size=100, seed=42):
     return samples
 
 
-def run_baseline(config_path: str) -> dict:
+def run_baseline(config_path: str, out_dir: str = "results/raw") -> dict:
     """Executes baseline workflow and calculates latency distributions."""
     start_time = time.time()
 
@@ -80,8 +80,8 @@ def run_baseline(config_path: str) -> dict:
         "log_path": f"logs/{run_id}.log",
     }
 
-    os.makedirs("results/raw", exist_ok=True)
-    out_file = os.path.join("results/raw", f"run_{run_id}.json")
+    os.makedirs(out_dir, exist_ok=True)
+    out_file = os.path.join(out_dir, f"run_{run_id}.json")
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(result_record, f, indent=2)
 
