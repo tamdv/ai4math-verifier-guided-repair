@@ -1,0 +1,37 @@
+{
+  "total": 50,
+  "label_agrees": 15,
+  "compiles_without_error": 14,
+  "lean_category_counts": {
+    "SYN_01": 9,
+    "UNK_99": 13,
+    "ID_03": 11,
+    "COMPILES": 14,
+    "SEM_06": 2,
+    "TYP_04": 1
+  },
+  "confusion": {
+    "ID_03->ID_03": 6,
+    "ID_03->UNK_99": 2,
+    "IMP_02->ID_03": 2,
+    "IMP_02->SYN_01": 2,
+    "IMP_02->UNK_99": 4,
+    "SEM_06->COMPILES": 2,
+    "SEM_06->ID_03": 1,
+    "SEM_06->SEM_06": 1,
+    "SEM_06->UNK_99": 1,
+    "SYN_01->SYN_01": 7,
+    "SYN_01->UNK_99": 1,
+    "TMO_05->COMPILES": 2,
+    "TMO_05->ID_03": 1,
+    "TMO_05->UNK_99": 2,
+    "TYP_04->COMPILES": 10,
+    "TYP_04->ID_03": 1,
+    "TYP_04->SEM_06": 1,
+    "TYP_04->TYP_04": 1,
+    "TYP_04->UNK_99": 3
+  },
+  "source": "data_sample/error_dataset_50.json",
+  "lean_project": "lean_ws",
+  "timestamp": "2026-10-15T09:15:22.435266+00:00"
+}

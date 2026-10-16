@@ -1,0 +1,43 @@
+{
+  "run_id": "build-seeds-20261016071934-6e9500",
+  "timestamp": "2026-10-16T07:19:34.217832+00:00",
+  "git_commit": "a512409c8b9f2b11bb2f57af2f45a873e853bf92-dirty",
+  "data_version": "goedel-lean-workbook-proofs@main",
+  "machine": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "cpu": "arm",
+    "cpu_count": 8,
+    "ram_gb": 16.0
+  },
+  "software": {
+    "python": "3.14.3",
+    "lean": "Lean (version 4.35.0, arm64-apple-darwin24.6.0, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+  },
+  "parameters": {
+    "source": "data/raw/goedel_lean_workbook_proofs.parquet",
+    "source_sha256": "24fcb50eecc2ccbcc52a58c6412c6d10edbeaa9483a97d30e207fb20ef6e2677",
+    "n": 100,
+    "workers": 1,
+    "heartbeats": 400000,
+    "out": "/private/tmp/claude-501/-Users-tamdv-Documents-Workspace-Master-3-DLL/519dc1b3-3bc4-4aab-b970-6263ef0189ee/scratchpad/pilot_seeds.jsonl"
+  },
+  "seed": 42,
+  "timeout": 60.0,
+  "metrics": {
+    "candidates": 100,
+    "kept": 67,
+    "failed": 33,
+    "timeouts": 0,
+    "sorry": 0,
+    "keep_rate": 0.67,
+    "wall_time_s": 197.0,
+    "throughput_per_s": 0.51,
+    "service_p50_ms": 221.862,
+    "service_p95_ms": 16848.511,
+    "queue_wait_p95_ms": 195616.929,
+    "worker_startup_ms": [
+      42391.4
+    ]
+  },
+  "status": "SUCCESS"
+}
