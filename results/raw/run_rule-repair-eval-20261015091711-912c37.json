@@ -1,0 +1,1537 @@
+{
+  "run_id": "rule-repair-eval-20261015091711-912c37",
+  "timestamp": "2026-10-15T09:17:11.925220+00:00",
+  "git_commit": "a512409c8b9f2b11bb2f57af2f45a873e853bf92",
+  "data_version": "v0.1-50-errors",
+  "machine": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "cpu": "arm",
+    "python": "3.14.3"
+  },
+  "parameters": {
+    "dataset_path": "data_sample/error_dataset_50.json",
+    "total_candidates": 50,
+    "engine": "RuleRepairEngine",
+    "token_cost_per_repair": 0,
+    "seed": 42,
+    "lean_verify": true,
+    "lean_project_dir": "lean_ws"
+  },
+  "seed": 42,
+  "timeout": 120.0,
+  "metrics": {
+    "total_samples": 50,
+    "rule_repaired_count": 24,
+    "rule_hit_rate": 0.48,
+    "category_breakdown": {
+      "SYN_01": 8,
+      "IMP_02": 8,
+      "ID_03": 8
+    },
+    "latency_p50_ms": 0.005,
+    "latency_p95_ms": 0.166,
+    "throughput_qps": 32705.48,
+    "total_tokens_saved": 13200,
+    "avg_tokens_saved_per_sample": 264.0,
+    "original_compiled_count": 16,
+    "repaired_compiled_count": 14,
+    "repaired_proved_count": 10,
+    "compile_rate": 0.28,
+    "compile_rate_given_rule": 0.5833,
+    "compiled_by_category": {
+      "SYN_01": 5,
+      "IMP_02": 4,
+      "ID_03": 5
+    },
+    "verify_latency_p50_ms": 1234.534,
+    "verify_latency_p95_ms": 2770.188
+  },
+  "status": "SUCCESS",
+  "log_path": "logs/rule-repair-eval-20261015091711-912c37.log",
+  "software": {
+    "lean": "Lean (version 4.35.0, arm64-apple-darwin24.6.0, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+  },
+  "samples": [
+    {
+      "error_id": "ERR-001",
+      "category_code": "SYN_01",
+      "rule_applied": "R2_keyword_inserter",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1185.268,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 23,
+            "end_line": 1,
+            "end_column": 25,
+            "message": "unexpected token '>'; expected ':'"
+          }
+        ]
+      },
+      "repaired_code": "theorem foo (n : Nat) : n > 0",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1213.35,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 2,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "unexpected end of input; expected ':=', 'where' or '|'"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-002",
+      "category_code": "SYN_01",
+      "rule_applied": "R1_bracket_balancer",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1301.973,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 2,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "unexpected end of input; expected ')'"
+          }
+        ]
+      },
+      "repaired_code": "theorem bar (a b : Real) (h : a + b = 2) : a = 2 - b",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1242.514,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 2,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "unexpected end of input; expected ':=', 'where' or '|'"
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 30,
+            "end_line": 1,
+            "end_column": 35,
+            "message": "failed to synthesize instance of type class\n  HAdd Real Real ?m.6\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 47,
+            "end_line": 1,
+            "end_column": 52,
+            "message": "failed to synthesize instance of type class\n  HSub Nat Real Real\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-003",
+      "category_code": "SYN_01",
+      "rule_applied": "R2_keyword_inserter",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1226.555,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 3,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "unexpected end of input; expected ':=', 'where' or '|'"
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 36,
+            "end_line": 2,
+            "end_column": 15,
+            "message": "Function expected at\n  p\nbut this term has type\n  Prop\n\nNote: Expected a function because this term is being applied to the argument\n  exact"
+          }
+        ]
+      },
+      "repaired_code": "theorem thm1 (p q : Prop) : p \u2227 q \u2192 p := by\n  exact And.left",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1201.333,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-004",
+      "category_code": "SYN_01",
+      "rule_applied": "R1_bracket_balancer",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1182.141,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 2,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "unexpected end of input; expected ']'"
+          }
+        ]
+      },
+      "repaired_code": "def l : List Nat := [1, 2, 3]",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1213.973,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-005",
+      "category_code": "SYN_01",
+      "rule_applied": "R2_keyword_inserter",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1279.536,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 24,
+            "end_line": 1,
+            "end_column": 25,
+            "message": "unexpected token ';'; expected ':=', 'where' or '|'"
+          }
+        ]
+      },
+      "repaired_code": "theorem thm2 : 1 + 1 = 2 := by rfl",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1283.55,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-006",
+      "category_code": "SYN_01",
+      "rule_applied": "R2_keyword_inserter",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1208.524,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 0,
+            "end_line": 1,
+            "end_column": 11,
+            "message": "unexpected identifier; expected command"
+          }
+        ]
+      },
+      "repaired_code": "theorem simple_math (n : Nat) : n = n := by rfl",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1197.482,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-007",
+      "category_code": "SYN_01",
+      "rule_applied": "R1_bracket_balancer",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1187.874,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 32,
+            "end_line": 1,
+            "end_column": 33,
+            "message": "unexpected token ')'; expected ':=', 'where' or '|'"
+          }
+        ]
+      },
+      "repaired_code": "theorem thm3 (x : Nat) : (x = x) := by rfl",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1222.791,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-008",
+      "category_code": "SYN_01",
+      "rule_applied": "R2_keyword_inserter",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1200.53,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 38,
+            "end_line": 1,
+            "end_column": 48,
+            "message": "unsolved goals\np q : Prop\nh : p\n\u22a2 q"
+          }
+        ]
+      },
+      "repaired_code": "theorem thm4 (p q : Prop) : p \u2192 q := by intro h",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1237.788,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 37,
+            "end_line": 1,
+            "end_column": 47,
+            "message": "unsolved goals\np q : Prop\nh : p\n\u22a2 q"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-009",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1227.877,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 30,
+            "end_line": 1,
+            "end_column": 38,
+            "message": "failed to synthesize instance of type class\n  LE Real\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 37,
+            "end_line": 1,
+            "end_column": 38,
+            "message": "failed to synthesize instance of type class\n  OfNat Real 0\nnumerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is\n  Real\ndue to the absence of the instance above\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 30,
+            "end_line": 1,
+            "end_column": 33,
+            "message": "failed to synthesize instance of type class\n  HPow Real Nat Real\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.Data.Real.Basic\n\ntheorem real_pos (x : Real) : x^2 >= 0 := sorry",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": false,
+        "uses_sorry": true,
+        "latency_ms": 7273.479,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 1,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "\n'Mathlib.Data.Real.Basic' has been deprecated: please replace this import by\n\nimport Mathlib.Basic.Real.Basic\n"
+          },
+          {
+            "severity": "warning",
+            "line": 3,
+            "column": 8,
+            "end_line": 3,
+            "end_column": 16,
+            "message": "declaration uses `sorry`"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-010",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1310.338,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 29,
+            "end_line": 1,
+            "end_column": 33,
+            "message": "Invalid field notation: Field projection operates on types of the form `C ...` where C is a constant. The expression\n  z\nhas type `Complex` which does not have the necessary form."
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.Data.Complex.Basic\n\ntheorem c_im (z : Complex) : z.im = 0 := sorry",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": false,
+        "uses_sorry": true,
+        "latency_ms": 2770.188,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 1,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "\n'Mathlib.Data.Complex.Basic' has been deprecated: please replace this import by\n\nimport Mathlib.Basic.Complex.Basic\n"
+          },
+          {
+            "severity": "warning",
+            "line": 3,
+            "column": 8,
+            "end_line": 3,
+            "end_column": 12,
+            "message": "declaration uses `sorry`"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-011",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1357.92,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 8,
+            "end_line": 1,
+            "end_column": 34,
+            "message": "Function expected at\n  Matrix\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (Fin 2)\n\nHint: The identifier `Matrix` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.Data.Matrix.Basic\n\ndef M : Matrix (Fin 2) (Fin 2) Nat := sorry",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": false,
+        "uses_sorry": true,
+        "latency_ms": 3847.386,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 3,
+            "column": 4,
+            "end_line": 3,
+            "end_column": 5,
+            "message": "declaration uses `sorry`"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-012",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1294.882,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 31,
+            "end_line": 1,
+            "end_column": 32,
+            "message": "unexpected token ')'; expected term"
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.Topology.Basic\n\ntheorem is_open_univ (X : Type*) [TopologicalSpace X] : IsOpen (Set.univ : Set X) := sorry",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": false,
+        "uses_sorry": true,
+        "latency_ms": 2761.057,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 3,
+            "column": 8,
+            "end_line": 3,
+            "end_column": 20,
+            "message": "declaration uses `sorry`"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-013",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1431.757,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 20,
+            "end_line": null,
+            "end_column": null,
+            "message": "expected token"
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.Data.Finset.Basic\n\ntheorem sum_empty : \u2211 i in (\u2205 : Finset Nat), i = 0 := sorry",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 2187.084,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 3,
+            "column": 20,
+            "end_line": null,
+            "end_column": null,
+            "message": "expected token"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-014",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1306.27,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 27,
+            "end_line": 1,
+            "end_column": 28,
+            "message": "unexpected token ')'; expected term"
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.GroupTheory.Subgroup.Basic\n\ntheorem lagrange (G : Type*) [Group G] [Fintype G] (H : Subgroup G) : True := sorry",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1114.688,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "object file '/Users/tamdv/Documents/Workspace/Master/3.DLL/lean_ws/.lake/packages/mathlib/.lake/build/lib/lean/Mathlib/GroupTheory/Subgroup/Basic.olean' of module Mathlib.GroupTheory.Subgroup.Basic does not exist"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-015",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1232.196,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 25,
+            "end_line": 1,
+            "end_column": 43,
+            "message": "invalid binder annotation, type is not a class instance\n  ?m.2\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.Data.Nat.Prime\n\ntheorem p_dvd (p : Nat) [Fact (Nat.Prime p)] : True := sorry",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1156.578,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "object file '/Users/tamdv/Documents/Workspace/Master/3.DLL/lean_ws/.lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Data/Nat/Prime.olean' of module Mathlib.Data.Nat.Prime does not exist"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-016",
+      "category_code": "IMP_02",
+      "rule_applied": "R3_mathlib_import_injector",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1219.255,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 26,
+            "end_line": 1,
+            "end_column": 35,
+            "message": "Function expected at\n  Measure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u211d\n\nHint: The identifier `Measure` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          }
+        ]
+      },
+      "repaired_code": "import Mathlib.MeasureTheory.Measure.MeasureSpace\n\ntheorem measure_zero (\u03bc : Measure \u211d) : True := sorry",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 5745.699,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 1,
+            "column": 0,
+            "end_line": null,
+            "end_column": null,
+            "message": "\n'Mathlib.MeasureTheory.Measure.MeasureSpace' has been deprecated: please replace this import by\n\nimport Mathlib.MeasureTheory.Measure.Basic\nimport Mathlib.MeasureTheory.Measure.CompleteLattice\nimport Mathlib.MeasureTheory.Measure.Continuity\nimport Mathlib.MeasureTheory.Measure.Filter\nimport Mathlib.MeasureTheory.Measure.Interval\nimport Mathlib.MeasureTheory.Measure.Module\nimport Mathlib.MeasureTheory.Measure.OuterMeasure\nimport Mathlib.MeasureTheory.Measure.Sum\n"
+          },
+          {
+            "severity": "error",
+            "line": 3,
+            "column": 26,
+            "end_line": 3,
+            "end_column": 35,
+            "message": "Function expected at\n  Measure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u211d\n\nHint: The identifier `Measure` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-017",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1304.082,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 34,
+            "end_line": 1,
+            "end_column": 37,
+            "message": "Invalid field `len`: The environment does not contain `List.len`, so it is not possible to project the field `len` from an expression\n  l\nof type `List Nat`"
+          }
+        ]
+      },
+      "repaired_code": "def len (l : List Nat) : Nat := l.length",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1212.166,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-018",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1245.001,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 28,
+            "end_line": 1,
+            "end_column": 35,
+            "message": "Unknown constant `Nat.suc`"
+          }
+        ]
+      },
+      "repaired_code": "def next (n : Nat) : Nat := Nat.succ n",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1267.932,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-019",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1234.122,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 29,
+            "end_line": 1,
+            "end_column": 39,
+            "message": "Function expected at\n  sqrt\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  (x ^ 2)\n\nHint: The identifier `sqrt` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          }
+        ]
+      },
+      "repaired_code": "theorem sq_root (x : Real) : Real.sqrt (x^2) = x := sorry",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1270.561,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 29,
+            "end_line": 1,
+            "end_column": 44,
+            "message": "Invalid field notation: Field projection operates on types of the form `C ...` where C is a constant. The expression\n  Real\nhas type `Sort ?u.2` which does not have the necessary form."
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-020",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1258.234,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 51,
+            "end_line": 1,
+            "end_column": 62,
+            "message": "Unknown constant `Nat.add_com`"
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 44,
+            "end_line": 1,
+            "end_column": 63,
+            "message": "unsolved goals\na b : Nat\n\u22a2 a + b = b + a"
+          }
+        ]
+      },
+      "repaired_code": "theorem comm (a b : Nat) : a + b = b + a := by rw [Nat.add_comm]",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1266.844,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-021",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1226.558,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 36,
+            "end_line": 1,
+            "end_column": 40,
+            "message": "Invalid field `size`: The environment does not contain `String.size`, so it is not possible to project the field `size` from an expression\n  s\nof type `String`"
+          }
+        ]
+      },
+      "repaired_code": "def str_len (s : String) : Nat := s.length",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1218.252,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-022",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1235.076,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 43,
+            "end_line": null,
+            "end_column": null,
+            "message": "unknown tactic"
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 39,
+            "end_line": 1,
+            "end_column": 47,
+            "message": "unsolved goals\nn : Nat\n\u22a2 n + 0 = n"
+          }
+        ]
+      },
+      "repaired_code": "theorem sim_t (n : Nat) : n + 0 = n := by simp",
+      "repaired": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1227.584,
+        "diagnostics": []
+      }
+    },
+    {
+      "error_id": "ERR-023",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1214.234,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 43,
+            "end_line": 1,
+            "end_column": 57,
+            "message": "Unknown identifier `Classical.some`"
+          }
+        ]
+      },
+      "repaired_code": "theorem em (p : Prop) : p \u2228 \u00acp := by exact Classical.choose sorry",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": true,
+        "latency_ms": 1234.534,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 43,
+            "end_line": 1,
+            "end_column": 65,
+            "message": "don't know how to synthesize implicit argument `p`\n  @Classical.choose (p \u2228 \u00acp) ?m.3 sorry\ncontext:\np : Prop\n\u22a2 p \u2228 \u00acp \u2192 Prop"
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 34,
+            "end_line": 1,
+            "end_column": 65,
+            "message": "unsolved goals\np : Prop\n\u22a2 p \u2228 \u00acp"
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-024",
+      "category_code": "ID_03",
+      "rule_applied": "R4_identifier_resolver",
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1279.897,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 11,
+            "end_line": 1,
+            "end_column": 21,
+            "message": "Function expected at\n  Finset\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  Nat\n\nHint: The identifier `Finset` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          }
+        ]
+      },
+      "repaired_code": "def c (s : Finset Nat) : Nat := s.card",
+      "repaired": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1216.934,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 11,
+            "end_line": 1,
+            "end_column": 21,
+            "message": "Function expected at\n  Finset\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  Nat\n\nHint: The identifier `Finset` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          }
+        ]
+      }
+    },
+    {
+      "error_id": "ERR-025",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1212.365,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-026",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": false,
+        "uses_sorry": true,
+        "latency_ms": 1234.051,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 1,
+            "column": 8,
+            "end_line": 1,
+            "end_column": 14,
+            "message": "declaration uses `sorry`"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-027",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1194.115,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-028",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1232.463,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 27,
+            "end_line": 1,
+            "end_column": 34,
+            "message": "failed to synthesize instance of type class\n  HAdd Real Float Real\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-029",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1285.079,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 29,
+            "end_line": 1,
+            "end_column": 35,
+            "message": "Tactic `decide` proved that the proposition\n  7 < 5\nis false"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-030",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1254.076,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 17,
+            "end_line": 1,
+            "end_column": 41,
+            "message": "Function expected at\n  Matrix\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (Fin 2)\n\nHint: The identifier `Matrix` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          },
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 48,
+            "end_line": 1,
+            "end_column": 72,
+            "message": "Function expected at\n  Matrix\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (Fin 4)\n\nHint: The identifier `Matrix` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement."
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-031",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1229.432,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 26,
+            "end_line": 1,
+            "end_column": 41,
+            "message": "failed to synthesize instance of type class\n  HAppend (List Nat) (List Char) (List Nat)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-032",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1246.714,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 60,
+            "end_line": 1,
+            "end_column": 68,
+            "message": "Type mismatch\n  h2\nhas type\n  2 = 2\nbut is expected to have type\n  1 = 1"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-033",
+      "category_code": "TMO_05",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1201.088,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 37,
+            "end_line": 1,
+            "end_column": 64,
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = n"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-034",
+      "category_code": "TMO_05",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1189.13,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 1,
+            "column": 36,
+            "end_line": 1,
+            "end_column": 49,
+            "message": "This simp argument is unused:\n  Nat.add_assoc\n\nHint: Omit it from the simp argument list.\n  [apply] simp [Nat.add_comm]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`"
+          },
+          {
+            "severity": "warning",
+            "line": 1,
+            "column": 51,
+            "end_line": 1,
+            "end_column": 63,
+            "message": "This simp argument is unused:\n  Nat.add_comm\n\nHint: Omit it from the simp argument list.\n  [apply] simp [Nat.add_assoc]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-035",
+      "category_code": "TMO_05",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1214.109,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-036",
+      "category_code": "TMO_05",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1268.45,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 2,
+            "column": 12,
+            "end_line": 2,
+            "end_column": 20,
+            "message": "Unknown identifier `loop_mac\u271d`"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-037",
+      "category_code": "TMO_05",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1220.701,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 57,
+            "end_line": 1,
+            "end_column": 62,
+            "message": "omega could not prove the goal:\nNo usable constraints found. You may need to unfold definitions so `omega` can see linear arithmetic facts about `Nat` and `Int`, which may also involve multiplication, division, and modular remainder by constants."
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-038",
+      "category_code": "SEM_06",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": false,
+        "uses_sorry": true,
+        "latency_ms": 1226.569,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "line": 1,
+            "column": 8,
+            "end_line": 1,
+            "end_column": 20,
+            "message": "declaration uses `sorry`"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-039",
+      "category_code": "SEM_06",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1210.927,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-040",
+      "category_code": "SEM_06",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1215.306,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 33,
+            "end_line": 1,
+            "end_column": 42,
+            "message": "Unknown constant `Nat.Prime`"
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-041",
+      "category_code": "SEM_06",
+      "rule_applied": null,
+      "original": {
+        "status": "ERROR",
+        "compiled": false,
+        "proved": false,
+        "uses_sorry": false,
+        "latency_ms": 1244.324,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "line": 1,
+            "column": 40,
+            "end_line": 1,
+            "end_column": 45,
+            "message": "failed to synthesize instance of type class\n  HDiv Real Real ?m.4\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+          }
+        ]
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-042",
+      "category_code": "SEM_06",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1543.75,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-043",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1395.809,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-044",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1300.108,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-045",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1300.054,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-046",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1271.058,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-047",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1190.207,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-048",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1207.261,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-049",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1239.912,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    },
+    {
+      "error_id": "ERR-050",
+      "category_code": "TYP_04",
+      "rule_applied": null,
+      "original": {
+        "status": "OK",
+        "compiled": true,
+        "proved": true,
+        "uses_sorry": false,
+        "latency_ms": 1342.665,
+        "diagnostics": []
+      },
+      "repaired_code": null,
+      "repaired": null
+    }
+  ]
+}
