@@ -44,8 +44,18 @@ class LLMClient(Protocol):
 
 
 def load_env(path: Path = ENV_FILE) -> None:
-    """Loads KEY=VALUE lines from `.env` into os.environ without overriding."""
+    """Loads KEY=VALUE lines from `.env` into os.environ without overriding.
+
+    On Kaggle (no `.env`), falls back to the GEMINI_API_KEY notebook secret.
+    """
     if not path.exists():
+        if "GEMINI_API_KEY" not in os.environ and os.path.isdir("/kaggle"):
+            try:
+                from kaggle_secrets import UserSecretsClient  # type: ignore[import-not-found]
+
+                os.environ["GEMINI_API_KEY"] = UserSecretsClient().get_secret("GEMINI_API_KEY")
+            except Exception:
+                pass
         return
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
