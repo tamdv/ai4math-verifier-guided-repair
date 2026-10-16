@@ -238,6 +238,78 @@ class RuleRepairEngine:
         return None
 
 
+    # ---- Full-file rules (R0, R5-R7), derived from real Lean 4.35 failures ----
+    def repair_file(
+        self, code: str, category_code: str, error_message: str
+    ) -> RuleRepairResult | None:
+        """Rules for complete Lean files; falls back to snippet rules R1-R4.
+
+        R0 restores missing Mathlib imports, R5 applies Mathlib lemma renames,
+        R6 updates deprecated big-operator syntax, R7 restores a sane heartbeat
+        budget. Returns None when no rule changes the code (route to LLM).
+        """
+        start = time.perf_counter()
+        candidates: list[tuple[str, str | None]] = []
+        if category_code == "IMP_02":
+            candidates.append(("R0_restore_mathlib_import", restore_imports(code)))
+        if category_code in ("ID_03", "TYP_04", "TAC_07"):
+            candidates.append(("R5_mathlib_rename", apply_renames(code)))
+        if category_code == "SYN_01":
+            candidates.append(("R6_big_operator_syntax", fix_big_operator_syntax(code)))
+        if category_code == "TMO_05":
+            candidates.append(("R7_heartbeat_budget", raise_heartbeats(code)))
+
+        for rule, fixed in candidates:
+            if fixed and fixed != code:
+                return RuleRepairResult(
+                    repaired_code=fixed,
+                    rule_applied=rule,
+                    category_code=category_code,
+                    latency_ms=round((time.perf_counter() - start) * 1000, 3),
+                )
+        return self.repair_candidate(code, category_code, error_message)
+
+
+# Lemma renames in Mathlib (verified present in the v4.35.0 source tree).
+MATHLIB_RENAMES = {
+    "le_div_iff": "le_div_iff₀",
+    "div_le_iff": "div_le_iff₀",
+    "lt_div_iff": "lt_div_iff₀",
+    "div_lt_iff": "div_lt_iff₀",
+}
+_RENAME_RE = re.compile(r"(?<![\w.'])(" + "|".join(MATHLIB_RENAMES) + r")(?![\w'₀])")
+_IMPORT_RE = re.compile(r"^\s*import\s", re.MULTILINE)
+DEFAULT_HEARTBEATS = 400000
+
+
+def restore_imports(code: str) -> str | None:
+    """R0: prepend the standard Mathlib header to a file with no imports."""
+    if _IMPORT_RE.search(code):
+        return None
+    return "import Mathlib\nimport Aesop\n\n" + code.lstrip("\n")
+
+
+def apply_renames(code: str) -> str | None:
+    """R5: replace deprecated root-namespace lemma names with current ones."""
+    fixed = _RENAME_RE.sub(lambda m: MATHLIB_RENAMES[m.group(1)], code)
+    return fixed if fixed != code else None
+
+
+def fix_big_operator_syntax(code: str) -> str | None:
+    """R6: `∑ x in s, f x` -> `∑ x ∈ s, f x` (same for ∏)."""
+    fixed = re.sub(r"([∑∏]\s*[^,∈]+?)\s+in\s+", r"\1 ∈ ", code)
+    return fixed if fixed != code else None
+
+
+def raise_heartbeats(code: str) -> str | None:
+    """R7: restore a heartbeat budget that was set too low."""
+    def bump(m: re.Match[str]) -> str:
+        return f"set_option maxHeartbeats {max(int(m.group(1)), DEFAULT_HEARTBEATS)}"
+
+    fixed = re.sub(r"set_option maxHeartbeats (\d+)", bump, code)
+    return fixed if fixed != code else None
+
+
 # Module-level convenience singleton & function
 _default_engine = RuleRepairEngine()
 
