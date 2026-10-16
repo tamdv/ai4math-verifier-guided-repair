@@ -1,0 +1,20 @@
+# Experiment plan (cost option C, chosen 2026-10-16): Lean-only configs carry the
+# scalability tiers for $0; LLM configs run on hold-out splits with comments stripped.
+# samples: holdout of the 1K tier ~= 300, holdout of the 10K tier ~= 3000.
+assumptions:
+  mean_attempts: {"1": 1.0, "3": 1.8}   # calibrate from the pilot run record
+  hybrid_llm_share: 0.75                # share of attempts not handled by rules
+  cache_repeats: true                   # repeats 2-3 replay cached LLM replies ($0)
+  strip_comments: true                  # option C
+  safety_margin: 1.5
+
+experiments:
+  - {name: "pilot (50, blind+diag)", strategy: llm_only, budget: 1, samples: 100, model: gemini-3.5-flash-lite}
+  - {name: "RQ1 blind b1 (1K holdout)", strategy: blind, budget: 1, samples: 300, repeats: 3, model: gemini-3.5-flash-lite}
+  - {name: "RQ1 llm_only b1 (1K holdout)", strategy: llm_only, budget: 1, samples: 300, repeats: 3, model: gemini-3.5-flash-lite}
+  - {name: "RQ2 hybrid b1 (1K holdout)", strategy: hybrid, budget: 1, samples: 300, repeats: 3, model: gemini-3.5-flash-lite}
+  - {name: "RQ2 llm_only b3 (1K holdout)", strategy: llm_only, budget: 3, samples: 300, repeats: 3, model: gemini-3.5-flash-lite}
+  - {name: "RQ2 hybrid b3 (1K holdout)", strategy: hybrid, budget: 3, samples: 300, repeats: 3, model: gemini-3.5-flash-lite}
+  - {name: "Scale hybrid b1 (10K holdout)", strategy: hybrid, budget: 1, samples: 3000, model: gemini-3.5-flash-lite}
+  - {name: "Strong model llm_only b1 (300)", strategy: llm_only, budget: 1, samples: 300, model: gemini-3.6-flash}
+  # $0 Lean-only scalability matrix (not priced): rule_only / none x {1K, 10K, all} x {1,2,4} workers x 3 repeats

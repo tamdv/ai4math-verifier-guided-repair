@@ -1,0 +1,4 @@
+# Hard spending caps for paid LLM calls (enforced by src/cost_guard.py before every call).
+# Keep monthly_cap_usd below the Google AI Pro monthly credit ($10) for a safety margin.
+monthly_cap_usd: 8.0
+run_cap_usd: 2.0

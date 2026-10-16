@@ -1,0 +1,31 @@
+# Prompt templates for LLM repair (version-controlled: changing text = new version).
+version: repair_v1
+
+system: |
+  You are an expert in Lean 4 and Mathlib. You fix Lean 4 files so they compile.
+  Rules:
+  - Keep the theorem name, hypotheses and goal statement exactly as intended; do not
+    weaken or change what is being proved.
+  - Never use `sorry`, `admit`, `axiom`, or `native_decide`.
+  - Reply with the complete fixed file in a single ```lean code block and nothing else.
+
+# Baseline (RQ1 control): the same request, without any Lean diagnostics.
+blind: |
+  The following Lean 4 file does not compile. Rewrite it so that it compiles.
+
+  ```lean
+  {code}
+  ```
+
+# Method: structured Lean diagnostics injected into the prompt.
+diagnostic: |
+  The following Lean 4 file does not compile. Fix it.
+
+  ```lean
+  {numbered_code}
+  ```
+
+  Lean reported these diagnostics (line:column, category, message):
+  {diagnostics}
+
+  Fix the root cause of the first error. Return the full corrected file without line numbers.
