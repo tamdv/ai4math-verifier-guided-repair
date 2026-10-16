@@ -24,6 +24,7 @@ from typing import Any
 
 from src.lean_verifier import (
     DEFAULT_TIMEOUT_S,
+    STATUS_CRASH,
     STATUS_ERROR,
     STATUS_OK,
     STATUS_TIMEOUT,
@@ -35,6 +36,10 @@ from src.lean_verifier import (
 DEFAULT_PROJECT = Path(__file__).resolve().parent.parent / "lean_ws"
 REPL_REL_PATH = Path(".lake/packages/REPL/.lake/build/bin/repl")
 IMPORT_RE = re.compile(r"^\s*import\s+(.+)$")
+
+
+class ReplCrash(RuntimeError):
+    """The REPL process exited, closed its pipes or printed unparsable output."""
 
 
 def split_imports(code: str) -> tuple[list[str], str, int]:
@@ -88,6 +93,7 @@ class LeanREPLVerifier:
         self._commands = 0
         self.import_latency_ms = 0.0
         self.restarts = 0
+        self.crashes = 0
         if preload and self.available:
             self._start()
 
@@ -151,10 +157,17 @@ class LeanREPLVerifier:
 
     # ---- protocol -----------------------------------------------------------
     def _send(self, obj: dict[str, Any], timeout_s: float) -> dict[str, Any] | None:
-        """Sends one JSON command; returns the parsed reply or None on timeout/EOF."""
+        """Sends one JSON command; returns the parsed reply, None on timeout.
+
+        Raises:
+            ReplCrash: the process died (EOF / broken pipe) or replied with non-JSON.
+        """
         assert self._proc is not None and self._proc.stdin is not None
-        self._proc.stdin.write(json.dumps(obj, ensure_ascii=False) + "\n\n")
-        self._proc.stdin.flush()
+        try:
+            self._proc.stdin.write(json.dumps(obj, ensure_ascii=False) + "\n\n")
+            self._proc.stdin.flush()
+        except (BrokenPipeError, OSError) as exc:
+            raise ReplCrash(f"write failed: {exc!r}") from exc
         deadline = time.monotonic() + timeout_s
         buf: list[str] = []
         while True:
@@ -166,11 +179,14 @@ class LeanREPLVerifier:
             except queue.Empty:
                 return None
             if line is None:
-                return None
+                raise ReplCrash(f"REPL exited (code {self._proc.poll()})")
             if line.strip() == "" and buf:
                 break
             buf.append(line)
-        return json.loads("".join(buf))
+        try:
+            return json.loads("".join(buf))
+        except json.JSONDecodeError as exc:
+            raise ReplCrash(f"unparsable REPL output: {''.join(buf)[:200]!r}") from exc
 
     def _module_exists(self, module: str) -> bool:
         """True if `module` is built in any package of the workspace (Mathlib deps)."""
@@ -210,7 +226,18 @@ class LeanREPLVerifier:
         if env_id is not None:
             cmd["env"] = env_id
         start = time.perf_counter()
-        resp = self._send(cmd, timeout_s=self.timeout_s)
+        try:
+            resp = self._send(cmd, timeout_s=self.timeout_s)
+        except ReplCrash as exc:
+            # Isolate the failure to this snippet: relaunch and report it as a crash.
+            latency_ms = round((time.perf_counter() - start) * 1000, 3)
+            self.crashes += 1
+            self.restart()
+            return VerificationResult(
+                status=STATUS_CRASH, latency_ms=latency_ms,
+                diagnostics=[{"severity": "error", "line": 0, "column": 0,
+                              "message": f"verifier crashed: {exc}"}],
+            )
         latency_ms = round((time.perf_counter() - start) * 1000, 3)
         self._commands += 1
 

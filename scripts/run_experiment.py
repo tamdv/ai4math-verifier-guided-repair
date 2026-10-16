@@ -79,6 +79,16 @@ class PeakMemory:
         self._thread.join()
 
 
+def file_sha256(path: str) -> str:
+    import hashlib
+
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def load_samples(path: str, split: str, limit: int) -> list[dict[str, Any]]:
     with open(path, encoding="utf-8") as f:
         rows = [json.loads(line) for line in f if line.strip()]
@@ -246,7 +256,7 @@ def main() -> None:
         f"exp-{args.strategy}-b{args.budget}-w{args.workers}",
         parameters=vars(args) | {"log_path": str(log_path.relative_to(RAW_DIR.parent.parent))},
         metrics=metrics,
-        data_version=Path(args.data).name,
+        data_version=f"{Path(args.data).name}@{file_sha256(args.data)[:12]}",
         seed=args.seed,
         timeout=args.timeout,
         status=status,

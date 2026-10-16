@@ -127,6 +127,9 @@ def main() -> None:
     for i, pr in enumerate(pool.imap((c["code"], c) for c in candidates), 1):
         rec, res = pr.payload, pr.result
         service.append(pr.service_ms)
+        if isinstance(res, BaseException) or res.status == "CRASH":
+            rejected["verifier_crash"] += 1  # never label a sample from a crashed check
+            continue
         is_sorry_op = rec["mutation_op"] == "sem_sorry"
         if res.status == "TIMEOUT":
             rec_diags = [{"severity": "error", "line": 0, "column": 0,

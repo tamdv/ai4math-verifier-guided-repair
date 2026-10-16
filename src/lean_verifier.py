@@ -23,6 +23,7 @@ STATUS_OK = "OK"
 STATUS_ERROR = "ERROR"
 STATUS_TIMEOUT = "TIMEOUT"
 STATUS_TOOL_MISSING = "TOOL_MISSING"
+STATUS_CRASH = "CRASH"  # verifier process died / produced unparsable output
 
 Runner = Callable[[list[str], str | None, float], subprocess.CompletedProcess]
 

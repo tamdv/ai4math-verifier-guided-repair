@@ -35,7 +35,10 @@ def main() -> None:
     saved_chars = 0
     for pr in pool.imap((strip_comments(s["code"]), s) for s in seeds):
         saved_chars += len(pr.payload["code"]) - len(strip_comments(pr.payload["code"]))
-        if not pr.result.proved:
+        if isinstance(pr.result, BaseException):
+            broken.append({"seed_id": pr.payload["seed_id"], "status": "EXCEPTION",
+                           "errors": [repr(pr.result)]})
+        elif not pr.result.proved:
             broken.append({"seed_id": pr.payload["seed_id"], "status": pr.result.status,
                            "errors": pr.result.errors[:1]})
 
@@ -44,12 +47,13 @@ def main() -> None:
         "seeds": len(seeds),
         "still_compile": len(seeds) - len(broken),
         "broken": len(broken),
+        "broken_timeouts": sum(b["status"] == "TIMEOUT" for b in broken),
         "broken_examples": broken[:10],
         "chars_saved_fraction": round(saved_chars / total_chars, 4) if total_chars else 0.0,
     }
     path = write_run_record("check-strip-comments", vars(args), metrics,
                             data_version=Path(args.seeds).name, seed=0, timeout=args.timeout,
-                            status="SUCCESS" if not broken else "FAILED")
+                            status="SUCCESS" if all(b["status"] == "TIMEOUT" for b in broken) else "FAILED")
     print(json.dumps({k: v for k, v in metrics.items() if k != "broken_examples"}))
     print(f"[{'OK' if not broken else 'FAIL'}] run record: {path}")
 

@@ -1,0 +1,104 @@
+{
+  "run_id": "gen-errors-20261016091312-dafe8d",
+  "timestamp": "2026-10-16T09:13:12.017809+00:00",
+  "git_commit": "a4baa002dc931ffa7f4412d7d9769ca6fd8d84da",
+  "data_version": "v1.0-mutation+natural",
+  "machine": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "cpu_count": 4,
+    "ram_gb": 31.3
+  },
+  "software": {
+    "python": "3.13.15",
+    "lean": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+  },
+  "parameters": {
+    "seeds": "data/seeds/seeds_verified.jsonl",
+    "natural": "data/seeds/natural_errors.jsonl",
+    "out_dir": "data/errors",
+    "sample_out": "data_sample/errors_sample_100.jsonl",
+    "max_per_seed": 5,
+    "workers": 4,
+    "timeout": 60.0,
+    "seed": 42,
+    "limit_seeds": 0
+  },
+  "seed": 42,
+  "timeout": 60.0,
+  "metrics": {
+    "seeds": 603,
+    "candidates": 3010,
+    "kept_synthetic": 2637,
+    "kept_natural": 197,
+    "total_unique": 2834,
+    "duplicates_removed": 0,
+    "rejected_not_broken": {
+      "typ_change_type": 82,
+      "tac_weaken": 114,
+      "id_tactic_typo": 87,
+      "tmo_low_heartbeats": 72,
+      "id_lemma_typo": 18
+    },
+    "category_counts": {
+      "SEM_06": 392,
+      "SYN_01": 772,
+      "TAC_07": 636,
+      "IMP_02": 379,
+      "ID_03": 294,
+      "TMO_05": 294,
+      "TYP_04": 53,
+      "UNK_99": 14
+    },
+    "split_counts": {
+      "train": 2046,
+      "holdout": 788
+    },
+    "intended_vs_lean": {
+      "ID_03->ID_03": 256,
+      "ID_03->TAC_07": 264,
+      "ID_03->TMO_05": 2,
+      "ID_03->UNK_99": 4,
+      "IMP_02->IMP_02": 379,
+      "SEM_06->SEM_06": 392,
+      "SYN_01->SYN_01": 740,
+      "TAC_07->TAC_07": 144,
+      "TAC_07->TMO_05": 1,
+      "TAC_07->UNK_99": 4,
+      "TMO_05->TMO_05": 281,
+      "TYP_04->ID_03": 3,
+      "TYP_04->TAC_07": 110,
+      "TYP_04->TYP_04": 53,
+      "TYP_04->UNK_99": 4
+    },
+    "verify_wall_s": 580.6,
+    "verify_throughput_per_s": 5.18,
+    "service_p50_ms": 108.534,
+    "service_p95_ms": 3003.59,
+    "worker_startup_ms": [
+      16135.4,
+      16326.6,
+      16560.3,
+      16773.2
+    ],
+    "files": {
+      "errors_all.jsonl": {
+        "rows": 2834,
+        "sha256": "abc4b461981ced0d7acfd6fc7d1fb650d92cf75936ca1fe3be8b08e0b03bd5d0"
+      },
+      "errors_10k.jsonl": {
+        "rows": 2834,
+        "sha256": "abc4b461981ced0d7acfd6fc7d1fb650d92cf75936ca1fe3be8b08e0b03bd5d0"
+      },
+      "errors_1k.jsonl": {
+        "rows": 1000,
+        "sha256": "0d7ebdf93bbe959171f636d447cc361e363c6fb009990c5ba09bdee187c63b56"
+      },
+      "errors_100.jsonl": {
+        "rows": 100,
+        "sha256": "27806ec3c486347bbd0ac25adf2b5b7325734bfa121872a8f7a530e5585aa405"
+      }
+    }
+  },
+  "status": "SUCCESS"
+}

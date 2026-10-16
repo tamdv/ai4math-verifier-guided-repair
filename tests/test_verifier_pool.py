@@ -69,5 +69,43 @@ class TestSplitImports(unittest.TestCase):
         self.assertEqual((mods, offset), ([], 0))
 
 
+
+class TestReplCrashRecovery(unittest.TestCase):
+    """A dying REPL must yield a CRASH result and a restart, not an exception."""
+
+    def _attach_fake(self, verifier, script: str) -> None:
+        import queue as q
+        import subprocess
+        import sys
+
+        proc = subprocess.Popen([sys.executable, "-c", script], stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE, text=True)
+        verifier._proc = proc
+        verifier._lines = q.Queue()
+        threading.Thread(target=verifier._pump, args=(proc, verifier._lines), daemon=True).start()
+        verifier._mathlib_env, verifier._core_env = 0, 1
+
+    def test_crash_then_recover(self) -> None:
+        from src.lean_repl import LeanREPLVerifier
+        from src.lean_verifier import STATUS_CRASH
+
+        v = LeanREPLVerifier(preload=False, timeout_s=5)
+        dies = "import sys; sys.stdin.readline(); sys.exit(3)"
+        healthy = ("import sys, json\n"
+                   "while True:\n"
+                   "    line = sys.stdin.readline()\n"
+                   "    if not line: break\n"
+                   "    if line.strip():\n"
+                   "        print(json.dumps({'env': 2}) + '\\n', flush=True)\n")
+        self._attach_fake(v, dies)
+        v.restart = lambda: self._attach_fake(v, healthy)  # type: ignore[method-assign]
+        res = v.verify("theorem t : True := trivial")
+        self.assertEqual(res.status, STATUS_CRASH)
+        self.assertIn("crashed", res.errors[0]["message"])
+        self.assertEqual(v.crashes, 1)
+        self.assertTrue(v.verify("theorem t : True := trivial").compiled)
+        v.close()
+
+
 if __name__ == "__main__":
     unittest.main()

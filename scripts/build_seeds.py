@@ -68,7 +68,7 @@ def main() -> None:
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    kept, failed, timeouts, sorry = 0, 0, 0, 0
+    kept, failed, timeouts, sorry, crashes = 0, 0, 0, 0, 0
     service, waits = [], []
     t0 = time.perf_counter()
     with open(out_path, "w", encoding="utf-8") as out, open(
@@ -77,6 +77,9 @@ def main() -> None:
         for i, pr in enumerate(pool.imap(items), 1):
             res = pr.result
             service.append(pr.service_ms)
+            if isinstance(res, BaseException) or res.status == "CRASH":
+                crashes += 1  # verifier failure, not a property of the proof: skip
+                continue
             waits.append(pr.queue_wait_ms)
             code = items[pr.index][0]
             if res.status == "TIMEOUT":
@@ -123,6 +126,7 @@ def main() -> None:
         "failed": failed,
         "timeouts": timeouts,
         "sorry": sorry,
+        "verifier_crashes": crashes,
         "keep_rate": round(kept / len(items), 4),
         "wall_time_s": round(wall, 1),
         "throughput_per_s": round(len(items) / wall, 2),
