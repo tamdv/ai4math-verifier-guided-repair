@@ -219,7 +219,9 @@ def quality_groups(runs: list[dict[str, Any]]) -> dict[tuple[str, int, str], lis
     groups: dict[tuple[str, int, str], list[dict[str, Any]]] = collections.defaultdict(list)
     for r in runs:
         p = r["parameters"]
-        if p.get("split") != "holdout" or p.get("limit") or p.get("tag") in ("scale", "pilot"):
+        if (p.get("split") != "holdout" or p.get("limit")
+                or Path(p.get("data", "")).name != "errors_1k.jsonl"
+                or p.get("tag") in ("scale", "scale-llm", "pilot")):
             continue
         model = p["model"] if p["strategy"] in ("blind", "llm_only", "hybrid") else "-"
         groups[(p["strategy"], p["budget"], model)].append(r["metrics"])
@@ -285,8 +287,16 @@ def fig_quality(runs: list[dict[str, Any]], out: Path) -> list[Path]:
     ax.plot(*zip(*frontier), color=INK_2, lw=1, ls=(0, (2, 3)), label="Pareto frontier")
     ax.scatter([p[0] for p in pts], [p[1] for p in pts], s=40, color=SERIES[0],
                edgecolor=SURFACE, linewidth=2, zorder=3)
-    for c, s, k in pts:
-        ax.annotate(label(*k).replace("\n", " "), (c, s), xytext=(6, -10),
+    xr = (max(p[0] for p in pts) - min(p[0] for p in pts)) or 1.0
+    yr = (max(p[1] for p in pts) - min(p[1] for p in pts)) or 1.0
+    placed: list[tuple[float, float]] = []
+    for c, s, k in sorted(pts, key=lambda p: -p[1]):
+        # put the label above the point if another labelled point sits just below it
+        crowded = any(abs(c - pc) / xr < 0.25 and 0 <= (s - ps) / yr < 0.12 for pc, ps in placed)
+        crowded = crowded or any(abs(c - pc) / xr < 0.25 and 0 < (s - ps) / yr < 0.12
+                                 for pc, ps, _ in pts if (pc, ps) != (c, s))
+        placed.append((c, s))
+        ax.annotate(label(*k).replace("\n", " "), (c, s), xytext=(6, 5 if crowded else -10),
                     textcoords="offset points", fontsize=7, color=INK_2, zorder=4,
                     bbox={"boxstyle": "square,pad=0.15", "fc": SURFACE, "ec": "none"})
     ax.set_ylim(bottom=-6)  # room for labels of points at 0 %

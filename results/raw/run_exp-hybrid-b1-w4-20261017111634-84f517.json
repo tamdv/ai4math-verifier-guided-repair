@@ -1,0 +1,133 @@
+{
+  "run_id": "exp-hybrid-b1-w4-20261017111634-84f517",
+  "timestamp": "2026-10-17T11:40:42.537775+00:00",
+  "git_commit": "92f33672633f78a0493f7fe0a694b2c788cd3ed8-dirty",
+  "data_version": "errors_10k.jsonl@a4dbeb60ed5f",
+  "machine": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "cpu_count": 4,
+    "ram_gb": 31.3
+  },
+  "software": {
+    "python": "3.13.15",
+    "lean": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+  },
+  "parameters": {
+    "data": "data/errors/errors_10k.jsonl",
+    "split": "holdout",
+    "limit": 0,
+    "strategy": "hybrid",
+    "budget": 1,
+    "wall_budget": 300.0,
+    "workers": 4,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "prompt_version": "repair_v1",
+    "timeout": 60.0,
+    "seed": 42,
+    "repeat_index": 0,
+    "tag": "scale-llm",
+    "run_cap": 3.0,
+    "keep_comments": false,
+    "no_cache": false,
+    "log_path": "results/raw/logs/exp-hybrid-b1-w4-20261017111634-84f517.jsonl.gz"
+  },
+  "seed": 42,
+  "timeout": 60.0,
+  "metrics": {
+    "n_samples": 2907,
+    "repair_success_rate": 0.3409,
+    "compile_rate": 0.3753,
+    "semantic_pass_given_compiled": 0.9083,
+    "attempts_per_sample": 1.0,
+    "llm_calls": 740,
+    "tokens_input": 332924,
+    "tokens_output": 352138,
+    "tokens_thinking": 0,
+    "tokens_per_success": 691.3,
+    "cost_usd": 0.980222,
+    "cost_per_success_usd": 0.000989,
+    "service_p50_ms": 453.8,
+    "service_p95_ms": 7695.8,
+    "latency_p50_ms": 748646.8,
+    "latency_p95_ms": 1377241.9,
+    "queue_wait_p50_ms": 747696.6,
+    "queue_wait_p95_ms": 1377039.4,
+    "throughput_samples_per_s": 2.008,
+    "wall_time_s": 1448.0,
+    "stop_reasons": {
+      "success": 991,
+      "budget_exhausted": 1916
+    },
+    "success_by_category": {
+      "ID_03": {
+        "success": 12,
+        "n": 681,
+        "rate": 0.0176
+      },
+      "IMP_02": {
+        "success": 401,
+        "n": 401,
+        "rate": 1.0
+      },
+      "SEM_06": {
+        "success": 135,
+        "n": 390,
+        "rate": 0.3462
+      },
+      "SYN_01": {
+        "success": 66,
+        "n": 782,
+        "rate": 0.0844
+      },
+      "TAC_07": {
+        "success": 63,
+        "n": 289,
+        "rate": 0.218
+      },
+      "TMO_05": {
+        "success": 304,
+        "n": 310,
+        "rate": 0.9806
+      },
+      "TYP_04": {
+        "success": 7,
+        "n": 48,
+        "rate": 0.1458
+      },
+      "UNK_99": {
+        "success": 3,
+        "n": 6,
+        "rate": 0.5
+      }
+    },
+    "success_by_source": {
+      "synthetic": {
+        "success": 973,
+        "n": 2728
+      },
+      "natural": {
+        "success": 18,
+        "n": 179
+      }
+    },
+    "worker_errors": 0,
+    "budget_refusals": 0,
+    "real_spend_usd": 0.831112,
+    "paid_calls": 659,
+    "month_spend_usd": 2.432044,
+    "cache_hits": 81,
+    "cache_misses": 659,
+    "peak_rss_mb": 36880.8,
+    "peak_uss_mb": 19387.1,
+    "worker_startup_ms": [
+      20460.0,
+      20461.2,
+      20463.7,
+      20467.2
+    ],
+    "throughput_excl_startup_per_s": 2.036
+  },
+  "status": "SUCCESS"
+}
