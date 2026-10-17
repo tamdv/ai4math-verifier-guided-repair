@@ -94,3 +94,7 @@ scratch/
 # Lean / Mathlib workspace (multi-GB, rebuilt via lake)
 lean_ws/.lake/
 .lake/
+
+# Replayable per-sample experiment logs are deliverables (small, gzip)
+!results/raw/logs/
+!results/raw/kaggle_run1/logs/

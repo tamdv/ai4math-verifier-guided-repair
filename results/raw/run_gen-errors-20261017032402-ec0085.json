@@ -1,0 +1,108 @@
+{
+  "run_id": "gen-errors-20261017032402-ec0085",
+  "timestamp": "2026-10-17T03:24:02.110478+00:00",
+  "git_commit": "34de69e6a3305cf07bc204677dd45d85c523d736",
+  "data_version": "v1.0-mutation+natural",
+  "machine": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "cpu_count": 4,
+    "ram_gb": 31.3
+  },
+  "software": {
+    "python": "3.13.15",
+    "lean": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+  },
+  "parameters": {
+    "seeds": "data/seeds/seeds_verified.jsonl",
+    "natural": "data/seeds/natural_errors.jsonl",
+    "out_dir": "data/errors",
+    "sample_out": "data_sample/errors_sample_100.jsonl",
+    "max_per_seed": 5,
+    "workers": 4,
+    "timeout": 30.0,
+    "seed": 42,
+    "limit_seeds": 0
+  },
+  "seed": 42,
+  "timeout": 30.0,
+  "metrics": {
+    "seeds": 3666,
+    "candidates": 18309,
+    "kept_synthetic": 15921,
+    "kept_natural": 1110,
+    "total_unique": 17031,
+    "duplicates_removed": 0,
+    "rejected_not_broken": {
+      "tac_weaken": 768,
+      "id_tactic_typo": 558,
+      "typ_change_type": 444,
+      "tmo_low_heartbeats": 528,
+      "id_lemma_typo": 90
+    },
+    "category_counts": {
+      "ID_03": 3978,
+      "SYN_01": 4590,
+      "IMP_02": 2269,
+      "TAC_07": 1827,
+      "TMO_05": 1707,
+      "SEM_06": 2292,
+      "TYP_04": 338,
+      "UNK_99": 30
+    },
+    "split_counts": {
+      "train": 12090,
+      "holdout": 4941
+    },
+    "intended_vs_lean": {
+      "ID_03->ID_03": 3116,
+      "ID_03->TAC_07": 60,
+      "ID_03->TMO_05": 5,
+      "ID_03->TYP_04": 2,
+      "ID_03->UNK_99": 21,
+      "IMP_02->IMP_02": 2269,
+      "SEM_06->SEM_06": 2292,
+      "SYN_01->SYN_01": 4447,
+      "SYN_01->UNK_99": 1,
+      "TAC_07->SYN_01": 1,
+      "TAC_07->TAC_07": 887,
+      "TAC_07->TMO_05": 3,
+      "TAC_07->UNK_99": 3,
+      "TMO_05->TMO_05": 1681,
+      "TYP_04->ID_03": 20,
+      "TYP_04->TAC_07": 776,
+      "TYP_04->TMO_05": 2,
+      "TYP_04->TYP_04": 333,
+      "TYP_04->UNK_99": 2
+    },
+    "verify_wall_s": 2251.2,
+    "verify_throughput_per_s": 8.13,
+    "service_p50_ms": 70.335,
+    "service_p95_ms": 2080.47,
+    "worker_startup_ms": [
+      11008.5,
+      11019.2,
+      11155.3,
+      11180.3
+    ],
+    "files": {
+      "errors_all.jsonl": {
+        "rows": 17031,
+        "sha256": "c8067bbb3e85e00caa9dc2fe57a664feebf15bd2fc6c022204a69d31e9f0290a"
+      },
+      "errors_10k.jsonl": {
+        "rows": 10000,
+        "sha256": "a4dbeb60ed5fec8cc16d237600ff31720366fa99c6a157922eafa460255f870d"
+      },
+      "errors_1k.jsonl": {
+        "rows": 1000,
+        "sha256": "63704690f69c32fefe9605c5f3e8b62698269b0657b2e9145ee2994e6da38c43"
+      },
+      "errors_100.jsonl": {
+        "rows": 100,
+        "sha256": "f4c4ba555d2c72bdb73f4d1e10478aea7fca0feaed2b575e7b33c9bee06ad386"
+      }
+    }
+  },
+  "status": "SUCCESS"
+}
