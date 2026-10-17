@@ -1,0 +1,47 @@
+{
+  "run_id": "build-seeds-20261017024149-9c43f0",
+  "timestamp": "2026-10-17T02:41:49.005319+00:00",
+  "git_commit": "34de69e6a3305cf07bc204677dd45d85c523d736",
+  "data_version": "goedel-lean-workbook-proofs@main",
+  "machine": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "cpu_count": 4,
+    "ram_gb": 31.3
+  },
+  "software": {
+    "python": "3.13.15",
+    "lean": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+  },
+  "parameters": {
+    "source": "data/raw/goedel_lean_workbook_proofs.parquet",
+    "source_sha256": "24fcb50eecc2ccbcc52a58c6412c6d10edbeaa9483a97d30e207fb20ef6e2677",
+    "n": 5000,
+    "workers": 4,
+    "heartbeats": 400000,
+    "out": "data/seeds/seeds_verified.jsonl"
+  },
+  "seed": 42,
+  "timeout": 30.0,
+  "metrics": {
+    "candidates": 5000,
+    "kept": 3666,
+    "failed": 1110,
+    "timeouts": 224,
+    "sorry": 0,
+    "verifier_crashes": 0,
+    "keep_rate": 0.7332,
+    "wall_time_s": 4632.3,
+    "throughput_per_s": 1.08,
+    "service_p50_ms": 567.274,
+    "service_p95_ms": 25814.684,
+    "queue_wait_p95_ms": 4289227.376,
+    "worker_startup_ms": [
+      10953.0,
+      10954.3,
+      10990.2,
+      10992.8
+    ]
+  },
+  "status": "SUCCESS"
+}
