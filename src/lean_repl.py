@@ -16,6 +16,7 @@ import json
 import os
 import queue
 import re
+import signal
 import subprocess
 import threading
 import time
@@ -115,6 +116,10 @@ class LeanREPLVerifier:
             stderr=subprocess.DEVNULL,
             text=True,
             env=env,
+            # `lake env repl` forks the real `repl` as a child: give the pair its own
+            # process group so close() can kill both (killing only lake leaked a busy
+            # repl per timeout, starving CPU/RAM on Kaggle).
+            start_new_session=True,
         )
         self._lines = queue.Queue()
         threading.Thread(target=self._pump, args=(self._proc, self._lines), daemon=True).start()
@@ -137,11 +142,26 @@ class LeanREPLVerifier:
         out.put(None)
 
     def close(self) -> None:
-        """Terminates the REPL process."""
-        if self._proc and self._proc.poll() is None:
-            self._proc.kill()
-            self._proc.wait()
+        """Terminates the REPL process group (lake + its repl child)."""
+        proc = self._proc
         self._proc = None
+        if proc is None:
+            return
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError, OSError):
+            if proc.poll() is None:
+                proc.kill()
+        for stream in (proc.stdin, proc.stdout):
+            try:
+                if stream:
+                    stream.close()
+            except OSError:
+                pass
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            pass
 
     def restart(self) -> None:
         """Kills and relaunches the REPL (re-imports Mathlib)."""

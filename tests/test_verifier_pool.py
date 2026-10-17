@@ -106,6 +106,25 @@ class TestReplCrashRecovery(unittest.TestCase):
         self.assertTrue(v.verify("theorem t : True := trivial").compiled)
         v.close()
 
+    def test_close_kills_grandchild(self) -> None:
+        """Regression (Kaggle run 2): killing `lake` left its `repl` child running."""
+        import os
+        import subprocess
+        import time
+
+        from src.lean_repl import LeanREPLVerifier
+
+        v = LeanREPLVerifier(preload=False)
+        parent = subprocess.Popen(["sh", "-c", "sleep 300 & echo $!; wait"],
+                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
+                                  start_new_session=True)
+        child_pid = int(parent.stdout.readline())
+        v._proc = parent
+        v.close()
+        time.sleep(0.3)
+        with self.assertRaises(ProcessLookupError):
+            os.kill(child_pid, 0)  # child is gone
+
 
 if __name__ == "__main__":
     unittest.main()
