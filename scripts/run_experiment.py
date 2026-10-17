@@ -79,6 +79,16 @@ class PeakMemory:
         self._thread.join()
 
 
+def list_or_raise(it):
+    """Yields from `it`; a failure before the first result is re-raised to the caller."""
+    first = next(it, None)
+    if first is None:
+        return iter(())
+    import itertools
+
+    return itertools.chain([first], it)
+
+
 def file_sha256(path: str) -> str:
     import hashlib
 
@@ -214,9 +224,14 @@ def main() -> None:
     errors = 0
     budget_hit = 0
     print(f"[..] {run_id}: {len(samples)} samples, {args.workers} workers", flush=True)
+    startup_error: BaseException | None = None
     with PeakMemory() as mem, gzip.open(log_path, "wt", encoding="utf-8") as log:
         t0 = time.perf_counter()
-        for i, pr in enumerate(pool.imap((s, s) for s in samples), 1):
+        try:
+            stream = list_or_raise(pool.imap((s, s) for s in samples))
+        except Exception as exc:  # worker could not start (e.g. missing API key, no Lean)
+            startup_error, stream = exc, []
+        for i, pr in enumerate(stream, 1):
             if isinstance(pr.result, BaseException):
                 errors += 1
                 budget_hit += isinstance(pr.result, BudgetExceeded)
@@ -233,6 +248,15 @@ def main() -> None:
                 ok = sum(o.success for o, _, _ in outcomes)
                 print(f"  {i}/{len(samples)} success={ok}", flush=True)
         wall = time.perf_counter() - t0
+
+    if startup_error is not None:
+        path = write_run_record(
+            f"exp-{args.strategy}-b{args.budget}-w{args.workers}",
+            parameters=vars(args), metrics={"startup_error": repr(startup_error)[:500]},
+            data_version=f"{Path(args.data).name}@{file_sha256(args.data)[:12]}",
+            seed=args.seed, timeout=args.timeout, status="FAILED", run_id=run_id,
+        )
+        sys.exit(f"[FAILED] workers could not start: {startup_error!r}\n         record: {path}")
 
     metrics = summarize(outcomes, wall, args.model if needs_llm else None)
     metrics["worker_errors"] = errors
