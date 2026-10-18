@@ -62,5 +62,5 @@ Mỗi người trình bày mảng của mình **và phải trả lời được 
 | W6 | Vòng lặp có giới hạn, timeout, dedup, worker queue | ✅ |
 | W7 | Scale 100/1K/10K × 1/2/4 worker × 3 lần; RQ1/RQ2 | ✅ |
 | W8 | Ablation, phân tích lỗi, kiểm toán ngữ nghĩa | ✅ (bảng trong `results/figures/`) |
-| W9 | Release candidate, README, báo cáo | ⏳ |
+| W9 | Release candidate, README, báo cáo | ✅ merge vào `main`, tag `v1.0` |
 | W10 | Demo, bảo vệ, bàn giao | ⏳ |

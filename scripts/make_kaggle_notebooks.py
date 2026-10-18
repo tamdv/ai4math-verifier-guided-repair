@@ -48,7 +48,7 @@ def config_cell(flags: dict) -> str:
         f"SCALE_TIERS  = {json.dumps(flags['SCALE_TIERS'])}",
         "SCALE_WORKERS, SCALE_REPEATS = [1, 2, 4], [1, 2, 3]",
         'RUN_TAG      = ""',
-        'BRANCH = "feat/verifier-guided-pipeline"',
+        'BRANCH = "main"',
     ])
 
 
