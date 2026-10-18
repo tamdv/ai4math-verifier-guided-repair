@@ -10,11 +10,16 @@ Usage:
 import argparse
 from pathlib import Path
 
+import copy
+
 from docx import Document
+from docx.text.paragraph import Paragraph
+from docx.shared import Cm, Pt
 
 TITLE_LINES = [
-    "VERIFIER-GUIDED REPAIR: SỬA CHỨNG MINH LEAN 4",
-    "CÓ KIỂM CHỨNG DƯỚI RÀNG BUỘC CHI PHÍ VÀ ĐỘ TRỄ",
+    "VERIFIER-GUIDED REPAIR:",
+    "SỬA CHỨNG MINH LEAN 4 CÓ KIỂM CHỨNG",
+    "DƯỚI RÀNG BUỘC CHI PHÍ VÀ ĐỘ TRỄ",
 ]
 SUBJECT = "MÔN DỮ LIỆU LỚN"
 INFO = {"Giảng viên:": "TS. Nguyễn Kiều Linh", "Nhóm:": "06"}
@@ -66,8 +71,13 @@ def main() -> None:
     set_text(next(p for p in paras if p.text.startswith("MÔN ")), SUBJECT)
     title_paras = [p for p in paras[:12] if p.style.name == "Body Text" and p.text.isupper()
                    and "HỌC VIỆN" not in p.text]
+    while len(title_paras) < len(TITLE_LINES):  # clone the last title line's formatting
+        clone = copy.deepcopy(title_paras[-1]._p)
+        title_paras[-1]._p.addnext(clone)
+        title_paras.append(Paragraph(clone, title_paras[-1]._parent))
     for p, line in zip(title_paras, TITLE_LINES):
         set_text(p, line)
+    # the three blank spacer paragraphs under the header stay: they keep the anchored logo clear
 
     info, members = doc.tables[0], doc.tables[1]
     for row in info.rows:
@@ -77,6 +87,20 @@ def main() -> None:
     cells = [c for row in members.rows for c in row.cells]
     for cell, (mssv, name) in zip(cells, MEMBERS):
         set_cell(cell, [mssv, name])
+
+    # Six members need one more table row than the reference: tighten the cover tables
+    for tbl in (info, members):
+        for row in tbl.rows:
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    para.paragraph_format.line_spacing = 1.15
+                    para.paragraph_format.space_after = Pt(0)
+                    para.paragraph_format.space_before = Pt(0)
+    # ... and drop the blank paragraph
+    # between the title and the info table so the cover stays on one page.
+    prev = info._tbl.getprevious()
+    if prev is not None and prev.tag.endswith("}p") and not "".join(prev.itertext()).strip():
+        body.remove(prev)
 
     # Drop everything after the members table except the final section properties.
     after = False

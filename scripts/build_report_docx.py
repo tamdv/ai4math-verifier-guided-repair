@@ -40,10 +40,10 @@ ABBREVIATIONS = [
     ("LLM", "Large Language Model", "Mô hình ngôn ngữ lớn"),
     ("REPL", "Read–Eval–Print Loop", "Tiến trình Lean thường trú nhận lệnh kiểm chứng"),
     ("RQ", "Research Question", "Câu hỏi nghiên cứu"),
-    ("P50 / P95", "50th / 95th percentile", "Trung vị / phân vị 95 (độ trễ đuôi)"),
+    ("P50 / P95", "50th / 95th percentile", "Trung vị và phân vị 95, đo độ trễ đuôi"),
     ("USS / RSS", "Unique / Resident Set Size", "Bộ nhớ riêng / bộ nhớ thường trú của tiến trình"),
     ("k", "Attempt budget", "Số lần thử sửa tối đa mỗi mẫu"),
-    ("SYN_01 … TAC_07", "Error taxonomy codes", "Mã nhóm lỗi trong taxonomy v0.2"),
+    ("SYN_01 đến TAC_07", "Error taxonomy codes", "Mã nhóm lỗi trong taxonomy v0.2"),
 ]
 
 
@@ -108,9 +108,11 @@ def front_heading(doc, text: str) -> None:
     r.font.size = Pt(16)
 
 
-def chapter(doc, text: str) -> None:
+def chapter(doc, text: str, new_page: bool = False) -> None:
+    """Heading 1. Chapters flow continuously to stay within the 20-page limit."""
     h = doc.add_heading(text, level=1)
-    h.paragraph_format.page_break_before = True
+    h.paragraph_format.page_break_before = new_page
+    h.paragraph_format.space_before = Pt(18)
 
 
 def body_para(doc, text: str) -> None:
@@ -120,8 +122,9 @@ def body_para(doc, text: str) -> None:
     add_inline(p, text)
 
 
-def caption(doc, text: str) -> None:
+def caption(doc, text: str, keep_with_next: bool = False) -> None:
     p = doc.add_paragraph(style="Caption")
+    p.paragraph_format.keep_with_next = keep_with_next
     add_inline(p, text)
 
 
@@ -138,6 +141,8 @@ def table(doc, rows: list[list[str]]) -> None:
             p.paragraph_format.space_after = Pt(0)
             p.paragraph_format.line_spacing = 1.0
             add_inline(p, row[j] if j < len(row) else "", size=size)
+            # keep the whole table (and its caption above) on one page
+            p.paragraph_format.keep_with_next = i < len(rows) - 1
             if i == 0:
                 for r in p.runs:
                     r.bold = True
@@ -190,7 +195,9 @@ def renumber(text: str, mapping: dict[str, str]) -> str:
         return m.group(0)
 
     text = re.sub(r"(Bảng|Hình) (\d+)–(\d+)", rng, text)
-    return re.sub(r"(Bảng|Hình) (\d+)(?![\d.,])", lambda m: mapping.get(m.group(0), m.group(0)), text)
+    # a following "." or "," only blocks the match when it is a decimal separator ("Bảng 3.1")
+    return re.sub(r"(Bảng|Hình) (\d+)(?!\d)(?![.,]\d)",
+                  lambda m: mapping.get(m.group(0), m.group(0)), text)
 
 
 # --------------------------------------------------------------------------- build
@@ -202,15 +209,22 @@ def build(md_path: Path, out_path: Path) -> dict[str, int]:
     mapping = caption_map(lines)
 
     doc = Document(TEMPLATE)
+    for name in ("toc 1", "toc 2"):  # compact TOC so it fits one page
+        try:
+            st = doc.styles[name]
+        except KeyError:
+            continue
+        st.paragraph_format.line_spacing = 1.0
+        st.paragraph_format.space_after = Pt(0)
+        st.paragraph_format.space_before = Pt(0)
     page_break(doc)
     front_heading(doc, "MỤC LỤC")
     add_field(doc.add_paragraph(), 'TOC \\o "1-2" \\h \\z \\u',
-              "(Mở trong Word: Ctrl/Cmd+A rồi F9 để cập nhật mục lục)")
+              "Mở bằng Word, chọn toàn bộ và nhấn F9 để cập nhật mục lục")
     page_break(doc)
     front_heading(doc, "DANH MỤC HÌNH VÀ BẢNG")
     add_field(doc.add_paragraph(), 'TOC \\h \\z \\t "Caption,1"',
-              "(Mở trong Word: Ctrl/Cmd+A rồi F9 để cập nhật danh mục)")
-    page_break(doc)
+              "Mở bằng Word, chọn toàn bộ và nhấn F9 để cập nhật danh mục")
     front_heading(doc, "DANH MỤC TỪ VIẾT TẮT")
     table(doc, [["Viết tắt", "Tiếng Anh", "Ý nghĩa"], *[list(a) for a in ABBREVIATIONS]])
 
@@ -247,7 +261,7 @@ def build(md_path: Path, out_path: Path) -> dict[str, int]:
             while k < len(lines) and not lines[k].strip():
                 k += 1
             if k < len(lines) and lines[k].strip().startswith("*Bảng"):
-                caption(doc, caption_label(lines[k].strip().strip("*"), mapping))
+                caption(doc, caption_label(lines[k].strip().strip("*"), mapping), keep_with_next=True)
                 i = k + 1
             table(doc, rows)
             stats["tables"] += 1
@@ -257,7 +271,8 @@ def build(md_path: Path, out_path: Path) -> dict[str, int]:
         if m_img:
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            p.add_run().add_picture(str((md_path.parent / m_img.group(2)).resolve()), width=Cm(14))
+            p.paragraph_format.keep_with_next = True  # figure stays with its caption below
+            p.add_run().add_picture(str((md_path.parent / m_img.group(2)).resolve()), width=Cm(11))
             caption(doc, caption_label(m_img.group(1), mapping))
             stats["figures"] += 1
         elif m_chap:
@@ -271,7 +286,8 @@ def build(md_path: Path, out_path: Path) -> dict[str, int]:
             stats["chapters"] += 1
         elif ln.startswith("# "):
             chap_no, has_sections = "", True
-            chapter(doc, ln[2:].strip().upper())
+            title = ln[2:].strip().upper()
+            chapter(doc, title, new_page=(title == "TÓM TẮT"))
         elif ln.startswith("## "):
             doc.add_heading(ln[3:].strip(), level=2)
             stats["sections"] += 1

@@ -50,10 +50,19 @@ STRATEGY_LABEL = {
 }
 
 
-def style() -> None:
+SUFFIX = ""  # "_slide" for the large-font slide variants
+FIG_SCALE = 1.0  # figure size multiplier (slide variants are drawn larger)
+
+
+def subplots(*args, figsize=(4.2, 3.0), **kwargs):
+    return plt.subplots(*args, figsize=(figsize[0] * FIG_SCALE, figsize[1] * FIG_SCALE), **kwargs)
+
+
+def style(scale: float = 1.0) -> None:
     plt.rcParams.update({
         "figure.facecolor": SURFACE, "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
-        "font.size": 9, "axes.titlesize": 10, "axes.labelsize": 9,
+        "font.size": 9 * scale, "axes.titlesize": 10 * scale, "axes.labelsize": 9 * scale,
+        "xtick.labelsize": 8 * scale, "ytick.labelsize": 8 * scale, "legend.fontsize": 8 * scale,
         "axes.edgecolor": INK_2, "axes.labelcolor": INK, "xtick.color": INK_2,
         "ytick.color": INK_2, "text.color": INK, "axes.spines.top": False,
         "axes.spines.right": False, "axes.grid": True, "grid.color": GRID,
@@ -95,7 +104,7 @@ def agg(values: list[float]) -> tuple[float, float, float]:
 
 
 def save(fig: plt.Figure, out: Path, name: str) -> list[Path]:
-    paths = [out / f"{name}.pdf", out / f"{name}.png"]
+    paths = [out / f"{name}{SUFFIX}.pdf", out / f"{name}{SUFFIX}.png"]
     for p in paths:
         fig.savefig(p, dpi=300, bbox_inches="tight")
     plt.close(fig)
@@ -146,7 +155,7 @@ def fig_scale(runs: list[dict[str, Any]], out: Path) -> list[Path]:
         return xs, med, err
 
     # Throughput vs tier
-    fig, ax = plt.subplots(figsize=(4.2, 3.0))
+    fig, ax = subplots(figsize=(4.2, 3.0))
     for i, w in enumerate(workers):
         xs, med, err = series("throughput_excl_startup_per_s", w)
         ax.errorbar(xs, med, yerr=err, color=SERIES[i], marker=MARKERS[i], ls=LINESTYLES[i],
@@ -160,7 +169,7 @@ def fig_scale(runs: list[dict[str, Any]], out: Path) -> list[Path]:
     made += save(fig, out, "fig_scale_throughput")
 
     # Speedup vs workers
-    fig, ax = plt.subplots(figsize=(4.2, 3.0))
+    fig, ax = subplots(figsize=(4.2, 3.0))
     ax.plot(workers, workers, color=INK_2, ls=(0, (2, 3)), lw=1, label="Ideal (linear)")
     for i, t in enumerate(tiers):
         base = [m["throughput_excl_startup_per_s"] for m in groups.get((t, workers[0]), [])]
@@ -180,7 +189,7 @@ def fig_scale(runs: list[dict[str, Any]], out: Path) -> list[Path]:
 
     # Service latency P50 | P95 (small multiples, shared y)
     # P50 and P95 differ by an order of magnitude: independent y-scales, both from 0.
-    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.8))
+    fig, axes = subplots(1, 2, figsize=(6.4, 2.8))
     for ax, metric, title in zip(axes, ["service_p50_ms", "service_p95_ms"], ["P50", "P95"]):
         for i, w in enumerate(workers):
             xs, med, err = series(metric, w)
@@ -246,7 +255,7 @@ def fig_quality(runs: list[dict[str, Any]], out: Path) -> list[Path]:
     made: list[Path] = []
 
     # Ablation: compile rate vs audited repair success
-    fig, ax = plt.subplots(figsize=(max(4.5, 1.0 * len(keys) + 1.5), 3.2))
+    fig, ax = subplots(figsize=(max(4.5, 1.0 * len(keys) + 1.5), 3.2))
     width = 0.38
     for j, (metric, name) in enumerate([("compile_rate", "Compiles"),
                                         ("repair_success_rate", "Repair success (audited)")]):
@@ -263,8 +272,8 @@ def fig_quality(runs: list[dict[str, Any]], out: Path) -> list[Path]:
             for b, v in zip(bars, med):
                 ax.annotate(f"{v:.0f}%", (b.get_x() + b.get_width() / 2, b.get_height()),
                             xytext=(0, 3), textcoords="offset points", ha="center",
-                            fontsize=7, color=INK)
-    ax.set_xticks(range(len(keys)), [label(*k) for k in keys], fontsize=7)
+                            fontsize=plt.rcParams["font.size"] * 0.78, color=INK)
+    ax.set_xticks(range(len(keys)), [label(*k) for k in keys], fontsize=plt.rcParams["font.size"] * 0.78)
     ax.set_ylabel("% of hold-out samples")
     ax.set_ylim(0, 100)
     ax.grid(axis="x", visible=False)
@@ -279,7 +288,7 @@ def fig_quality(runs: list[dict[str, Any]], out: Path) -> list[Path]:
         cost = statistics.median((g.get("cost_usd") or 0.0) for g in groups[k])
         succ = statistics.median(g["repair_success_rate"] for g in groups[k]) * 100
         pts.append((cost / n * 1000 if n else 0.0, succ, k))
-    fig, ax = plt.subplots(figsize=(4.6, 3.2))
+    fig, ax = subplots(figsize=(4.6, 3.2))
     frontier, best = [], -1.0
     for c, s, k in sorted(pts, key=lambda p: (p[0], -p[1])):
         if s > best:
@@ -298,7 +307,7 @@ def fig_quality(runs: list[dict[str, Any]], out: Path) -> list[Path]:
                                  for pc, ps, _ in pts if (pc, ps) != (c, s))
         placed.append((c, s))
         ax.annotate(label(*k).replace("\n", " "), (c, s), xytext=(6, 5 if crowded else -10),
-                    textcoords="offset points", fontsize=7, color=INK_2, zorder=4,
+                    textcoords="offset points", fontsize=plt.rcParams["font.size"] * 0.78, color=INK_2, zorder=4,
                     bbox={"boxstyle": "square,pad=0.15", "fc": SURFACE, "ec": "none"})
     ax.set_ylim(bottom=-6)  # room for labels of points at 0 %
     ax.set_xlabel("LLM cost per 1,000 samples (USD)")
@@ -319,14 +328,14 @@ def fig_quality(runs: list[dict[str, Any]], out: Path) -> list[Path]:
                 row.append(statistics.median(rates) if rates else float("nan"))
             grid.append(row)
         cmap = matplotlib.colors.LinearSegmentedColormap.from_list("seq_blue", SEQ_BLUE)
-        fig, ax = plt.subplots(figsize=(max(4.5, 0.9 * len(keys) + 1.5), 0.42 * len(cats) + 1.2))
+        fig, ax = subplots(figsize=(max(4.5, 0.9 * len(keys) + 1.5), 0.42 * len(cats) + 1.2))
         im = ax.imshow(grid, cmap=cmap, vmin=0, vmax=100, aspect="auto")
         for i, row in enumerate(grid):
             for j, v in enumerate(row):
                 if v == v:  # not NaN
-                    ax.text(j, i, f"{v:.0f}", ha="center", va="center", fontsize=7,
+                    ax.text(j, i, f"{v:.0f}", ha="center", va="center", fontsize=plt.rcParams["font.size"] * 0.78,
                             color=SURFACE if v > 55 else INK)
-        ax.set_xticks(range(len(keys)), [label(*k) for k in keys], fontsize=7)
+        ax.set_xticks(range(len(keys)), [label(*k) for k in keys], fontsize=plt.rcParams["font.size"] * 0.78)
         ax.set_yticks(range(len(cats)), cats)
         ax.grid(False)
         ax.set_title("Repair success (%) by error category", loc="left")
@@ -356,9 +365,16 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate report figures from raw results")
     parser.add_argument("--input", default="results/raw/")
     parser.add_argument("--output", default="results/figures/")
+    parser.add_argument("--slide", action="store_true",
+                        help="Large-font variants (*_slide.png) for 16:9 slides; tables unchanged")
     args = parser.parse_args()
 
-    style()
+    global SUFFIX, FIG_SCALE
+    if args.slide:
+        SUFFIX, FIG_SCALE = "_slide", 1.6
+        style(scale=1.7)
+    else:
+        style()
     out = Path(args.output)
     out.mkdir(parents=True, exist_ok=True)
     runs = load_runs(Path(args.input))
