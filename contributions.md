@@ -1,39 +1,66 @@
-# CONTRIBUTIONS.md - Phân công vai trò & Nhật ký đóng góp
+# CONTRIBUTIONS — Nhóm 6, Verifier-Guided Repair (INT4418, PTIT)
 
-Môn học: **INT4418 - Dữ liệu lớn (Trình độ Thạc sĩ, PTIT)**  
-Đề tài: **NHÓM 6 — Verifier-Guided Repair: Sửa bản Lean dựa trên phản hồi kiểm chứng**  
-Giảng viên hướng dẫn: **TS. Nguyễn Kiều Linh**
+Tài liệu này ghi **ai đã làm gì** (truy được qua lịch sử Git) và **phần bảo vệ của từng thành viên**.
+Việc dùng AI được khai báo riêng trong [`docs/ai_use_statement.md`](docs/ai_use_statement.md).
 
----
+## 1. Phân vai (theo Hướng dẫn BTL, mục 5)
 
-## 1. Cơ cấu phân vai chính thức (06 thành viên)
+| Thành viên | Mã HV | Vai trò chính | Dự phòng |
+|---|---|---|---|
+| Đào Văn Tâm *(trưởng nhóm)* | B25CHHT112 | Evaluation & Cost Analysis | Queue & Worker System |
+| Trần Quang Đức Dũng | B25CHHT088 | Queue & Worker System | Evaluation & Cost Analysis |
+| Lâm Thành Trung | B25CHHT117 | Rule-based Repair | LLM Repair Engine |
+| Nguyễn Xuân Tùng | B25CHHT119 | LLM Repair Engine | Rule-based Repair |
+| Khamsing OUTHAIHUENG | B25CHHT125 | Parser & Taxonomy | Error Dataset & Contract |
+| Mekdala Nounou | B25CHHT124 | Error Dataset & Contract | Parser & Taxonomy |
 
-Căn cứ Mục 5 (Trang 18–19) trong *Hướng dẫn Bài tập lớn AI4Math*, cơ cấu 6 vai trò chính và vai trò dự phòng của nhóm được xác định như sau:
+## 2. Đóng góp đã thực hiện (đối chiếu `git log`)
 
-| STT | Thành viên & Mã HV | Vai trò (Chính / Dự phòng) | Nhiệm vụ cụ thể (Làm gì) | Tệp & Thư mục làm việc (Ở đâu) | Công cụ & Công nghệ | Sản phẩm bàn giao chính |
-|:---:|:---|:---|:---|:---|:---|:---|
-| **1** | **Đào Văn Tâm**<br>`B25CHHT112`<br>*(Trưởng nhóm)* | **Evaluation & Cost Analysis (TV6)**<br>*(DP: Queue System)* | • Chủ trì tiến độ, kết nối Nhóm 5 & 7.<br>• Viết module Semantic Safety Audit.<br>• Chạy benchmark 3 mức tải, đo P50/P95, QPS, Token Cost.<br>• Viết script vẽ biểu đồ Pareto.<br>• Chủ trì Báo cáo 12-20 trang & Slide. | • `src/semantic_auditor.py`<br>• `src/baseline_repair.py`<br>• `scripts/run_experiment.py`<br>• `scripts/generate_figures.py`<br>• `reports/report.pdf/docx`<br>• `results/raw/`, `results/figures/` | Python, NumPy, Pandas, Matplotlib, Seaborn, LaTeX/Word, Git Projects | • Báo cáo khoa học 12-20 trang.<br>• Biểu đồ P95 & Pareto curve.<br>• Semantic Safety Auditor. |
-| **2** | **Trần Quang Đức Dũng**<br>`B25CHHT088` | **Queue & Worker System (TV5)**<br>*(DP: Evaluation)* | • Cấu hình Redis Queue phân tán.<br>• Lập trình Priority Queue vs FIFO.<br>• Xây dựng Lean 4 Verifier Worker Pool (đa tiến trình song song).<br>• Cài đặt Bounded Retry Controller & timeout 15s. | • `src/worker_queue.py`<br>• `src/verifier_pool.py`<br>• `src/bounded_controller.py`<br>• `docker-compose.yml`<br>• `Dockerfile`<br>• `tests/test_queue.py` | Redis, Python `redis-py`, `multiprocessing`, `asyncio`, `subprocess`, Docker | • Redis Task Dispatcher.<br>• Lean 4 Worker Pool.<br>• Docker Compose cụm Queue.<br>• Báo cáo Queue P95 latency. |
-| **3** | **Lâm Thành Trung**<br>`B25CHHT117` | **Rule-based Repair (TV3)**<br>*(DP: LLM Repair)* | • Phát triển các bộ luật sửa heuristic 0-token (< 5ms).<br>• Cân bằng ngoặc `()`, `[]`, `{}`.<br>• Chèn từ khóa thiếu (`by`, `:`).<br>• Tự động thêm `import Mathlib...`.<br>• Đánh giá Rule Coverage. | • `src/rule_repair.py`<br>• `configs/mathlib_import_table.json`<br>• `tests/test_rule_repair.py` | Python, Regex (`re`), Unicode Lean 4 syntax, Pytest/Unittest | • Module `rule_repair.py`.<br>• Bảng tra cứu Mathlib import.<br>• Bộ unit test 100% pass.<br>• Báo cáo Rule Coverage. |
-| **4** | **Nguyễn Xuân Tùng**<br>`B25CHHT119` | **LLM Repair Engine (TV4)**<br>*(DP: Rule Repair)* | • Xây dựng module gọi LLM sửa lỗi logic (Type mismatch, Tactic).<br>• Thiết kế Prompt Templates tiêm ngữ cảnh lỗi chẩn đoán (Diagnostic Injection).<br>• Tích hợp API/Local Model (Qwen/DeepSeek qua Ollama/vLLM).<br>• Tối ưu hóa chi phí token/lần sửa. | • `src/llm_repair.py`<br>• `configs/prompts/*.yaml`<br>• `tests/test_llm_repair.py` | Python, `httpx`, `requests`, LLM APIs / Ollama / vLLM, Prompt Engineering | • Module `llm_repair.py`.<br>• Bộ Prompt Templates.<br>• Thống kê Token Cost/bài.<br>• Mock LLM Test Suite. |
-| **5** | **Khamsing OUTHAIHUENG**<br>`B25CHHT125` | **Parser & Taxonomy (TV2)**<br>*(DP: Error Dataset)* | • Nâng cấp bộ bóc tách log compiler (`lean --json`).<br>• Chuẩn hóa mã lỗi theo Taxonomy v0.1 (`SYN_01` $\rightarrow$ `SEM_06`).<br>• Cài đặt Error Router định tuyến sang Rule hoặc LLM.<br>• Đo đạc Parser Accuracy. | • `src/error_parser.py`<br>• `src/error_router.py`<br>• `docs/error_taxonomy_v0.1.md`<br>• `tests/test_error_parser.py` | Python, Pydantic, Regular Expressions, Lean 4 Diagnostics JSON | • Module `error_parser.py`.<br>• Bộ định tuyến `error_router.py`.<br>• Báo cáo độ chính xác Parser. |
-| **6** | **Mekdala Nounou**<br>`B25CHHT124` | **Error Dataset & Contract (TV1)**<br>*(DP: Parser)* | • Đầu mối kết nối Data Contract với Nhóm 5.<br>• Mở rộng tập lỗi lên 1.000 và 10.000 mẫu.<br>• Quản lý tập Hold-out 30% chống rò rỉ.<br>• Duy trì Replayable Error Store (dedup sha256).<br>• Đóng gói Trace Lake Parquet cho Nhóm 7. | • `src/error_store.py`<br>• `data_sample/error_dataset_50.json`<br>• `data_sample/manifest.json`<br>• `scripts/replay_error_run.py`<br>• `scripts/export_to_group7.py`<br>• `tests/test_error_store.py` | Python, PyArrow, FastParquet, Pandas, HuggingFace Datasets, SHA-256 | • Replayable Error Store.<br>• Dataset 1K & 10K mẫu.<br>• File Parquet xuất cho Nhóm 7.<br>• Script Replay kiểm chứng. |
+| Giai đoạn | Thành viên | Đóng góp | Bằng chứng |
+|---|---|---|---|
+| W1–W2 | Đào Văn Tâm | Khởi tạo dự án, đề cương, taxonomy v0.1, 50 lỗi mẫu, parser/baseline ban đầu, data contract v0.1 với Nhóm 5, ReplayableErrorStore, kiến trúc, quy trình AI-use | `1b19f14` … `5fa9fd2`, `efcf899`, `c1e48c9` |
+| W3 | Mekdala Nounou | Chạy và kiểm chứng baseline trên tập lỗi mẫu | `e65cf30` |
+| W4 | Lâm Thành Trung | Rule engine R1–R4, bảng tra Mathlib import, 17 test, script benchmark (rule coverage 48%) | `23f479b`, `24b7dbd`, `5c3a362`, `b4778cc`, `59582b0` |
+| W4 | Khamsing OUTHAIHUENG | Bỏ phụ thuộc numpy của baseline (test pass), tóm tắt tiếng Việt | `ae43a61`, `19ca3f0` |
+| W5–W7 | Đào Văn Tâm (có hỗ trợ AI — Claude, đã khai báo) | Lean REPL verifier + worker pool; dataset lỗi v1.0 (17.031 mẫu) từ Lean thật; taxonomy v0.2 (TAC_07); luật R0, R5–R7; LLM repair + kiểm soát chi phí; vòng lặp có giới hạn + kiểm toán ngữ nghĩa; toàn bộ thực nghiệm Kaggle (RQ1–RQ3); hình, phân tích lỗi, tài liệu, báo cáo | nhánh `feat/verifier-guided-pipeline` (từ `6767845`) |
 
-> **Nguyên tắc bảo vệ:** Mỗi thành viên có vai trò chính và vai trò dự phòng. Khi bảo vệ vấn đáp, từng thành viên phải nắm vững toàn bộ pipeline và giải trình được chi tiết phần việc mình phụ trách.
+Ghi chú: luật R1–R4 của Trung là nền của module luật hiện tại; số liệu thực nghiệm (bảng độ chính xác từng luật) cho thấy R0/R7 đạt 97–100%, R1 27%, R2–R4 0% trên tệp hoàn chỉnh — một kết quả phân tích quan trọng của báo cáo.
 
----
+## 3. Phần bảo vệ của từng thành viên
 
-## 2. Nhật ký công việc và Pull Requests (PR Log)
+Mỗi người trình bày mảng của mình **và phải trả lời được toàn bộ pipeline** (yêu cầu chung của học phần).
 
-| Tuần | Nhiệm vụ trọng tâm | Người phụ trách chính | PR / Commit | Trạng thái | Minh chứng bàn giao |
-|:---:|:---|:---:|:---:|:---:|:---|
-| **W1** | Chốt đề cương 1 trang, Taxonomy v0.1, 50 lỗi mẫu & Baseline plan | Cả nhóm (Tâm chủ trì) | `7388923`, `a557797` | ✅ Hoàn thành | [docs/de_cuong_nhom_6_tuan_1.md](file:///Users/daotam/Documents/Workspace/Master/3.DLL/docs/de_cuong_nhom_6_tuan_1.md)<br>[docs/error_taxonomy_v0.1.md](file:///Users/daotam/Documents/Workspace/Master/3.DLL/docs/error_taxonomy_v0.1.md)<br>[data_sample/error_dataset_50.json](file:///Users/daotam/Documents/Workspace/Master/3.DLL/data_sample/error_dataset_50.json)<br>[src/baseline_repair.py](file:///Users/daotam/Documents/Workspace/Master/3.DLL/src/baseline_repair.py) |
-| **W2** | Nhận Data Contract từ Nhóm 5, dựng Replayable Error Store | Nounou, Khamsing, Tâm | `c53a5fa` | ✅ Hoàn thành | [docs/data_contract_group5_group6.md](file:///Users/daotam/Documents/Workspace/Master/3.DLL/docs/data_contract_group5_group6.md)<br>[src/error_store.py](file:///Users/daotam/Documents/Workspace/Master/3.DLL/src/error_store.py)<br>[scripts/replay_error_run.py](file:///Users/daotam/Documents/Workspace/Master/3.DLL/scripts/replay_error_run.py) |
-| **W3** | Chạy Baseline retry nguyên prompt trên dữ liệu đầy đủ | Trung, Tùng | - | ⏳ Chờ thực hiện | Baseline raw metrics + demo nội bộ |
-| **W4** | Hoàn thiện Error Parser & Rule-based fixes cho lỗi đơn giản | Khamsing, Trung | `feature/rule-repair` | ✅ Hoàn thành | [src/rule_repair.py](file:///Users/tone/Desktop/BIGDATA/ai4math-verifier-guided-repair/src/rule_repair.py)<br>[configs/mathlib_import_table.json](file:///Users/tone/Desktop/BIGDATA/ai4math-verifier-guided-repair/configs/mathlib_import_table.json)<br>[tests/test_rule_repair.py](file:///Users/tone/Desktop/BIGDATA/ai4math-verifier-guided-repair/tests/test_rule_repair.py)<br>[scripts/run_rule_experiment.py](file:///Users/tone/Desktop/BIGDATA/ai4math-verifier-guided-repair/scripts/run_rule_experiment.py) |
-| **W5** | Hoàn thiện Router và module LLM Repair nạp ngữ cảnh lỗi | Tùng, Tâm | - | ⏳ Chờ thực hiện | Repair service v0.1 + prompt versions |
-| **W6** | Tích hợp Bounded Loop, Timeout, Dedup & Queue workers | Dũng, Tâm | - | ⏳ Chờ thực hiện | End-to-end pipeline service + recovery test |
-| **W7** | Thí nghiệm Scalability 3 mức tải (100 $\rightarrow$ 1K $\rightarrow$ 10K) | Dũng, Tâm, Cả nhóm | - | ⏳ Chờ thực hiện | Raw CSV/JSON + Biểu đồ Queue P95 & Throughput |
-| **W8** | Ablation study, Taxonomy lỗi thất bại & Semantic audit | Tâm, Cả nhóm | - | ⏳ Chờ thực hiện | Bảng ablation + failure taxonomy + safety note |
-| **W9** | Đóng gói Docker Compose, hoàn thiện Báo cáo khoa học | Tâm, Cả nhóm | - | ⏳ Chờ thực hiện | Release candidate + Draft Report 12–20 trang |
-| **W10** | Chuẩn bị Slide, Kịch bản Live Demo và Bảo vệ vấn đáp | Cả nhóm | - | ⏳ Chờ thực hiện | Final package + Slide demo + Bảo vệ cá nhân |
+| Thành viên | Trình bày | Tài liệu chuẩn bị |
+|---|---|---|
+| Đào Văn Tâm | Câu hỏi nghiên cứu, kiến trúc, đánh giá RQ1–RQ3, chi phí | `reports/`, `results/figures/` |
+| Trần Quang Đức Dũng | Worker pool, REPL thường trú, scale & nút thắt CPU, lỗi rò rỉ tiến trình | `src/lean_repl.py`, `src/verifier_pool.py`, `table_scale` |
+| Lâm Thành Trung | Luật sửa R0–R7, độ chính xác từng luật, vì sao hybrid k=1 kém | `src/rule_repair.py`, `table_rule_precision` |
+| Nguyễn Xuân Tùng | LLM repair: blind vs diagnostic, prompt, chi phí token, mô hình so sánh | `src/llm_repair.py`, `configs/prompts/` |
+| Khamsing OUTHAIHUENG | Parser & taxonomy v0.2, chọn lỗi gốc, độ khớp nhãn 94,4% | `src/error_parser.py`, `docs/error_taxonomy_v0.2.md` |
+| Mekdala Nounou | Dataset v1.0: seed, đột biến, lỗi tự nhiên, chia tập chống rò rỉ, data card | `scripts/generate_error_dataset.py`, `docs/data_card_lean_errors.md` |
+
+## 4. Việc còn mở cho thành viên (ghi tên + commit khi hoàn thành)
+
+| Việc | Người nhận | Trạng thái |
+|---|---|---|
+| Chạy lại `pytest` + demo replay trên máy cá nhân, báo lỗi nếu có | Mỗi thành viên | ☐ |
+| Đối chiếu số liệu trong báo cáo với `results/figures/*.md` | Khamsing, Nounou | ☐ |
+| Kiểm tra lại 10 trích dẫn của báo cáo | Tùng | ☐ |
+| Slide phần mình phụ trách (theo mục 3) | Mỗi thành viên | ☐ |
+| Đọc code mảng mình + trả lời bộ câu hỏi vấn đáp | Mỗi thành viên | ☐ |
+| Review PR `feat/verifier-guided-pipeline` → `main` | Dũng, Trung | ☐ |
+
+## 5. Nhật ký tiến độ
+
+| Tuần | Mốc | Trạng thái |
+|---|---|---|
+| W1 | Đề cương, taxonomy v0.1, 50 lỗi mẫu, baseline plan | ✅ |
+| W2 | Data contract Nhóm 5, replayable error store | ✅ |
+| W3 | Baseline retry nguyên prompt | ✅ (giả lập W3; baseline thật chạy W7: 31,7%) |
+| W4 | Parser + luật sửa | ✅ |
+| W5 | Router + LLM repair dùng error context | ✅ |
+| W6 | Vòng lặp có giới hạn, timeout, dedup, worker queue | ✅ |
+| W7 | Scale 100/1K/10K × 1/2/4 worker × 3 lần; RQ1/RQ2 | ✅ |
+| W8 | Ablation, phân tích lỗi, kiểm toán ngữ nghĩa | ✅ (bảng trong `results/figures/`) |
+| W9 | Release candidate, README, báo cáo | ⏳ |
+| W10 | Demo, bảo vệ, bàn giao | ⏳ |

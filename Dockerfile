@@ -1,20 +1,28 @@
-# Dockerfile for PTIT INT4418 Group 6 (Verifier-Guided Repair)
-FROM ubuntu:22.04
+# Reproducible environment for Group 6 (Verifier-Guided Repair).
+# Primary execution path is Kaggle (scripts/kaggle_setup.sh); this image mirrors it.
+# Size: ~10 GB (Lean toolchain + Mathlib build cache). Needs >= 16 GB RAM per 4 REPL workers.
+FROM ubuntu:24.04
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="/root/.elan/bin:${PATH}"
+ENV DEBIAN_FRONTEND=noninteractive \
+    PATH="/root/.elan/bin:${PATH}"
 
-# 1. Install system utilities and Python
-RUN apt-get update && apt-get install -y --no-install-recommends     curl     git     build-essential     python3     python3-pip     python3-venv     ca-certificates     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl git ca-certificates build-essential python3 python3-pip python3-venv zip unzip \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. Install Elan and Lean 4
-RUN curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.8.0
+# Lean toolchain pinned by lean_ws/lean-toolchain (v4.35.0)
+RUN curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+    | sh -s -- -y --no-modify-path --default-toolchain none
 
-# 3. Setup workspace
 WORKDIR /workspace
-COPY requirements.txt /workspace/
-RUN pip3 install --no-cache-dir -r requirements.txt
+COPY lean_ws/ /workspace/lean_ws/
+RUN elan default "$(cat lean_ws/lean-toolchain)" \
+    && cd lean_ws && lake exe cache get && lake build repl
+
+COPY requirements.txt requirements-lock.txt /workspace/
+RUN python3 -m venv /opt/venv && /opt/venv/bin/pip install --no-cache-dir -r requirements-lock.txt
+ENV PATH="/opt/venv/bin:${PATH}"
 
 COPY . /workspace/
-
-CMD ["python3", "-m", "src.baseline_repair"]
+# Default: unit tests (no Lean/API needed). Experiments: see README "Reproduce".
+CMD ["python", "-m", "pytest", "tests", "-q"]

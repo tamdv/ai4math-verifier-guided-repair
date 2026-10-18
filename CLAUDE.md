@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 ### Testing & Code Quality
 ```bash
-# Run all tests
+# Run all tests (no Lean / API needed)
 pytest tests/ -v
 
 # Run linting and formatting
@@ -52,16 +52,22 @@ mypy src/
 
 ### Experiment Execution & Benchmarking
 ```bash
-# Run standard baseline
-python3 -m src.baseline --config configs/baseline.yaml
+# Data (checksum-verified source -> verified seeds -> labeled error dataset)
+bash scripts/download_data.sh
+python3 scripts/build_seeds.py --n 5000 --workers 4 --timeout 30
+python3 scripts/generate_error_dataset.py --workers 4 --max-per-seed 5 --timeout 30
 
-# Run scalability experiment across 3 tiers (small, medium, large)
-python3 scripts/run_experiment.py --config configs/exp_scale.yaml --scale tier1
-python3 scripts/run_experiment.py --config configs/exp_scale.yaml --scale tier2
-python3 scripts/run_experiment.py --config configs/exp_scale.yaml --scale tier3
+# One configuration (strategies: none | blind | llm_only | rule_only | hybrid)
+python3 scripts/run_experiment.py --data data/errors/errors_1k.jsonl --split holdout --strategy hybrid --budget 3 --workers 4
 
-# Generate paper figures from raw results
+# Scale tiers 100 -> 1K -> 10K x 1/2/4 workers: Kaggle notebooks in notebooks/sessions/
+python3 scripts/estimate_cost.py --data data/errors/errors_10k.jsonl     # before any paid LLM run
+
+# Figures, tables, error analysis, deliverable export, demo
 python3 scripts/generate_figures.py --input results/raw/ --output results/figures/
+python3 scripts/analyze_failures.py --input results/raw/ --output results/figures/
+python3 scripts/export_repaired.py --run-id <run_id> --data data/errors/errors_1k.jsonl
+python3 scripts/demo_repair.py --replay results/raw/logs/<run_id>.jsonl.gz --pick success --data data/errors/errors_1k.jsonl
 ```
 
 ---
