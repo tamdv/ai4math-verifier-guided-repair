@@ -40,7 +40,7 @@ Nhận một tệp Lean 4 không biên dịch được, phân loại lỗi từ 
 - Thông lượng bị giới hạn bởi CPU: 4 worker trên 4 vCPU tăng tốc ~2,4–2,6× (không tuyến tính) do tranh chấp CPU; mỗi worker cần ~3,5 GB RAM (đếm RSS trùng phần Mathlib dùng chung — báo cáo cả USS).
 
 ## 6. Đánh giá
-Chỉ số chính: tỷ lệ sửa thành công **đã kiểm toán** và thông lượng ổn định; phụ: tỷ lệ biên dịch, lần thử/mẫu, token và USD/thành công, thời gian phục vụ P50/P95, thời gian chờ P95, bộ nhớ đỉnh. Mọi số liệu truy được tới run record trong `results/raw/` (commit, máy, phần mềm, seed, tham số). Kết quả: xem `reports/report_draft.md` §6–7.
+Chỉ số chính: tỷ lệ sửa thành công **đã kiểm toán** và thông lượng ổn định; phụ: tỷ lệ biên dịch, lần thử/mẫu, token và USD/thành công, thời gian phục vụ P50/P95, thời gian chờ P95, bộ nhớ đỉnh. Mọi số liệu truy được tới run record trong `results/raw/` (commit, máy, phần mềm, seed, tham số). Kết quả: xem `reports/report.md` §6–7.
 
 ## 7. Liên hệ và trách nhiệm
 Nhóm 6, INT4418, PTIT — trưởng nhóm Đào Văn Tâm. Mã do AI hỗ trợ được khai báo trong `docs/ai_use_statement.md` và đã được kiểm chứng bằng kiểm thử tự động và chạy Lean thật.

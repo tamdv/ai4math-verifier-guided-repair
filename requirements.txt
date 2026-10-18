@@ -9,3 +9,6 @@ numpy>=1.26             # legacy simulated baseline only (src/baseline_repair.py
 
 # Development / testing
 pytest>=8.0
+
+# Report build (development only)
+python-docx>=1.1      # scripts/build_report_docx.py
