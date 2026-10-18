@@ -10,11 +10,11 @@ Hệ thống nhận tệp Lean 4 không biên dịch được, **phân loại l�
 |---|---|
 | **RQ1** — thông báo lỗi có cấu trúc vs thử lại mù (1K hold-out, n=284, 3 lần lặp) | **53,9%** vs **31,7%** sửa thành công đã kiểm toán (+22 điểm %), rẻ hơn ~45% token |
 | **RQ2** — ngân sách thử lại / định tuyến | LLM+diagnostics k=3: **65,1%**; hybrid k=3: 59,5%; rule-only k=3: 23,9% |
-| **RQ3** — khả năng mở rộng (100 → 1K → 10K × 1/2/4 worker × 3 lần lặp) | 10K: 1,53 → 2,69 → 2,86 mẫu/s (tăng tốc 1,76× / 1,87×); nút thắt CPU ở 4 worker (P95 3,1 s → 6,5 s) |
+| **RQ3** — khả năng mở rộng (100 → 1K → 10K × 1/2/4 worker × 3 lần lặp) | 10K: 1,52 → 2,68 → 2,86 mẫu/s (tăng tốc 1,76× / 1,88×); nút thắt CPU ở 4 worker (P95 3,1 s → 6,5 s) |
 | Kiểm chứng Lean: tệp nguội vs REPL thường trú | 63–107 s/tệp → P50 3 ms / P95 23 ms mỗi định lý |
 | Chi phí LLM toàn bộ thực nghiệm | **$2,97** (Gemini 3.5 Flash-Lite, sổ chi tiêu `results/cost_ledger.jsonl`) |
 
-Hình và bảng: [`results/figures/`](results/figures/) · Báo cáo: [`reports/report_draft.md`](reports/report_draft.md)
+Hình và bảng: [`results/figures/`](results/figures/) · Báo cáo: [`reports/report.md`](reports/report.md) ([`report.docx`](reports/report.docx))
 
 ## Kiến trúc
 
