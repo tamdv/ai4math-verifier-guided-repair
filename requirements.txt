@@ -1,29 +1,11 @@
-# Core Data & Big Data Processing
-pyspark>=3.5.0
-pyarrow>=15.0.0
-fastparquet>=2024.2.0
-pandas>=2.2.0
-numpy>=1.26.0
-scipy>=1.12.0
+# Runtime dependencies of the Group 6 pipeline (exact versions: requirements-lock.txt).
+# Lean side is pinned separately: lean_ws/lean-toolchain + lean_ws/lake-manifest.json.
+google-genai>=2.31      # Gemini API client (src/llm_client.py)
+pyyaml>=6.0             # configs, prompts, budgets
+psutil>=7.0             # peak memory / machine provenance
+pyarrow>=15.0           # seed source (parquet) and Parquet export
+matplotlib>=3.8         # scripts/generate_figures.py
+numpy>=1.26             # legacy simulated baseline only (src/baseline_repair.py)
 
-# Information Retrieval & Vector Search (AI4Math)
-rank-bm25>=0.2.2
-faiss-cpu>=1.8.0
-scikit-learn>=1.4.0
-
-# System Benchmarking & Provenance (Phụ lục B)
-psutil>=5.9.8
-pydantic>=2.6.0
-pyyaml>=6.0.1
-tqdm>=4.66.0
-click>=8.1.7
-
-# Plotting & Report Visuals
-matplotlib>=3.8.0
-seaborn>=0.13.0
-
-# Testing & Code Quality
-pytest>=8.0.0
-pytest-cov>=4.1.0
-ruff>=0.3.0
-mypy>=1.9.0
+# Development / testing
+pytest>=8.0

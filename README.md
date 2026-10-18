@@ -1,161 +1,142 @@
-# PTIT INT4418 - Dữ liệu lớn (Big Data)
-## Đề tài: Hệ thống Dữ liệu lớn phục vụ Toán học & Suy luận hình thức (AI4Math)
+# Nhóm 6 — Verifier-Guided Repair: sửa chứng minh Lean 4 có kiểm chứng
 
-Học phần: **INT4418 - Dữ liệu lớn (Trình độ Thạc sĩ)**  
-Giảng viên hướng dẫn: **TS. Nguyễn Kiều Linh**  
-Đơn vị: Khoa Trí tuệ Nhân tạo - Học viện Công nghệ Bưu chính Viễn thông (PTIT)
+Bài tập lớn **INT4418 – Dữ liệu lớn (Thạc sĩ), PTIT** · Giảng viên: **TS. Nguyễn Kiều Linh** · 2026
 
----
+Hệ thống nhận tệp Lean 4 không biên dịch được, **phân loại lỗi từ chẩn đoán thật của Lean**, sửa bằng **luật (0 token) hoặc LLM có tiêm thông báo lỗi**, và chỉ chấp nhận bản sửa khi **Lean biên dịch được và kiểm toán ngữ nghĩa xác nhận đề không bị đổi** — trong một vòng lặp có giới hạn số lần thử, thời gian và chi phí, chạy trên pool worker Lean REPL thường trú.
 
-## 1. Tổng quan & Thành viên nhóm
+## Kết quả chính (dataset v1.0, Kaggle CPU 4 vCPU / 31 GB)
 
-* **Đề tài:** **NHÓM 6 — Verifier-Guided Repair** (Sửa bản Lean dựa trên phản hồi kiểm chứng).
-* **Mục tiêu:** Giải quyết các nút thắt kỹ thuật về lập lịch hàng đợi phân tán, điều phối đa worker kiểm chứng Lean 4, kiểm soát độ trễ đuôi ($P95$) và bùng nổ chi phí token khi sửa lỗi tự động cho hàng nghìn mã toán hình thức.
+| | Kết quả |
+|---|---|
+| **RQ1** — thông báo lỗi có cấu trúc vs thử lại mù (1K hold-out, n=284, 3 lần lặp) | **53,9%** vs **31,7%** sửa thành công đã kiểm toán (+22 điểm %), rẻ hơn ~45% token |
+| **RQ2** — ngân sách thử lại / định tuyến | LLM+diagnostics k=3: **65,1%**; hybrid k=3: 59,5%; rule-only k=3: 23,9% |
+| **RQ3** — khả năng mở rộng (100 → 1K → 10K × 1/2/4 worker × 3 lần lặp) | 10K: 1,53 → 2,69 → 2,86 mẫu/s (tăng tốc 1,76× / 1,87×); nút thắt CPU ở 4 worker (P95 3,1 s → 6,5 s) |
+| Kiểm chứng Lean: tệp nguội vs REPL thường trú | 63–107 s/tệp → P50 3 ms / P95 23 ms mỗi định lý |
+| Chi phí LLM toàn bộ thực nghiệm | **$2,97** (Gemini 3.5 Flash-Lite, sổ chi tiêu `results/cost_ledger.jsonl`) |
 
-### Danh sách thành viên Nhóm 6:
-| STT | Mã học viên | Họ và tên | Vai trò phụ trách chính | Vai trò dự phòng |
-|:---:|:---:|:---|:---|:---|
-| 1 | **B25CHHT112** | **Đào Văn Tâm** *(Trưởng nhóm)* | Evaluation & Cost Analysis (Lead) | Queue & Worker System |
-| 2 | **B25CHHT088** | **Trần Quang Đức Dũng** | Queue & Worker System Lead | Evaluation & Cost Analysis |
-| 3 | **B25CHHT117** | **Lâm Thành Trung** | Rule-based Repair Lead | LLM Repair Engine |
-| 4 | **B25CHHT119** | **Nguyễn Xuân Tùng** | LLM Repair Engine Lead | Rule-based Repair |
-| 5 | **B25CHHT125** | **Khamsing OUTHAIHUENG** | Parser & Taxonomy Lead | Error Dataset & Contract |
-| 6 | **B25CHHT124** | **Mekdala Nounou** | Error Dataset & Contract Lead | Parser & Taxonomy |
+Hình và bảng: [`results/figures/`](results/figures/) · Báo cáo: [`reports/report_draft.md`](reports/report_draft.md)
 
----
-
-## 2. Kiến trúc Hệ thống (System Architecture)
-
-Hệ thống được thiết kế theo mô hình 4 phân tầng chịu lỗi cao, điều phối giữa hàng đợi phân tán, các worker kiểm chứng Lean 4 và các engine sửa lỗi (chi tiết tại [docs/architecture.md](docs/architecture.md)):
+## Kiến trúc
 
 ```mermaid
 flowchart LR
-    In["Nhóm 5<br/>Candidate Lỗi"] --> Q["Hàng đợi phân tán<br/>(Redis / Queue)"]
-    Q --> P["Error Parser<br/>& Taxonomy"]
-    P --> R{"Error<br/>Router"}
-    R -->|Cú pháp/Import| Rule["Rule Fixer<br/>(0-Token)"]
-    R -->|Kiểu/Logic| LLM["LLM Repair<br/>(Context)"]
-    Rule & LLM --> V["Lean 4 Verifier<br/>(Worker Pool)"]
-    V -->|Vẫn lỗi| B{"Bounded Retry<br/>Controller"}
-    B -->|Còn Budget| Q
-    B -->|Hết Budget| S["Replayable<br/>Error Store"]
-    V -->|Thành công| Audit{"Semantic<br/>Audit"}
-    Audit -->|Pass| S
-    Audit -->|Fail| B
+    D["Tệp Lean lỗi<br/>+ chẩn đoán"] --> Q["Hàng đợi FIFO<br/>(VerifierPool)"]
+    Q --> P["Parser & taxonomy v0.2<br/>(7 nhóm lỗi)"]
+    P --> R{"Router"}
+    R -->|SYN/IMP/TMO| Rule["Luật R0–R7<br/>(0 token)"]
+    R -->|TYP/TAC/ID…| LLM["LLM + diagnostics<br/>(Gemini, cost guard)"]
+    Rule & LLM --> V["Lean REPL worker<br/>(Mathlib nạp 1 lần)"]
+    V --> A{"Kiểm toán<br/>ngữ nghĩa"}
+    A -->|đạt| OK["Repaired Lean<br/>(repaired-v1)"]
+    A -->|không đạt| B{"Còn ngân sách?<br/>ứng viên mới?"}
+    B -->|có| P
+    B -->|không| F["Thất bại<br/>(log replay được)"]
 ```
 
----
+| Thành phần | Mã nguồn |
+|---|---|
+| Kiểm chứng: Lean nguội / **REPL thường trú** / pool worker | `src/lean_verifier.py`, `src/lean_repl.py`, `src/verifier_pool.py` |
+| Parser & taxonomy v0.2 | `src/error_parser.py`, `docs/error_taxonomy_v0.2.md` |
+| Luật sửa R0–R7 | `src/rule_repair.py` |
+| LLM (blind / diagnostic), client, kiểm soát chi phí | `src/llm_repair.py`, `src/llm_client.py`, `src/cost_guard.py` |
+| Vòng lặp có giới hạn, kiểm toán | `src/repair_pipeline.py`, `src/semantic_auditor.py` |
+| Sinh dữ liệu lỗi | `src/mutations.py`, `scripts/build_seeds.py`, `scripts/generate_error_dataset.py` |
+| Thực nghiệm, hình, phân tích | `scripts/run_experiment.py`, `scripts/generate_figures.py`, `scripts/analyze_failures.py` |
+| Provenance (Rule 3) | `src/provenance.py` |
 
-## 3. Cấu trúc thư mục dự án
+## Cấu trúc thư mục
 
 ```text
-.
-├── .claude/                  # AI & Claude Code harness, skills và agent configurations
-│   └── skills/               # Reusable skills (experiment-runner, lean4-verifier, ...)
-├── .gitnexus/                # GitNexus code intelligence index & MCP configurations
-├── configs/                  # File cấu hình tham số thí nghiệm (YAML/JSON)
-├── data_sample/              # Dữ liệu mẫu hợp pháp (< 5MB) và manifest checksums
-├── docs/                     # Tài liệu thiết kế, data cards, AI-use statement
-│   ├── references/           # Giáo trình tham khảo (Lin & Dyer, MMDS, Han & Kamber)
-│   └── syllabus/             # Đề cương học phần và hướng dẫn bài tập lớn
-├── reports/                  # Báo cáo học phần 12-20 trang (PDF/Docx)
-├── results/
-│   ├── figures/              # Biểu đồ đánh giá tạo tự động bằng script
-│   └── raw/                  # Dữ liệu thực nghiệm thô theo chuẩn Phụ lục B (JSONL)
-├── scripts/                  # Script tải dữ liệu lớn, chạy benchmark, vẽ đồ thị
-├── slides/                   # Slide bài giảng và kịch bản demo bảo vệ
-├── src/                      # Mã nguồn chính của pipeline
-├── tests/                    # Kiểm thử tự động (Unit test, Integration test)
-├── AGENTS.md                 # Chỉ dẫn thống nhất cho các tác tử AI
-├── CLAUDE.md                 # AI harness, lệnh thực thi và ràng buộc kỹ thuật
-├── CONVENTIONS.md            # Tiêu chuẩn code, commit Git và logging thực nghiệm
-├── contributions.md          # Phân công vai trò 6-7 thành viên và nhật ký đóng góp
-├── requirements.txt          # Danh sách thư viện Python phụ thuộc
-└── README.md                 # Tài liệu hướng dẫn tổng quan dự án
+src/            pipeline (verifier, parser, rules, LLM, loop, audit, cost guard)
+tests/          96 unit tests (không cần Lean hay API)
+scripts/        dữ liệu, thực nghiệm, hình, phân tích, demo, xuất kết quả
+configs/        prompts (repair_v1), budget, giá LLM, kế hoạch thí nghiệm
+notebooks/      notebook Kaggle (template + sessions/ sẵn cấu hình từng phiên)
+lean_ws/        Lake workspace ghim Lean/Mathlib/REPL v4.35.0 (.lake không commit)
+data_sample/    mẫu nhỏ trong Git + manifest.json (checksum dữ liệu đầy đủ)
+results/raw/    run record bất biến run_<id>.json + logs/<id>.jsonl.gz (replay được)
+results/figures/ hình/bảng sinh từ results/raw bằng script
+docs/           data card, system card, taxonomy, output contract, AI-use, license/privacy
+reports/        báo cáo
 ```
 
----
+## Cài đặt
 
-## 4. Hướng dẫn cài đặt & Khởi động nhanh (Quick Start)
-
-Dành cho các thành viên khi mới tham gia dự án hoặc kéo code về máy:
-
-### 4.1. Clone dự án & Khởi tạo môi trường
 ```bash
-# 1. Clone repository về máy
-git clone https://github.com/tamdv/ai4math-verifier-guided-repair.git
-cd ai4math-verifier-guided-repair
-
-# 2. Tạo môi trường ảo Python 3.10+
-python3 -m venv .venv
-source .venv/bin/activate
-
-# 3. Cài đặt các gói Python phụ thuộc
-pip install -r requirements.txt
-
-# 4. Cài đặt Lean 4 toolchain (nếu chạy trực tiếp trên máy)
-bash scripts/install_lean4.sh
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements-lock.txt          # phiên bản chính xác (hoặc requirements.txt)
+python -m pytest tests -q                      # 96 tests, không cần Lean/API
 ```
 
-> **Hoặc sử dụng Docker Compose (Khuyên dùng nếu muốn môi trường sẵn sàng 100%):**
-> ```bash
-> docker compose up -d verifier
-> ```
+Chạy Lean cục bộ (cần ≥ 16 GB RAM rảnh cho 1–2 worker; máy 16 GB đang chạy ứng dụng khác sẽ swap nặng):
 
-### 4.2. Kiểm thử tự động (Unit Tests)
-Kiểm tra toàn bộ 9+ test case của Parser, Error Store, Baseline:
 ```bash
-python3 -m unittest discover -s tests -v
+curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+cd lean_ws && lake exe cache get && lake build repl && cd ..   # Mathlib cache ~7 GB
 ```
 
-### 4.3. Chạy Baseline thử nghiệm
+LLM: tạo `.env` chứa `GEMINI_API_KEY=...` (đã git-ignore). Trần chi phí: `configs/budget.yaml`.
+
+## Demo (lỗi → phân loại → sửa → Lean kiểm tra → kiểm toán)
+
 ```bash
-python3 src/baseline_repair.py --data data_sample/error_dataset_50.json
+# Phát lại từ log thực nghiệm: $0, không cần Lean hay mạng
+python scripts/demo_repair.py --replay results/raw/logs/exp-llm_only-b3-w4-20261017101714-3f7a7e.jsonl.gz \
+    --pick success --data data/errors/errors_1k.jsonl
+# Chạy thật (Lean + luật/LLM)
+python scripts/demo_repair.py --data data/errors/errors_1k.jsonl --error-id E000008 --strategy hybrid --budget 3
 ```
-Kết quả thực nghiệm sẽ được ghi tự động vào `results/raw/run_blind-retry-baseline-*.json`.
 
----
+## Tái lập kết quả
 
-## 5. Quy trình làm việc nhóm & Git Flow (Team Workflow)
+**Dữ liệu** (checksum trong `data_sample/manifest.json`):
+```bash
+bash scripts/download_data.sh
+python scripts/build_seeds.py --n 5000 --workers 4 --timeout 30
+python scripts/generate_error_dataset.py --workers 4 --max-per-seed 5 --timeout 30
+```
 
-Để đảm bảo minh chứng đóng góp cá nhân khi bảo vệ học phần trước Hội đồng:
+**Thực nghiệm trên Kaggle** (đường chính — CPU 4 vCPU / 31 GB, Internet On): import notebook trong `notebooks/sessions/`, gắn Input là dataset lỗi, *Save & Run All*:
 
-### 5.1. Phân nhánh tính năng (Feature Branches)
-Tuyệt đối không commit trực tiếp lên nhánh `main`. Mỗi thành viên tạo nhánh riêng tương ứng với phần việc phụ trách:
-* **Lâm Thành Trung (TV3):** `git checkout -b feature/rule-repair`
-* **Nguyễn Xuân Tùng (TV4):** `git checkout -b feature/llm-engine`
-* **Trần Quang Đức Dũng (TV5):** `git checkout -b feature/worker-queue`
-* **Khamsing OUTHAIHUENG (TV2):** `git checkout -b feature/error-router`
-* **Mekdala Nounou (TV1):** `git checkout -b feature/dataset-scale`
-* **Đào Văn Tâm (TV6):** `git checkout -b feature/semantic-audit` hoặc nhánh tích hợp.
+| Notebook | Nội dung | Chi phí |
+|---|---|---|
+| `run3b_scale_100_1k.ipynb` | scale 100 + 1K × 1/2/4 worker × 3 lần | $0 |
+| `run3a_scale_10k.ipynb` | scale 10K × 1/2/4 worker × 3 lần | $0 |
+| `run2b_llm_PAID.ipynb` | RQ1/RQ2 + 10K hold-out + mô hình so sánh (cần Secret `GEMINI_API_KEY`) | ~$3 |
 
-### 5.2. Chuẩn Commit & Ghi nhận AI (Bắt buộc)
-1. **Quy chuẩn Commit:** Tuân thủ [Conventional Commits](CONVENTIONS.md):
-   - `feat(...)`: Thêm tính năng mới (ví dụ: `feat(rule): add bracket balancer heuristic`)
-   - `fix(...)`: Sửa lỗi (ví dụ: `fix(parser): handle utf-8 panic in lean diagnostics`)
-   - `test(...)`: Thêm unit test
-   - `docs(...)`: Cập nhật tài liệu
-2. **Ghi nhật ký sử dụng AI:** Nếu có dùng AI (ChatGPT, Claude, Cursor...), bắt buộc chạy lệnh log trước khi commit:
-   ```bash
-   python3 scripts/log_ai_use.py --stage "Week X" --type "Code" --desc "Mô tả công việc" --verify "Kiểm thử bằng test case" --auditor "Tên thành viên" --lines 50
-   ```
-3. **Tạo Pull Request (PR):** Đẩy nhánh lên remote (`git push -u origin feature/...`) và tạo PR trên GitHub để Trưởng nhóm (bạn Tâm) review và merge vào `main`.
+Một cấu hình đơn lẻ: `python scripts/run_experiment.py --data data/errors/errors_1k.jsonl --split holdout --strategy hybrid --budget 3 --workers 4`.
+Ước tính chi phí trước khi chạy: `python scripts/estimate_cost.py --data data/errors/errors_10k.jsonl`.
 
----
+**Hình, bảng, phân tích lỗi, đầu ra bàn giao:**
+```bash
+python scripts/generate_figures.py --input results/raw/ --output results/figures/
+python scripts/analyze_failures.py --input results/raw/ --output results/figures/
+python scripts/export_repaired.py --run-id exp-llm_only-b3-w4-20261017101714-3f7a7e --data data/errors/errors_1k.jsonl
+```
 
-## 6. Quy tắc thực nghiệm & Tái lập (Reproducibility)
+Mỗi lần chạy ghi `results/raw/run_<run_id>.json` (commit, phiên bản dữ liệu kèm checksum, máy, phần mềm, tham số, seed, timeout, chỉ số, trạng thái) và log từng mẫu để phát lại.
 
-Theo quy định học phần, mọi báo cáo kết quả phải tuân thủ:
-1. **Có Baseline so sánh:** Luôn chạy phương pháp cơ sở trước trên cùng tập split dữ liệu và cùng phần cứng.
-2. **Benchmark 3 mức quy mô:** Đo lường trên 3 mức dữ liệu / tải (Tier 1 $\rightarrow$ Tier 2 $\rightarrow$ Tier 3).
-3. **Chỉ số bắt buộc:** Bắt buộc ghi nhận độ trễ phân vị $P50$ và $P95$, không dùng giá trị trung bình đơn lẻ.
-4. **Không commit dữ liệu lớn vào Git:** Chỉ lưu mẫu nhỏ trong `data_sample/`. Dữ liệu lớn được tải qua script.
+## Tài liệu
 
----
+| Tài liệu | Nội dung |
+|---|---|
+| [`docs/data_card_lean_errors.md`](docs/data_card_lean_errors.md) | dataset lỗi v1.0: nguồn, giấy phép, trường, chia tập, hạn chế |
+| [`docs/system_card.md`](docs/system_card.md) | hệ thống, rủi ro & biện pháp, hạn chế |
+| [`docs/error_taxonomy_v0.2.md`](docs/error_taxonomy_v0.2.md) | 7 nhóm lỗi, dấu hiệu thật của Lean 4.35, định tuyến |
+| [`docs/output_contract_group6.md`](docs/output_contract_group6.md) | đầu ra `repaired-v1` cho Nhóm 7/8 |
+| [`docs/data_contract_group5_group6.md`](docs/data_contract_group5_group6.md) | đầu vào từ Nhóm 5 |
+| [`docs/license_privacy_note.md`](docs/license_privacy_note.md) | giấy phép, quyền riêng tư |
+| [`docs/ai_use_statement.md`](docs/ai_use_statement.md) | khai báo sử dụng AI |
 
-## 7. Tác tử AI & Tích hợp GitNexus
+## Thành viên và phân vai
 
-Dự án đã được trang bị đầy đủ bộ **AI Harness** để phối hợp với các trợ lý AI (Claude Code, Cursor, Antigravity):
-* **Harness & Conventions:** Quy định chặt chẽ trong `CLAUDE.md` và `CONVENTIONS.md`.
-* **GitNexus:** Quản lý biểu đồ quan hệ mã nguồn (Knowledge Graph) phục vụ phân tích phụ thuộc và blast radius.
-* **Skills:** Bộ kỹ năng tự động hóa trong `.claude/skills/`.
+| STT | Mã HV | Họ và tên | Vai trò chính | Dự phòng |
+|:---:|:---:|:---|:---|:---|
+| 1 | B25CHHT112 | **Đào Văn Tâm** *(trưởng nhóm)* | Evaluation & Cost Analysis | Queue & Worker System |
+| 2 | B25CHHT088 | Trần Quang Đức Dũng | Queue & Worker System | Evaluation & Cost Analysis |
+| 3 | B25CHHT117 | Lâm Thành Trung | Rule-based Repair | LLM Repair Engine |
+| 4 | B25CHHT119 | Nguyễn Xuân Tùng | LLM Repair Engine | Rule-based Repair |
+| 5 | B25CHHT125 | Khamsing OUTHAIHUENG | Parser & Taxonomy | Error Dataset & Contract |
+| 6 | B25CHHT124 | Mekdala Nounou | Error Dataset & Contract | Parser & Taxonomy |
+
+Ai thực hiện phần nào và phần bảo vệ của từng người: [`contributions.md`](contributions.md). Quy ước code/commit: [`CONVENTIONS.md`](CONVENTIONS.md).

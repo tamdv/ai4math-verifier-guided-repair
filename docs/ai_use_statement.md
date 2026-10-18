@@ -7,38 +7,41 @@
 
 ## 1. Bảng số liệu định lượng tổng hợp (Quantitative Summary)
 
-* **Tổng số phiên/hạng mục AI hỗ trợ:** `25`
-* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~6315` dòng
+* **Tổng số phiên/hạng mục AI hỗ trợ:** `28`
+* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~7815` dòng
 * **Cơ chế kiểm chứng bắt buộc:** 100% mã nguồn được xác minh qua unit test tự động và trình kiểm chứng Lean 4; không chấp nhận mã chưa kiểm chứng.
 
 ### Phân bổ theo loại tác vụ:
 | Loại tác vụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Code | 6 | 24.0% |
-| Code Generation | 2 | 8.0% |
-| Docs | 2 | 8.0% |
-| Workspace Setup | 1 | 4.0% |
-| Governance & Harness | 1 | 4.0% |
-| Academic Proposal | 1 | 4.0% |
-| Taxonomy Design | 1 | 4.0% |
-| Dataset Curation | 1 | 4.0% |
-| Baseline Implementation | 1 | 4.0% |
-| Testing & QA | 1 | 4.0% |
-| Team Roster & Governance | 1 | 4.0% |
-| Team Role Adjustment | 1 | 4.0% |
-| Environment & Tooling | 1 | 4.0% |
-| Lean 4 Interactive Verification | 1 | 4.0% |
-| Data Contract & Replayable Store | 1 | 4.0% |
-| System Architecture Documentation | 1 | 4.0% |
-| Architecture Refinement | 1 | 4.0% |
-| Docs+Code | 1 | 4.0% |
+| Code | 6 | 21.4% |
+| Code Generation | 2 | 7.1% |
+| Docs | 2 | 7.1% |
+| Workspace Setup | 1 | 3.6% |
+| Governance & Harness | 1 | 3.6% |
+| Academic Proposal | 1 | 3.6% |
+| Taxonomy Design | 1 | 3.6% |
+| Dataset Curation | 1 | 3.6% |
+| Baseline Implementation | 1 | 3.6% |
+| Testing & QA | 1 | 3.6% |
+| Team Roster & Governance | 1 | 3.6% |
+| Team Role Adjustment | 1 | 3.6% |
+| Environment & Tooling | 1 | 3.6% |
+| Lean 4 Interactive Verification | 1 | 3.6% |
+| Data Contract & Replayable Store | 1 | 3.6% |
+| System Architecture Documentation | 1 | 3.6% |
+| Architecture Refinement | 1 | 3.6% |
+| Docs+Code | 1 | 3.6% |
+| Code+Debug | 1 | 3.6% |
+| Experiment | 1 | 3.6% |
+| Analysis+Docs | 1 | 3.6% |
 
 ### Phân bổ theo mô hình / công cụ AI:
 | Mô hình / Công cụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Claude Code / Antigravity | 19 | 76.0% |
-| Claude Opus 5.5 | 5 | 20.0% |
-| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 4.0% |
+| Claude Code / Antigravity | 19 | 67.9% |
+| Claude Opus 5.5 | 8 | 28.6% |
+| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 3.6% |
 
 ---
 
@@ -71,6 +74,9 @@
 | 2026-10-16 07:28 | Week 6 (Day 1) | Claude Opus 5.5 | Code | Lean REPL verifier (500-1000x faster than cold lean), verifier pool, seed builder from Goedel Lean-workbook proofs, 9 mutation operators, parser v0.2 (+TAC_07, real Lean messages), full-file rules R0/R5-R7, semantic auditor, LLM repair (blind/diagnostic) + Gemini client, bounded repair pipeline, experiment runner with provenance | pytest 82/82; REPL vs cold Lean agree on 74/74 checks; real Lean 4.35 + Mathlib runs | Dao Van Tam | ✅ VERIFIED |
 | 2026-10-16 07:36 | Week 6 (Day 1) | Claude Opus 5.5 | Code | Cost control: CostGuard (monthly/run hard caps, ledger), SQLite response cache, pre-run estimator with VND, comment stripping preserving line/column (cost option C) | pytest 88/88 incl. cap-blocks-before-call and cache-hit-free tests | Dao Van Tam | ✅ VERIFIED |
 | 2026-10-16 08:46 | Week 6 (Day 1) | Claude Opus 5.5 | Docs+Code | Figure/table generator from run records (6 figures, 2 tables), report draft skeleton per Phu luc C, data card; Kaggle notebook flags | pytest 91/91; figures rendered and inspected for overlap | Dao Van Tam | ✅ VERIFIED |
+| 2026-10-18 15:30 | Week 7 | Claude Opus 5.5 | Code+Debug | Kaggle execution: per-stage saves, robust input discovery, session notebooks; fixed REPL process-group leak (lake env repl child), REPL crash recovery, primary-error selection (unsolved goals as consequence), fail-fast on missing API key | pytest 96/96; regression test reproduces orphaned child; label agreement 85.1%->95.0% on stored diagnostics | Dao Van Tam | ✅ VERIFIED |
+| 2026-10-18 15:30 | Week 7 | Claude Opus 5.5 | Experiment | Kaggle runs 2/2b/3a/3b: dataset v1.0 (17,031), RQ1/RQ2 LLM runs, scale 100/1K/10K x 1/2/4 workers x 3 repeats | 48 run records with provenance; 0 seed leakage, 0 duplicates; real spend $2.97 in cost ledger | Dao Van Tam | ✅ VERIFIED |
+| 2026-10-18 15:30 | Week 8 | Claude Opus 5.5 | Analysis+Docs | Figures/tables from raw results, failure analysis (stop/audit reasons, per-rule precision), repaired-v1 export + output contract, README, manifest v1.0, license/privacy note, requirements lock, Dockerfile Lean 4.35, contributions from git history | scripts re-run from results/raw; README demo command executed; pytest 96/96 | Dao Van Tam | ✅ VERIFIED |
 
 ---
 

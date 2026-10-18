@@ -29,7 +29,9 @@ def _run(cmd: list[str]) -> str:
 def git_commit() -> str:
     """Current HEAD hash, suffixed with `-dirty` if the tree has local changes."""
     head = _run(["git", "rev-parse", "HEAD"])
-    dirty = _run(["git", "status", "--porcelain", "--untracked-files=no"])
+    # The cost ledger is appended during LLM runs; it is data, not code.
+    dirty = _run(["git", "status", "--porcelain", "--untracked-files=no", "--", ".",
+                  ":(exclude)results/cost_ledger.jsonl"])
     return f"{head}-dirty" if dirty and dirty != "unknown" else head
 
 
@@ -50,11 +52,20 @@ def machine_info() -> dict[str, Any]:
 
 
 def software_info() -> dict[str, Any]:
-    """Python and Lean toolchain versions."""
+    """Python, key package and Lean toolchain versions."""
+    from importlib import metadata
+
     lean = _find_executable("lean")
+    packages = {}
+    for name in ("google-genai", "pyyaml", "psutil", "pyarrow", "matplotlib"):
+        try:
+            packages[name] = metadata.version(name)
+        except metadata.PackageNotFoundError:
+            packages[name] = None
     return {
         "python": platform.python_version(),
         "lean": _run([lean, "--version"]) if lean else "missing",
+        "packages": packages,
     }
 
 

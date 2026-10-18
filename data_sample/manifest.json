@@ -1,22 +1,70 @@
 {
-  "project": "AI4Math",
-  "data_version": "v0.1-sample",
-  "created_at": "2026-09-11T00:00:00Z",
+  "project": "AI4Math — Group 6 Verifier-Guided Repair",
+  "data_version": "v1.0-mutation+natural",
+  "created_at": "2026-10-17T03:24:02Z",
+  "generator_run": "gen-errors-20261017032402-ec0085 (Kaggle run 2)",
+  "toolchain": {
+    "lean": "v4.35.0",
+    "mathlib": "v4.35.0",
+    "repl": "v4.35.0"
+  },
   "sources": [
     {
-      "name": "NuminaMath-CoT-Sample",
-      "url": "https://huggingface.co/datasets/AI-MO/NuminaMath-CoT",
-      "license": "Apache-2.0",
-      "sample_records": 100
-    },
-    {
-      "name": "mathlib4-declarations-Sample",
-      "url": "https://github.com/leanprover-community/mathlib4",
-      "license": "Apache-2.0",
-      "sample_records": 100
+      "name": "Goedel-LM/Lean-workbook-proofs",
+      "license": "MIT",
+      "url": "https://huggingface.co/datasets/Goedel-LM/Lean-workbook-proofs",
+      "file": "data/raw/goedel_lean_workbook_proofs.parquet",
+      "sha256": "24fcb50eecc2ccbcc52a58c6412c6d10edbeaa9483a97d30e207fb20ef6e2677",
+      "records": 29750
     }
   ],
-  "checksum_sha256": {
-    "manifest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  "reproduce": [
+    "bash scripts/download_data.sh",
+    "python scripts/build_seeds.py --n 5000 --workers 4 --timeout 30",
+    "python scripts/generate_error_dataset.py --workers 4 --max-per-seed 5 --timeout 30"
+  ],
+  "full_files_not_in_git": {
+    "data/errors/errors_100.jsonl": {
+      "rows": 100,
+      "sha256": "f4c4ba555d2c72bdb73f4d1e10478aea7fca0feaed2b575e7b33c9bee06ad386"
+    },
+    "data/errors/errors_1k.jsonl": {
+      "rows": 1000,
+      "sha256": "63704690f69c32fefe9605c5f3e8b62698269b0657b2e9145ee2994e6da38c43"
+    },
+    "data/errors/errors_10k.jsonl": {
+      "rows": 10000,
+      "sha256": "a4dbeb60ed5fec8cc16d237600ff31720366fa99c6a157922eafa460255f870d"
+    },
+    "data/errors/errors_all.jsonl": {
+      "rows": 17031,
+      "sha256": "c8067bbb3e85e00caa9dc2fe57a664feebf15bd2fc6c022204a69d31e9f0290a"
+    },
+    "data/seeds/seeds_verified.jsonl": {
+      "rows": 3666,
+      "sha256": "c7a31d5435ffee2abec0cd5e8108bd717fc2864db30550d1888d84011b8722e6"
+    },
+    "data/seeds/natural_errors.jsonl": {
+      "rows": 1110,
+      "sha256": "13994199578adf0ed575311c470df9fa4ce2c4c5a7c4262f944f7c94edaffe1c"
+    }
+  },
+  "samples_in_git": {
+    "data_sample/errors_sample_100.jsonl": {
+      "rows": 100,
+      "sha256": "f4c4ba555d2c72bdb73f4d1e10478aea7fca0feaed2b575e7b33c9bee06ad386"
+    },
+    "data_sample/repaired_sample_50.jsonl": {
+      "rows": 50,
+      "sha256": "5ed048d48526580839f0d5d6495b183fc0a521a46cdc5a5f2b59e01e64fcfe59"
+    },
+    "data_sample/error_dataset_50.json": {
+      "rows": 802,
+      "sha256": "6640f04a46fbd179c916cd519b2f5da6d260e3e6cdf4cb94893f8881898d826f"
+    },
+    "data_sample/error_dataset_50_lean.json": {
+      "rows": 1236,
+      "sha256": "55c0876b1cc83923128e7d65a4ba363f6cf4719b7b9ca209f8a44e517b4b3b65"
+    }
   }
 }

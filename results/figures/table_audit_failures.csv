@@ -1,0 +1,9 @@
+configuration,failed with attempt,does_not_compile %,statement_changed %,uses_sorry %,forbidden_construct %,theorem_missing %
+blind k=1,193,95.3,12.4,19.2,10.4,3.1
+hybrid k=1,198,96.5,23.7,10.1,6.6,16.7
+hybrid k=3,115,90.4,27.8,13.0,13.9,20.9
+llm_only k=1,131,88.5,16.8,23.7,18.3,2.3
+llm_only k=1 [gemini-3.6-flash],180,88.3,23.3,7.2,8.3,0.0
+llm_only k=3,99,76.8,26.3,10.1,14.1,1.0
+none k=0,0,-,-,-,-,-
+rule_only k=3,135,98.5,25.9,3.0,0.0,23.7
