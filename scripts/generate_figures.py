@@ -208,7 +208,8 @@ def fig_scale(runs: list[dict[str, Any]], out: Path) -> list[Path]:
                      "service P50 ms": cell("service_p50_ms"),
                      "service P95 ms": cell("service_p95_ms"),
                      "queue wait P95 ms": cell("queue_wait_p95_ms"),
-                     "peak RSS MB": cell("peak_rss_mb")})
+                     "peak USS MB": cell("peak_uss_mb"),
+                     "peak RSS MB (double-counts shared Mathlib)": cell("peak_rss_mb")})
     write_table(rows, out, "table_scale")
     return made
 
