@@ -7,6 +7,10 @@ pyarrow>=15.0           # seed source (parquet) and Parquet export
 matplotlib>=3.8         # scripts/generate_figures.py
 numpy>=1.26             # legacy simulated baseline only (src/baseline_repair.py)
 
+# Redis worker-queue prototype (src/worker_queue.py); fakeredis lets tests run without a server
+redis>=5.0
+fakeredis>=2.21
+
 # Development / testing
 pytest>=8.0
 

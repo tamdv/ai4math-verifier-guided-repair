@@ -7,43 +7,44 @@
 
 ## 1. Bảng số liệu định lượng tổng hợp (Quantitative Summary)
 
-* **Tổng số phiên/hạng mục AI hỗ trợ:** `32`
-* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~9840` dòng
+* **Tổng số phiên/hạng mục AI hỗ trợ:** `33`
+* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~9960` dòng
 * **Cơ chế kiểm chứng bắt buộc:** 100% mã nguồn được xác minh qua unit test tự động và trình kiểm chứng Lean 4; không chấp nhận mã chưa kiểm chứng.
 
 ### Phân bổ theo loại tác vụ:
 | Loại tác vụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Code | 7 | 21.9% |
-| Code Generation | 2 | 6.2% |
-| Docs | 2 | 6.2% |
-| Experiment | 2 | 6.2% |
-| Workspace Setup | 1 | 3.1% |
-| Governance & Harness | 1 | 3.1% |
-| Academic Proposal | 1 | 3.1% |
-| Taxonomy Design | 1 | 3.1% |
-| Dataset Curation | 1 | 3.1% |
-| Baseline Implementation | 1 | 3.1% |
-| Testing & QA | 1 | 3.1% |
-| Team Roster & Governance | 1 | 3.1% |
-| Team Role Adjustment | 1 | 3.1% |
-| Environment & Tooling | 1 | 3.1% |
-| Lean 4 Interactive Verification | 1 | 3.1% |
-| Data Contract & Replayable Store | 1 | 3.1% |
-| System Architecture Documentation | 1 | 3.1% |
-| Architecture Refinement | 1 | 3.1% |
-| Docs+Code | 1 | 3.1% |
-| Code+Debug | 1 | 3.1% |
-| Analysis+Docs | 1 | 3.1% |
-| CodeGeneration | 1 | 3.1% |
-| Infrastructure | 1 | 3.1% |
+| Code | 7 | 21.2% |
+| Code Generation | 2 | 6.1% |
+| Docs | 2 | 6.1% |
+| Experiment | 2 | 6.1% |
+| Workspace Setup | 1 | 3.0% |
+| Governance & Harness | 1 | 3.0% |
+| Academic Proposal | 1 | 3.0% |
+| Taxonomy Design | 1 | 3.0% |
+| Dataset Curation | 1 | 3.0% |
+| Baseline Implementation | 1 | 3.0% |
+| Testing & QA | 1 | 3.0% |
+| Team Roster & Governance | 1 | 3.0% |
+| Team Role Adjustment | 1 | 3.0% |
+| Environment & Tooling | 1 | 3.0% |
+| Lean 4 Interactive Verification | 1 | 3.0% |
+| Data Contract & Replayable Store | 1 | 3.0% |
+| System Architecture Documentation | 1 | 3.0% |
+| Architecture Refinement | 1 | 3.0% |
+| Docs+Code | 1 | 3.0% |
+| Code+Debug | 1 | 3.0% |
+| Analysis+Docs | 1 | 3.0% |
+| CodeGeneration | 1 | 3.0% |
+| Infrastructure | 1 | 3.0% |
+| Refactoring | 1 | 3.0% |
 
 ### Phân bổ theo mô hình / công cụ AI:
 | Mô hình / Công cụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Claude Code / Antigravity | 23 | 71.9% |
-| Claude Opus 5.5 | 8 | 25.0% |
-| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 3.1% |
+| Claude Code / Antigravity | 24 | 72.7% |
+| Claude Opus 5.5 | 8 | 24.2% |
+| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 3.0% |
 
 ---
 
@@ -83,6 +84,7 @@
 | 2026-10-19 04:33 | Analysis | Claude Code / Antigravity | Experiment | Offline parser ablation scripts/parser_ablation.py replaying hybrid k=1 1K runs under 5 parser variants; report table 9, R5 leakage note, references trimmed to 8, PR list in contributions, dockerignore | Replay of full parser matches 100% of logged first attempts; 32 new rule candidates verified with local Lean REPL; 4 unit tests; report rebuilt at 20 pages | Nhóm 6 Lead | ✅ VERIFIED |
 | 2026-10-19 04:48 | Reproducibility | Claude Code / Antigravity | Infrastructure | Docker image test build, dockerignore, init process for REPL child reaping | Image built (16.6 GB, arm64); pytest 103 passed with --init; gateway run in container identical to host | Nhóm 6 Lead | ✅ VERIFIED |
 | 2026-10-10 17:30 | Week 6 | Claude Code / Antigravity | Code | Setup Redis Queue, Verifier Worker Pool, Bounded Controller, and Scalability Benchmark | 14 unit tests pass, 3-tier queue benchmark pass | Trần Quang Đức Dũng | ✅ VERIFIED |
+| 2026-10-19 05:31 | Integration | Claude Code / Antigravity | Refactoring | Integrate PR #6 worker queue: conflict resolution, simulated verifier renamed, simulated results isolated, Redis compose profile, requirements | pytest 121 passed including 14 queue tests; analysis scripts glob only results/raw/run_exp-*.json | Nhóm 6 Lead | ✅ VERIFIED |
 
 ---
 
