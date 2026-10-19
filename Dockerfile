@@ -1,6 +1,7 @@
 # Reproducible environment for Group 6 (Verifier-Guided Repair).
 # Primary execution path is Kaggle (scripts/kaggle_setup.sh); this image mirrors it.
-# Size: ~10 GB (Lean toolchain + Mathlib build cache). Needs >= 16 GB RAM per 4 REPL workers.
+# Size: 16.6 GB on linux/arm64 (Lean toolchain + Mathlib cache), build ~6 min. Needs >= 16 GB RAM per 4 REPL workers.
+# Run with an init process so killed REPL children are reaped: docker run --init ... (compose sets init: true).
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
