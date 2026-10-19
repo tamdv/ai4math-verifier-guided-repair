@@ -7,42 +7,43 @@
 
 ## 1. Bảng số liệu định lượng tổng hợp (Quantitative Summary)
 
-* **Tổng số phiên/hạng mục AI hỗ trợ:** `30`
-* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~8565` dòng
+* **Tổng số phiên/hạng mục AI hỗ trợ:** `31`
+* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~8590` dòng
 * **Cơ chế kiểm chứng bắt buộc:** 100% mã nguồn được xác minh qua unit test tự động và trình kiểm chứng Lean 4; không chấp nhận mã chưa kiểm chứng.
 
 ### Phân bổ theo loại tác vụ:
 | Loại tác vụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Code | 6 | 20.0% |
-| Code Generation | 2 | 6.7% |
-| Docs | 2 | 6.7% |
-| Experiment | 2 | 6.7% |
-| Workspace Setup | 1 | 3.3% |
-| Governance & Harness | 1 | 3.3% |
-| Academic Proposal | 1 | 3.3% |
-| Taxonomy Design | 1 | 3.3% |
-| Dataset Curation | 1 | 3.3% |
-| Baseline Implementation | 1 | 3.3% |
-| Testing & QA | 1 | 3.3% |
-| Team Roster & Governance | 1 | 3.3% |
-| Team Role Adjustment | 1 | 3.3% |
-| Environment & Tooling | 1 | 3.3% |
-| Lean 4 Interactive Verification | 1 | 3.3% |
-| Data Contract & Replayable Store | 1 | 3.3% |
-| System Architecture Documentation | 1 | 3.3% |
-| Architecture Refinement | 1 | 3.3% |
-| Docs+Code | 1 | 3.3% |
-| Code+Debug | 1 | 3.3% |
-| Analysis+Docs | 1 | 3.3% |
-| CodeGeneration | 1 | 3.3% |
+| Code | 6 | 19.4% |
+| Code Generation | 2 | 6.5% |
+| Docs | 2 | 6.5% |
+| Experiment | 2 | 6.5% |
+| Workspace Setup | 1 | 3.2% |
+| Governance & Harness | 1 | 3.2% |
+| Academic Proposal | 1 | 3.2% |
+| Taxonomy Design | 1 | 3.2% |
+| Dataset Curation | 1 | 3.2% |
+| Baseline Implementation | 1 | 3.2% |
+| Testing & QA | 1 | 3.2% |
+| Team Roster & Governance | 1 | 3.2% |
+| Team Role Adjustment | 1 | 3.2% |
+| Environment & Tooling | 1 | 3.2% |
+| Lean 4 Interactive Verification | 1 | 3.2% |
+| Data Contract & Replayable Store | 1 | 3.2% |
+| System Architecture Documentation | 1 | 3.2% |
+| Architecture Refinement | 1 | 3.2% |
+| Docs+Code | 1 | 3.2% |
+| Code+Debug | 1 | 3.2% |
+| Analysis+Docs | 1 | 3.2% |
+| CodeGeneration | 1 | 3.2% |
+| Infrastructure | 1 | 3.2% |
 
 ### Phân bổ theo mô hình / công cụ AI:
 | Mô hình / Công cụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Claude Code / Antigravity | 21 | 70.0% |
-| Claude Opus 5.5 | 8 | 26.7% |
-| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 3.3% |
+| Claude Code / Antigravity | 22 | 71.0% |
+| Claude Opus 5.5 | 8 | 25.8% |
+| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 3.2% |
 
 ---
 
@@ -80,6 +81,7 @@
 | 2026-10-18 15:30 | Week 8 | Claude Opus 5.5 | Analysis+Docs | Figures/tables from raw results, failure analysis (stop/audit reasons, per-rule precision), repaired-v1 export + output contract, README, manifest v1.0, license/privacy note, requirements lock, Dockerfile Lean 4.35, contributions from git history | scripts re-run from results/raw; README demo command executed; pytest 96/96 | Dao Van Tam | ✅ VERIFIED |
 | 2026-10-19 04:23 | Integration | Claude Code / Antigravity | CodeGeneration | Group 5 gateway scripts/repair_batch.py: contract validation, Lean re-verification, bounded repair, feedback and repaired-v1 export; sample input and handover guide; gpu field in provenance | 7 unit tests with stub verifier and MockClient; end-to-end rule_only run on real Lean 4.35 over 14 sample records | Nhóm 6 Lead | ✅ VERIFIED |
 | 2026-10-19 04:33 | Analysis | Claude Code / Antigravity | Experiment | Offline parser ablation scripts/parser_ablation.py replaying hybrid k=1 1K runs under 5 parser variants; report table 9, R5 leakage note, references trimmed to 8, PR list in contributions, dockerignore | Replay of full parser matches 100% of logged first attempts; 32 new rule candidates verified with local Lean REPL; 4 unit tests; report rebuilt at 20 pages | Nhóm 6 Lead | ✅ VERIFIED |
+| 2026-10-19 04:48 | Reproducibility | Claude Code / Antigravity | Infrastructure | Docker image test build, dockerignore, init process for REPL child reaping | Image built (16.6 GB, arm64); pytest 103 passed with --init; gateway run in container identical to host | Nhóm 6 Lead | ✅ VERIFIED |
 
 ---
 

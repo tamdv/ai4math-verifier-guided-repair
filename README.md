@@ -93,6 +93,15 @@ curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh 
 cd lean_ws && lake exe cache get && lake build repl && cd ..
 ```
 
+Hoặc dùng Docker; image đã build thử trên linux/arm64, nặng 16,6 GB, chạy được toàn bộ test và cổng Nhóm 5 với Lean thật:
+
+```bash
+docker build -t g6-verifier-repair .
+docker run --rm --init g6-verifier-repair
+docker run --rm --init g6-verifier-repair python scripts/repair_batch.py \
+    --input data_sample/group5_input_sample.jsonl --strategy rule_only --budget 3 --workers 1
+```
+
 Để dùng LLM, tạo tệp `.env` chứa `GEMINI_API_KEY=...`; tệp này đã nằm trong `.gitignore`. Trần chi phí đặt trong [configs/budget.yaml](configs/budget.yaml).
 
 ## Demo

@@ -2,6 +2,7 @@ services:
   verifier:
     build: .
     image: int4418-group6-repair
+    init: true            # reap killed lake/repl children; without it they stay as zombies
     working_dir: /workspace
     volumes:
       - ./results:/workspace/results
