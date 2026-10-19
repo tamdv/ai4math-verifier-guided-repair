@@ -11,3 +11,36 @@ services:
       - path: .env          # GEMINI_API_KEY (only for LLM experiments)
         required: false
     command: python -m pytest tests -q
+
+  # Optional: Redis backend for the worker-queue prototype.
+  #   docker compose --profile queue up redis
+  #   docker compose --profile queue run --rm queue_benchmark
+  redis:
+    image: redis:7-alpine
+    profiles: ["queue"]
+    command: redis-server --appendonly yes --save 60 1
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data
+
+  queue_benchmark:
+    image: int4418-group6-repair
+    profiles: ["queue"]
+    init: true
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    working_dir: /workspace
+    volumes:
+      - ./results:/workspace/results
+    command: python scripts/run_queue_benchmark.py --tiers   # simulated verifier -> results/raw/simulated/
+
+volumes:
+  redis_data:

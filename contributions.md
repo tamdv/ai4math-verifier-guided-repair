@@ -35,7 +35,7 @@ Ghi chú: luật R1–R4 của Trung là nền của module luật hiện tại;
 | #3 | Khamsing OUTHAIHUENG | feature/error-router | Bỏ phụ thuộc numpy của baseline | Đóng, commit đã có trong main |
 | #4 | Đào Văn Tâm | tamdv | Tài liệu Chương 2 MapReduce và Hadoop | Đã merge |
 | #5 | Đào Văn Tâm | feat/verifier-guided-pipeline | Toàn bộ pipeline, thực nghiệm, báo cáo, tag v1.0 | Đã merge |
-| #6 | Trần Quang Đức Dũng | feature/worker-queue | Hàng đợi Redis, verifier pool, bộ điều khiển có giới hạn | Đang mở, có xung đột, kết quả benchmark là giả lập nên chưa đưa vào báo cáo |
+| #6 | Trần Quang Đức Dũng | feature/worker-queue | Hàng đợi Redis, verifier giả lập, bộ điều khiển có giới hạn | Tích hợp bằng cherry-pick giữ tác giả, nhánh feat/integrate-worker-queue; verifier giả lập đổi tên thành src/sim_verifier.py, kết quả chuyển sang results/raw/simulated/ và không đưa vào báo cáo |
 | #7, #9 | Đào Văn Tâm | chore/notebooks-track-main | Notebook Kaggle clone main sau v1.0 | Đã merge |
 | #8 | Đào Văn Tâm | docs/readme-final | README cuối kèm kết quả, báo cáo, slide | Đã merge |
 | mới | Đào Văn Tâm | feat/group5-gateway | Cổng nhận dữ liệu Nhóm 5, file mẫu, hướng dẫn bàn giao | Chờ review |
@@ -48,7 +48,7 @@ Mỗi người trình bày mảng của mình **và phải trả lời được 
 | Thành viên | Trình bày | Tài liệu chuẩn bị |
 |---|---|---|
 | Đào Văn Tâm | Câu hỏi nghiên cứu, kiến trúc, đánh giá RQ1–RQ3, chi phí | `reports/`, `results/figures/` |
-| Trần Quang Đức Dũng | Worker pool, REPL thường trú, scale & nút thắt CPU, lỗi rò rỉ tiến trình | `src/lean_repl.py`, `src/verifier_pool.py`, `table_scale` |
+| Trần Quang Đức Dũng | Hàng đợi Redis FIFO và ưu tiên, worker pool, REPL thường trú, scale và nút thắt CPU, lỗi rò rỉ tiến trình | `src/worker_queue.py`, `src/lean_repl.py`, `src/verifier_pool.py`, `table_scale` |
 | Lâm Thành Trung | Luật sửa R0–R7, độ chính xác từng luật, vì sao hybrid k=1 kém | `src/rule_repair.py`, `table_rule_precision` |
 | Nguyễn Xuân Tùng | LLM repair: blind vs diagnostic, prompt, chi phí token, mô hình so sánh | `src/llm_repair.py`, `configs/prompts/` |
 | Khamsing OUTHAIHUENG | Parser & taxonomy v0.2, chọn lỗi gốc, độ khớp nhãn 94,4% | `src/error_parser.py`, `docs/error_taxonomy_v0.2.md` |
@@ -64,7 +64,8 @@ Mỗi người trình bày mảng của mình **và phải trả lời được 
 | Slide phần mình phụ trách (theo mục 3) | Mỗi thành viên | ☐ |
 | Đọc code mảng mình + trả lời bộ câu hỏi vấn đáp | Mỗi thành viên | ☐ |
 | Review PR `feat/group5-gateway` và `feat/final-gaps` | Dũng, Trung | ☐ |
-| Rebase PR #6 lên main, chuyển kết quả giả lập sang `results/raw/simulated/` | Dũng | ☐ |
+| Review tích hợp PR #6 trên nhánh `feat/integrate-worker-queue`, chạy `docker compose --profile queue` | Dũng | ☐ |
+| Tuỳ chọn: nối `WorkerQueue` vào `VerifierPool` thật, so FIFO với ưu tiên trên Kaggle | Dũng | ☐ |
 
 ## 5. Nhật ký tiến độ
 
