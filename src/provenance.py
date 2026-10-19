@@ -35,12 +35,19 @@ def git_commit() -> str:
     return f"{head}-dirty" if dirty and dirty != "unknown" else head
 
 
+def gpu_info() -> str:
+    """GPU names from nvidia-smi, or "none" (every reported run is CPU-only)."""
+    out = _run(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
+    return "none" if out in ("", "unknown") else "; ".join(out.splitlines())
+
+
 def machine_info() -> dict[str, Any]:
-    """CPU / RAM / OS of the current host."""
+    """CPU / RAM / GPU / OS of the current host."""
     info: dict[str, Any] = {
         "os": platform.platform(),
         "cpu": platform.processor() or platform.machine(),
         "cpu_count": os.cpu_count(),
+        "gpu": gpu_info(),
     }
     try:
         import psutil

@@ -1,0 +1,54 @@
+{
+  "run_id": "group5-batch-rule_only-b3-20261019041934-0f494f",
+  "timestamp": "2026-10-19T04:22:12.571971+00:00",
+  "git_commit": "5633726a7bad4470d85cff146b07c9c8d774cc4c-dirty",
+  "data_version": "group5_input_sample.jsonl@2b935fdcdc8d",
+  "machine": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "cpu": "arm",
+    "cpu_count": 8,
+    "ram_gb": 16.0,
+    "gpu": "none"
+  },
+  "software": {
+    "python": "3.14.3",
+    "lean": "Lean (version 4.35.0, arm64-apple-darwin24.6.0, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+    "packages": {
+      "google-genai": "2.31.0",
+      "pyyaml": "6.0.3",
+      "psutil": "7.2.2",
+      "pyarrow": "26.0.0",
+      "matplotlib": "3.11.2"
+    }
+  },
+  "parameters": {
+    "input": "data_sample/group5_input_sample.jsonl",
+    "out_dir": "/private/tmp/claude-501/-Users-tamdv-Documents-Workspace-Master-3-DLL/519dc1b3-3bc4-4aab-b970-6263ef0189ee/scratchpad/g5out",
+    "strategy": "rule_only",
+    "budget": 3,
+    "workers": 1,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "timeout": 60.0,
+    "run_cap": null,
+    "limit": 0
+  },
+  "seed": 42,
+  "timeout": 60.0,
+  "metrics": {
+    "input_records": 14,
+    "accepted": 14,
+    "rejected": {},
+    "final_status": {
+      "FAILED": 9,
+      "SUCCESS": 4,
+      "ALREADY_VALID": 1
+    },
+    "repair_success_rate_of_failing": 0.3077,
+    "repaired_exported": 4,
+    "worker_errors": 0,
+    "wall_time_s": 157.1,
+    "real_spend_usd": 0.0
+  },
+  "status": "SUCCESS"
+}

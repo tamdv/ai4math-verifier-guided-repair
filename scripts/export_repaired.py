@@ -22,43 +22,54 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 SCHEMA_VERSION = "repaired-v1"
 
 
+def repaired_record(entry: dict[str, Any], sample: dict[str, Any],
+                    provenance: dict[str, Any]) -> dict[str, Any]:
+    """One repaired-v1 record from a successful outcome and its input sample.
+
+    Args:
+        entry: RepairOutcome.to_dict() of a successful repair.
+        sample: The input record (error_id, seed_id, source, category, statement, code).
+        provenance: verified_by, run_id, git_commit, strategy, model.
+    """
+    code = entry["attempts"][-1]["candidate_code"]
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "error_id": entry["error_id"],
+        "seed_id": sample.get("seed_id"),
+        "source": sample.get("source"),
+        "error_category": sample.get("category"),
+        "statement": sample.get("statement"),
+        "broken_code": sample["code"],
+        "repaired_code": code,
+        "repaired_sha256": hashlib.sha256(code.encode()).hexdigest(),
+        "repair_trace": [
+            {k: a.get(k) for k in ("attempt", "engine", "rule", "category", "status",
+                                    "audit_passed", "audit_reasons", "input_tokens",
+                                    "output_tokens", "verify_latency_ms", "llm_latency_ms")}
+            for a in entry["attempts"]
+        ],
+        "attempts_used": entry["attempts_used"],
+        "total_tokens": entry["total_tokens"],
+        "verified_by": provenance.get("verified_by", "unknown"),
+        "run_id": provenance.get("run_id"),
+        "git_commit": provenance.get("git_commit"),
+        "strategy": provenance.get("strategy"),
+        "model": provenance.get("model") if entry["total_tokens"] else None,
+    }
+
+
 def build_records(run: dict[str, Any], log_entries: list[dict[str, Any]],
                   samples: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     """Joins successful log entries with their dataset samples."""
-    out = []
-    for e in log_entries:
-        if not e.get("success") or not e.get("attempts"):
-            continue
-        s = samples.get(e["error_id"])
-        if s is None:
-            continue
-        final = e["attempts"][-1]
-        code = final["candidate_code"]
-        out.append({
-            "schema_version": SCHEMA_VERSION,
-            "error_id": e["error_id"],
-            "seed_id": s["seed_id"],
-            "source": s["source"],
-            "error_category": s["category"],
-            "statement": s["statement"],
-            "broken_code": s["code"],
-            "repaired_code": code,
-            "repaired_sha256": hashlib.sha256(code.encode()).hexdigest(),
-            "repair_trace": [
-                {k: a.get(k) for k in ("attempt", "engine", "rule", "category", "status",
-                                        "audit_passed", "audit_reasons", "input_tokens",
-                                        "output_tokens", "verify_latency_ms", "llm_latency_ms")}
-                for a in e["attempts"]
-            ],
-            "attempts_used": e["attempts_used"],
-            "total_tokens": e["total_tokens"],
-            "verified_by": run["software"].get("lean", "unknown"),
-            "run_id": run["run_id"],
-            "git_commit": run["git_commit"],
-            "strategy": run["parameters"]["strategy"],
-            "model": run["parameters"]["model"] if e["total_tokens"] else None,
-        })
-    return out
+    provenance = {
+        "verified_by": run["software"].get("lean", "unknown"),
+        "run_id": run["run_id"],
+        "git_commit": run["git_commit"],
+        "strategy": run["parameters"]["strategy"],
+        "model": run["parameters"]["model"],
+    }
+    return [repaired_record(e, samples[e["error_id"]], provenance) for e in log_entries
+            if e.get("success") and e.get("attempts") and e.get("error_id") in samples]
 
 
 def main() -> None:
