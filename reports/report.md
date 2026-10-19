@@ -24,9 +24,9 @@ Các pipeline tự động hình thức hoá toán học sinh ra hàng chục ng
 
 **Môi trường và dữ liệu chứng minh.** LeanDojo [1] cung cấp công cụ tương tác với Lean và cho thấy giá trị của truy hồi premise. Lean Workbook [2] hình thức hoá hàng chục nghìn bài toán thi đấu, ProofNet [3] là benchmark tự hình thức hoá cấp đại học. Nhóm dùng bộ chứng minh của Goedel-Prover [4] trên Lean Workbook làm nguồn định lý đúng.
 
-**Sinh và sửa chứng minh bằng LLM.** Baldur [5] sinh toàn bộ chứng minh và sửa bằng cách đưa thông báo lỗi vào mô hình trên Isabelle/HOL, gần nhất với RQ1. Self-Debugging [6] cho thấy LLM tự sửa mã tốt hơn khi có phản hồi thực thi. DeepSeek-Prover-V1.5 [7] dùng phản hồi của Lean cho học tăng cường và tìm kiếm cây, DeepSeek-Prover-V2 [8] phân rã mục tiêu con, Draft-Sketch-Prove [9] dùng bản nháp phi hình thức để dẫn hướng.
+**Sinh và sửa chứng minh bằng LLM.** Baldur [5] sinh toàn bộ chứng minh và sửa bằng cách đưa thông báo lỗi vào mô hình trên Isabelle/HOL, gần nhất với RQ1. Self-Debugging [6] cho thấy LLM tự sửa mã tốt hơn khi có phản hồi thực thi. DeepSeek-Prover-V1.5 [7] dùng phản hồi của Lean cho học tăng cường và tìm kiếm cây.
 
-**Khoảng trống.** Các công trình trên tối ưu chất lượng mô hình nhưng ít báo cáo đồng thời chi phí token, độ trễ đuôi và khả năng mở rộng của hệ thống kiểm chứng, là phần chiếm phần lớn thời gian thực tế. Nhóm coi verifier là tài nguyên khan hiếm cần lập lịch, theo tinh thần xử lý theo lô trong [10].
+**Khoảng trống.** Các công trình trên tối ưu chất lượng mô hình nhưng ít báo cáo đồng thời chi phí token, độ trễ đuôi và khả năng mở rộng của hệ thống kiểm chứng, là phần chiếm phần lớn thời gian thực tế. Nhóm coi verifier là tài nguyên khan hiếm cần lập lịch, theo tinh thần xử lý theo lô trong [8].
 
 # 3. Dữ liệu và thu nhận
 
@@ -179,6 +179,18 @@ Trong các mẫu thất bại, lần thử cuối bị loại chủ yếu vì kh
 
 Các luật viết cho đoạn mã ngắn ở tuần 4 không chuyển được sang tệp hoàn chỉnh: R2 chèn từ khoá làm mất định lý, R3 thêm import sai module, R1 nối ngoặc vào cuối tệp. Hai luật thiết kế từ lỗi thật là R0 và R7 gần như hoàn hảo. R5 đạt 0% vì lỗi tự nhiên thường gồm nhiều lỗi đan xen nên đổi tên một lemma chưa đủ. Từ đây, router chỉ nên gửi sang các luật có độ chính xác cao, đo trên tập train chứ không trên hold-out.
 
+| Bộ phân loại | Khớp nhãn | Sang luật | Thành công lai k=1 | Token/mẫu |
+|---|---|---|---|---|
+| Đầy đủ v0.2 | 96,3% | 71,5% | 30,3% | 316 |
+| Bỏ lọc lỗi hệ quả | 84,1% | 58,1% | 35,9% | 455 |
+| Bỏ suy luận thiếu import | 84,5% | 71,5% | 29,2% | 316 |
+| Bỏ cả hai | 72,3% | 58,1% | 34,9% | 455 |
+| Không phân loại, mọi mẫu sang LLM | | 0% | 53,9% | 924 |
+
+*Bảng 9. Ablation bộ phân loại, phát lại lai k=1 trên hold-out 1K; ba lần lặp cho cùng kết quả nhờ bộ đệm.*
+
+Bảng 9 phát lại ba lần chạy lai k=1 với các bộ phân loại yếu hơn mà không gọi thêm LLM. Mẫu được gửi sang LLM nhận kết quả của lần chạy LLM k=1 ghép cặp, mẫu nhận ứng viên luật mới được kiểm chứng lại bằng Lean. Với bộ phân loại đầy đủ, bản phát lại khớp 100% lần thử đầu đã ghi. Lọc lỗi hệ quả và suy luận thiếu import nâng độ khớp nhãn từ 72,3% lên 96,3%. Tuy vậy, nhãn đúng hơn đưa nhiều mẫu hơn sang các luật R1 đến R6 vốn kém chính xác, nên thành công của lai k=1 giảm từ 34,9% xuống 30,3% trong khi token giảm 31%. Riêng suy luận thiếu import có lợi rõ, thêm 1,1 điểm, vì nó gửi đúng mẫu tới R0. Bộ phân loại chính xác là điều kiện cần, còn nút thắt nằm ở độ chính xác của luật.
+
 ## 7.3. Theo nhóm lỗi, nguồn lỗi và mô hình
 
 LLM k=3 sửa tốt SYN_01 với 85%, TMO_05 với 83%, ID_03 với 71%, nhưng kém ở TAC_07 với 29% và SEM_06 với 41%, hai nhóm đòi hỏi viết chứng minh mới. Lỗi tự nhiên khó hơn rõ rệt: LLM k=1 chỉ đạt 7,7% trên 13 mẫu so với 56,1% trên lỗi tổng hợp; với k=3 là 30,8% so với 66,8%. Gemini 3.6 Flash thua Flash-Lite chủ yếu vì nhiều lỗi biên dịch hơn, 125 so với 76 mẫu, và đổi phát biểu thường hơn. Cả hai chạy ở mức suy nghĩ tối thiểu, có thể bất lợi cho mô hình lớn, nên nhóm không kết luận mô hình lớn kém hơn.
@@ -190,7 +202,7 @@ LLM k=3 sửa tốt SYN_01 với 85%, TMO_05 với 83%, ID_03 với 71%, nhưng 
 - Lần lặp 2 và 3 của cấu hình LLM dùng bộ đệm, phản ánh tính tất định ở nhiệt độ 0 chứ không phản ánh biến thiên độ trễ API; chi phí được so sánh theo token, không theo chi tiêu thật.
 - Kaggle là máy ảo dùng chung; mọi cấu hình của một mức chạy trong cùng phiên, xen kẽ lần lặp và báo cáo min đến max.
 - Kết luận về LLM giới hạn ở họ Gemini Flash với mức suy nghĩ tối thiểu.
-- Luật R0, R5, R6, R7 được thiết kế từ lỗi quan sát trên tập 50 mẫu cũ và seed thử nghiệm, không từ hold-out.
+- Luật R0, R5, R6, R7 và bảng đổi tên của R5 được thiết kế từ lỗi quan sát trên tập 50 mẫu cũ và seed thử nghiệm trước khi chia hold-out, nên có nguy cơ rò rỉ. R5 đạt 0% trên hold-out nên rò rỉ không làm đẹp kết quả. R0 và R7 sửa đúng loại lỗi mà toán tử tổng hợp sinh ra, nên độ chính xác gần tuyệt đối của chúng phản ánh độ khớp với bộ sinh lỗi nhiều hơn là với lỗi thật.
 
 # 8. Kết luận và hướng phát triển
 
@@ -207,9 +219,7 @@ Hướng phát triển gồm: router chọn luật theo độ chính xác đo tr
 [5] E. First, M. Rabe, T. Ringer, Y. Brun, *Baldur: Whole-Proof Generation and Repair with Large Language Models*, ESEC/FSE, 2023.
 [6] X. Chen, M. Lin, N. Schärli, D. Zhou, *Teaching Large Language Models to Self-Debug*, ICLR, 2024.
 [7] H. Xin et al., *DeepSeek-Prover-V1.5: Harnessing Proof Assistant Feedback for Reinforcement Learning and Monte-Carlo Tree Search*, arXiv:2408.08152, 2024.
-[8] Z. Z. Ren et al., *DeepSeek-Prover-V2: Advancing Formal Mathematical Reasoning via Reinforcement Learning for Subgoal Decomposition*, arXiv:2504.21801, 2025.
-[9] A. Q. Jiang et al., *Draft, Sketch, and Prove: Guiding Formal Theorem Provers with Informal Proofs*, ICLR, 2023.
-[10] J. Leskovec, A. Rajaraman, J. D. Ullman, *Mining of Massive Datasets*, Cambridge University Press.
+[8] J. Leskovec, A. Rajaraman, J. D. Ullman, *Mining of Massive Datasets*, Cambridge University Press.
 
 # Phụ lục. Sử dụng AI, phân công và tái lập
 

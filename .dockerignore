@@ -1,0 +1,17 @@
+# Keep the build context small: Lean build cache and data are fetched inside the image.
+.git
+.venv
+**/__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.gitnexus
+.env
+lean_ws/.lake
+data/
+notebooks/*.zip
+results/cache*
+reports/*.pdf
+slides/*.pdf
+docs/syllabus/
+docs/references/

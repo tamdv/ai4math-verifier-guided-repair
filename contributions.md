@@ -26,6 +26,21 @@ Việc dùng AI được khai báo riêng trong [`docs/ai_use_statement.md`](doc
 
 Ghi chú: luật R1–R4 của Trung là nền của module luật hiện tại; số liệu thực nghiệm (bảng độ chính xác từng luật) cho thấy R0/R7 đạt 97–100%, R1 27%, R2–R4 0% trên tệp hoàn chỉnh — một kết quả phân tích quan trọng của báo cáo.
 
+### Pull request trên GitHub
+
+| PR | Tác giả | Nhánh | Nội dung | Kết quả |
+|---|---|---|---|---|
+| #1 | Mekdala Nounou | feature/dataset-scale | Chạy và kiểm chứng baseline trên tập lỗi mẫu | Đã merge |
+| #2 | Lâm Thành Trung | feature/rule-repair | Rule engine R1 đến R4 | Đóng, commit đã có trong main |
+| #3 | Khamsing OUTHAIHUENG | feature/error-router | Bỏ phụ thuộc numpy của baseline | Đóng, commit đã có trong main |
+| #4 | Đào Văn Tâm | tamdv | Tài liệu Chương 2 MapReduce và Hadoop | Đã merge |
+| #5 | Đào Văn Tâm | feat/verifier-guided-pipeline | Toàn bộ pipeline, thực nghiệm, báo cáo, tag v1.0 | Đã merge |
+| #6 | Trần Quang Đức Dũng | feature/worker-queue | Hàng đợi Redis, verifier pool, bộ điều khiển có giới hạn | Đang mở, có xung đột, kết quả benchmark là giả lập nên chưa đưa vào báo cáo |
+| #7, #9 | Đào Văn Tâm | chore/notebooks-track-main | Notebook Kaggle clone main sau v1.0 | Đã merge |
+| #8 | Đào Văn Tâm | docs/readme-final | README cuối kèm kết quả, báo cáo, slide | Đã merge |
+| mới | Đào Văn Tâm | feat/group5-gateway | Cổng nhận dữ liệu Nhóm 5, file mẫu, hướng dẫn bàn giao | Chờ review |
+| mới | Đào Văn Tâm | feat/final-gaps | Ablation bộ phân loại, trường gpu, ghi chú rò rỉ R5, rút còn 8 trích dẫn | Chờ review |
+
 ## 3. Phần bảo vệ của từng thành viên
 
 Mỗi người trình bày mảng của mình **và phải trả lời được toàn bộ pipeline** (yêu cầu chung của học phần).
@@ -45,10 +60,11 @@ Mỗi người trình bày mảng của mình **và phải trả lời được 
 |---|---|---|
 | Chạy lại `pytest` + demo replay trên máy cá nhân, báo lỗi nếu có | Mỗi thành viên | ☐ |
 | Đối chiếu số liệu trong báo cáo với `results/figures/*.md` | Khamsing, Nounou | ☐ |
-| Kiểm tra lại 10 trích dẫn của báo cáo | Tùng | ☐ |
+| Kiểm tra lại 8 trích dẫn của báo cáo | Tùng | ☐ |
 | Slide phần mình phụ trách (theo mục 3) | Mỗi thành viên | ☐ |
 | Đọc code mảng mình + trả lời bộ câu hỏi vấn đáp | Mỗi thành viên | ☐ |
-| Review PR `feat/verifier-guided-pipeline` → `main` | Dũng, Trung | ☐ |
+| Review PR `feat/group5-gateway` và `feat/final-gaps` | Dũng, Trung | ☐ |
+| Rebase PR #6 lên main, chuyển kết quả giả lập sang `results/raw/simulated/` | Dũng | ☐ |
 
 ## 5. Nhật ký tiến độ
 

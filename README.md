@@ -129,12 +129,23 @@ Hình, bảng, phân tích lỗi, đầu ra bàn giao và báo cáo:
 ```bash
 python scripts/generate_figures.py --input results/raw/ --output results/figures/
 python scripts/analyze_failures.py --input results/raw/ --output results/figures/
+python scripts/parser_ablation.py --verify
 python scripts/export_repaired.py --run-id exp-llm_only-b3-w4-20261017101714-3f7a7e --data data/errors/errors_1k.jsonl
 python scripts/build_report_docx.py && ./reports/to_pdf.sh
 python slides/build_slides.py && ./slides/to_pdf.sh
 ```
 
 Mỗi lần chạy ghi một run record gồm commit, phiên bản dữ liệu kèm checksum, máy, phần mềm, tham số, seed, timeout, chỉ số, trạng thái, cùng log từng mẫu để phát lại.
+
+## Nhận dữ liệu từ Nhóm 5
+
+Nhóm 5 gửi một file JSONL hoặc Parquet theo data contract v0.1; Nhóm 6 biên dịch lại từng ứng viên, sửa các ứng viên lỗi và trả về `feedback_group5.jsonl` cùng repaired-v1. Chạy thử trên file mẫu, chỉ dùng luật nên không tốn tiền:
+
+```bash
+python scripts/repair_batch.py --input data_sample/group5_input_sample.jsonl --strategy rule_only --budget 3 --workers 1
+```
+
+Hướng dẫn cho Nhóm 5: [docs/group5_handover_guide.md](docs/group5_handover_guide.md).
 
 ## Tài liệu kỹ thuật
 
@@ -144,6 +155,7 @@ Mỗi lần chạy ghi một run record gồm commit, phiên bản dữ liệu k
 | [docs/system_card.md](docs/system_card.md) | Hệ thống, rủi ro và biện pháp, hạn chế |
 | [docs/error_taxonomy_v0.2.md](docs/error_taxonomy_v0.2.md) | 7 nhóm lỗi, dấu hiệu thật của Lean 4.35, định tuyến |
 | [docs/data_contract_group5_group6.md](docs/data_contract_group5_group6.md) | Đầu vào từ Nhóm 5 |
+| [docs/group5_handover_guide.md](docs/group5_handover_guide.md) | Nhóm 5 gửi gì, nhận lại gì, lệnh chạy cổng nhận |
 | [docs/output_contract_group6.md](docs/output_contract_group6.md) | Đầu ra repaired-v1 cho Nhóm 7 và Nhóm 8 |
 | [docs/license_privacy_note.md](docs/license_privacy_note.md) | Giấy phép và quyền riêng tư |
 

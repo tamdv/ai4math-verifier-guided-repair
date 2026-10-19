@@ -1,0 +1,112 @@
+{
+  "run_id": "parser-ablation-20261019043012-e80236",
+  "timestamp": "2026-10-19T04:30:12.934901+00:00",
+  "git_commit": "ad85f918d002f09bf7df1ae99fd70aff128be1df",
+  "data_version": "errors_1k.jsonl@63704690f69c",
+  "machine": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "cpu": "arm",
+    "cpu_count": 8,
+    "gpu": "none",
+    "ram_gb": 16.0
+  },
+  "software": {
+    "python": "3.14.3",
+    "lean": "Lean (version 4.35.0, arm64-apple-darwin24.6.0, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+    "packages": {
+      "google-genai": "2.31.0",
+      "pyyaml": "6.0.3",
+      "psutil": "7.2.2",
+      "pyarrow": "26.0.0",
+      "matplotlib": "3.11.2"
+    }
+  },
+  "parameters": {
+    "pairs": [
+      [
+        "exp-hybrid-b1-w4-20261017101423-570b33",
+        "exp-llm_only-b1-w4-20261017100929-5d501e"
+      ],
+      [
+        "exp-hybrid-b1-w4-20261017103802-1c7c05",
+        "exp-llm_only-b1-w4-20261017103401-f64327"
+      ],
+      [
+        "exp-hybrid-b1-w4-20261017110053-3c408c",
+        "exp-llm_only-b1-w4-20261017105652-6fbf4b"
+      ]
+    ],
+    "variants": [
+      "full",
+      "no_consequence",
+      "no_import_infer",
+      "naive",
+      "no_parser"
+    ],
+    "verify": true
+  },
+  "seed": 42,
+  "timeout": 60.0,
+  "metrics": {
+    "rows": [
+      {
+        "variant": "full",
+        "label_agreement": 0.9631,
+        "routed_to_rule": 0.7148,
+        "first_attempt_changed": 0,
+        "success_median": 0.3028,
+        "success_min": 0.3028,
+        "success_max": 0.3028,
+        "tokens_per_sample": 316.1,
+        "unverified_candidates": 0
+      },
+      {
+        "variant": "no_consequence",
+        "label_agreement": 0.8413,
+        "routed_to_rule": 0.581,
+        "first_attempt_changed": 38,
+        "success_median": 0.3592,
+        "success_min": 0.3592,
+        "success_max": 0.3592,
+        "tokens_per_sample": 455.3,
+        "unverified_candidates": 0
+      },
+      {
+        "variant": "no_import_infer",
+        "label_agreement": 0.845,
+        "routed_to_rule": 0.7148,
+        "first_attempt_changed": 32,
+        "success_median": 0.2923,
+        "success_min": 0.2923,
+        "success_max": 0.2923,
+        "tokens_per_sample": 316.1,
+        "unverified_candidates": 0
+      },
+      {
+        "variant": "naive",
+        "label_agreement": 0.7232,
+        "routed_to_rule": 0.581,
+        "first_attempt_changed": 70,
+        "success_median": 0.3486,
+        "success_min": 0.3486,
+        "success_max": 0.3486,
+        "tokens_per_sample": 455.3,
+        "unverified_candidates": 0
+      },
+      {
+        "variant": "no_parser",
+        "label_agreement": NaN,
+        "routed_to_rule": 0.0,
+        "first_attempt_changed": 203,
+        "success_median": 0.5387,
+        "success_min": 0.5387,
+        "success_max": 0.5387,
+        "tokens_per_sample": 924.0,
+        "unverified_candidates": 0
+      }
+    ],
+    "replay_mismatch": 0,
+    "newly_verified": 32
+  },
+  "status": "SUCCESS"
+}
