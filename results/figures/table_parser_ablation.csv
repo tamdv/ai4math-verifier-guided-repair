@@ -1,0 +1,6 @@
+variant,label_agreement,routed_to_rule,first_attempt_changed,success_median,success_min,success_max,tokens_per_sample,unverified_candidates
+full,0.9631,0.7148,0,0.3028,0.3028,0.3028,316.1,0
+no_consequence,0.8413,0.581,38,0.3592,0.3592,0.3592,455.3,0
+no_import_infer,0.845,0.7148,32,0.2923,0.2923,0.2923,316.1,0
+naive,0.7232,0.581,70,0.3486,0.3486,0.3486,455.3,0
+no_parser,nan,0.0,203,0.5387,0.5387,0.5387,924.0,0
