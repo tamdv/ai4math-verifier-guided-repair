@@ -45,10 +45,10 @@ W, H = Inches(13.333), Inches(7.5)
 # orb (big light circle) and dot (small blue circle) positions per slide: x, y, diameter (inches) -> Morph motion
 ORB = [(7.6, -1.2, 7.4), (10.6, -2.4, 4.6), (-1.6, 4.4, 4.2), (10.9, 4.6, 4.0), (10.6, -2.4, 4.6), (-2.0, -2.0, 4.0),
        (10.9, 4.8, 3.8), (11.2, -2.2, 4.2), (-1.8, 4.6, 4.0), (10.8, 4.9, 3.8), (11.0, -2.3, 4.4), (-2.0, 4.5, 4.2),
-       (10.9, 4.8, 3.9), (11.2, -2.4, 4.4), (-1.9, -2.2, 4.0), (10.8, 4.7, 4.0), (6.9, -0.6, 8.2)]
+       (10.9, 4.8, 3.9), (11.2, -2.4, 4.4), (-1.9, -2.2, 4.0), (10.8, 4.7, 4.0), (11.0, -2.3, 4.4)]
 DOT = [(11.6, 5.7, 0.9), (12.25, 0.55, 0.45), (0.06, 6.6, 0.45), (12.8, 3.6, 0.45), (12.25, 0.55, 0.45), (0.06, 3.4, 0.45),
        (12.8, 4.2, 0.45), (12.3, 0.55, 0.45), (0.06, 6.6, 0.45), (12.8, 3.4, 0.45), (12.3, 0.55, 0.45), (0.06, 6.6, 0.45),
-       (12.8, 4.0, 0.45), (12.3, 0.55, 0.45), (0.06, 3.6, 0.45), (12.8, 3.8, 0.45), (6.4, 5.4, 1.0)]
+       (12.8, 4.0, 0.45), (12.3, 0.55, 0.45), (0.06, 3.6, 0.45), (12.8, 3.8, 0.45), (12.3, 0.55, 0.45)]
 
 NS_P = "http://schemas.openxmlformats.org/presentationml/2006/main"
 MORPH_XML = (
@@ -152,6 +152,12 @@ def card(slide, x, y, w, h, heading, body, fill=TINT, head_color=BLUE_DARK, size
 def stat(slide, x, y, w, value, label, color=BLUE):
     text(slide, x, y, w, 0.95, value, size=48, bold=True, color=color)
     text(slide, x, y + 0.95, w, 0.85, label, size=20, color=MUTED)
+
+
+def mini_stat(slide, x, y, value, label, color=BLUE):
+    """Compact stat for a narrow side column next to a chart."""
+    text(slide, x, y, 3.6, 0.75, value, size=36, bold=True, color=color)
+    text(slide, x, y + 0.72, 3.6, 0.8, label, size=20, color=MUTED)
 
 
 def image(slide, path, x, y, w=None, h=None):
@@ -363,27 +369,37 @@ def build():
     card(s, 8.9, 1.9, 3.9, 3.5, "Môi trường", ["Kaggle 4 vCPU, 31 GB", "Lean 4.35 + Mathlib", "Gemini Flash-Lite"], fill=TINT2)
     text(s, 0.6, 5.7, 12.1, 0.8, [[("Tổng chi phí API cho toàn bộ thực nghiệm: ", {"bold": True, "color": BLUE_DARK}), ("$2,97", {"bold": True})]], size=22)
 
-    # 9 results RQ1-RQ3
-    s = d.new("Kết quả: chẩn đoán vừa tốt hơn vừa rẻ hơn, REPL gỡ nút thắt kiểm chứng",
-              notes="Tâm/Tùng/Dũng: RQ1 cùng 284 mẫu hold-out, k = 1: không có chẩn đoán mô hình viết lại cả tệp, 783 token ra, có chẩn đoán "
-                    "chỉ 389. RQ2: k = 3 thêm 11 điểm, Pareto đi từ chỉ luật $0 tới LLM k=3. RQ3: 3 mức x 3 mức worker x 3 lần lặp; "
-                    "từ 2 lên 4 worker chỉ thêm 7–11% thông lượng vì 4 REPL tranh 4 vCPU. Biểu đồ chi tiết ở phụ lục P1–P3.")
-    cols = [("RQ1 · Thông báo lỗi", "53,9%", "thành công đã kiểm toán",
-             ["Baseline 31,7%, cùng k=1", "Rẻ hơn 45%: $1,13 / 1K mẫu"], TINT),
-            ("RQ2 · Chiến lược", "65,1%", "LLM + chẩn đoán, k=3",
-             ["$2,45 / 1K mẫu", "Lai k=3: 59,5%", "Chỉ luật: 23,9%, $0"], TINT2),
-            ("RQ3 · Mở rộng", "3 ms", "P50 mỗi định lý với REPL",
-             ["Chạy nguội: 63–107 s", "10K: 1,52 → 2,86 mẫu/s", "P95 3,1 → 6,5 s, nghẽn CPU"], TINT)]
-    for i, (head, value, label, items, fill) in enumerate(cols):
-        x = 0.6 + i * 4.1
-        shape(s, MSO_SHAPE.ROUNDED_RECTANGLE, x, 1.85, 3.9, 4.75, fill)
-        text(s, x + 0.25, 2.0, 3.4, 0.5, head, size=22, bold=True, color=BLUE_DARK)
-        text(s, x + 0.25, 2.55, 3.5, 0.85, value, size=40, bold=True, color=BLUE)
-        text(s, x + 0.25, 3.4, 3.4, 0.5, label, size=20, color=MUTED)
-        bullets(s, x + 0.25, 4.15, 3.45, 2.4, items, size=20, gap=4)
-    text(s, 0.6, 6.68, 11.0, 0.45, "Biểu đồ chi tiết: phụ lục P1–P3", size=20, color=MUTED)
+    # 9 RQ1
+    s = d.new("RQ1: thông báo lỗi tăng 22 điểm % và còn rẻ hơn 45%",
+              notes="Tùng: cùng 284 mẫu hold-out, k = 1, cùng model. Không có chẩn đoán, mô hình viết lại cả tệp, 783 token ra mỗi lần nên đắt hơn; "
+                    "có chẩn đoán, mô hình sửa cục bộ, 389 token. Lợi ích lớn ở SYN_01 47 → 85%, TMO_05 10 → 69%, IMP_02 3 → 34%; "
+                    "SEM_06 và TAC_07 hơi kém hơn vì cần viết chứng minh mới chứ không chỉ sửa chỗ lỗi.")
+    image(s, FIG / "fig_rq1_category_slide.png", 0.5, 1.95, w=8.4)
+    mini_stat(s, 9.2, 1.9, "53,9%", "thành công k=1, baseline 31,7%", color=BLUE_DARK)
+    mini_stat(s, 9.2, 3.5, "$1,13", "mỗi 1.000 mẫu, baseline $2,05")
+    text(s, 9.2, 5.15, 3.5, 1.4, "Chỉ kém ở SEM_06, TAC_07: cần viết chứng minh mới", size=20, color=MUTED)
 
-    # 10 analysis: rules + parser ablation
+    # 10 RQ2
+    s = d.new("RQ2: LLM có chẩn đoán, thử 3 lần đạt 65,1%, nằm trên biên Pareto",
+              notes="Tâm: trục x là chi phí LLM cho 1.000 mẫu, trục y là tỷ lệ thành công. Biên đi từ chỉ luật $0 qua lai k=1, LLM k=1, "
+                    "lai k=3 tới LLM k=3. Blind và Gemini 3.6 Flash nằm dưới biên: đắt hơn mà kém hơn. k = 3 thêm 11 điểm so với k = 1; "
+                    "82,7% thành công đến ngay lần thử đầu. Biểu đồ ablation đầy đủ ở phụ lục P1.")
+    image(s, FIG / "fig_cost_quality_slide.png", 0.5, 1.85, w=8.4)
+    mini_stat(s, 9.2, 1.9, "65,1%", "LLM k=3, $2,45 / 1K mẫu", color=BLUE_DARK)
+    mini_stat(s, 9.2, 3.5, "59,5%", "lai k=3, rẻ hơn")
+    mini_stat(s, 9.2, 5.1, "23,9%", "chỉ luật, $0", color=MUTED)
+
+    # 11 RQ3
+    s = d.new("RQ3: REPL nhanh 3–4 bậc; 4 worker chỉ nhanh 1,88× vì nghẽn CPU",
+              notes="Dũng: REPL khớp 74/74 với chạy nguội. 3 mức dữ liệu x 3 mức worker x 3 lần lặp, chênh lệch dưới 4%. "
+                    "Từ 2 lên 4 worker chỉ thêm 7–11% thông lượng, P95 phục vụ tăng gấp đôi vì 4 REPL tranh 4 vCPU. "
+                    "USS 12,6 → 21,1 GB. Mở rộng tiếp cần nhiều máy. P50 và P95 theo từng mức ở phụ lục P2.")
+    image(s, FIG / "fig_scale_speedup_slide.png", 0.5, 1.8, w=6.3)
+    mini_stat(s, 7.2, 1.9, "3 ms · 23 ms", "P50 · P95 với REPL, nguội 63–107 s", color=BLUE_DARK)
+    mini_stat(s, 7.2, 3.5, "1,52 → 2,86", "mẫu/s ở 10K, từ 1 lên 4 worker")
+    mini_stat(s, 7.2, 5.1, "3,1 → 6,5 s", "P95 phục vụ ở 10K, 1 lên 4 worker", color=BLUE_DARK)
+
+    # 12 analysis: rules + parser ablation
     s = d.new("Phân tích: luật đúng gần hoàn hảo, luật sai kéo chiến lược lai xuống",
               notes="Trung + Khamsing: luật được thử trước trên 203/284 mẫu nhưng chỉ đúng 33%; với k = 1 luật sai là hết lượt. "
                     "R0 97%, R7 100%; R2–R6 0% trên tệp hoàn chỉnh. Ablation bộ phân loại phát lại log, không gọi thêm LLM: "
@@ -398,7 +414,7 @@ def build():
         "Lai k=1 lại giảm 34,9% → 30,3%",
         "Nút thắt: độ chính xác của luật"], fill=TINT2)
 
-    # 11 audit
+    # 13 audit
     s = d.new("Không có kiểm toán, tỷ lệ thành công bị thổi phồng",
               notes="Khamsing/Tâm: trong các mẫu thất bại, 17–26% bản sửa của LLM đổi phát biểu và 10–24% chèn sorry hoặc cấu trúc cấm. "
                     "LLM k = 3: biên dịch 75,0% nhưng thành công thật 65,1%.")
@@ -407,7 +423,7 @@ def build():
     stat(s, 8.8, 2.0, 3.9, "17–26%", "bản sửa lỗi đã đổi đề")
     card(s, 0.8, 4.35, 11.9, 2.15, "Kiểm toán chặn", ["sorry, admit, axiom, native_decide", "Thay đổi tên, giả thiết hoặc kết luận của định lý"])
 
-    # 12 conclusion + delivery
+    # 14 conclusion + delivery
     s = d.new("Kết luận: chẩn đoán, kiểm toán, REPL thường trú; sẵn sàng bàn giao",
               notes="Tâm: ba bài học; phần bàn giao và tái lập: scripts/repair_batch.py nhận file của Nhóm 5 theo data contract, "
                     "đầu ra repaired-v1 cho Nhóm 7/8, Docker, 121 test, notebook Kaggle, run record và log phát lại; hướng phát triển.")
@@ -424,10 +440,10 @@ def build():
         "Model chuyên Lean trên GPU",
         "Worker phân tán, hàng đợi Redis"])
 
-    # 13 roles + Q&A
+    # 15 roles + Q&A
     s = d.new("Cảm ơn cô và các bạn · Hỏi đáp",
               notes="Cả nhóm: cảm ơn, mời hỏi đáp; Tâm điều phối người trả lời theo bảng; bộ câu hỏi trong slides/defense_qa.md. "
-                    "Phụ lục P1–P3 sau slide này, chỉ mở khi được hỏi về biểu đồ.")
+                    "Phụ lục P1–P2 sau slide này, chỉ mở khi được hỏi.")
     table(s, 0.6, 1.95, 12.1, [["Thành viên", "Mảng trả lời chính"],
                                ["Đào Văn Tâm", "Câu hỏi nghiên cứu, đánh giá, chi phí"],
                                ["Trần Quang Đức Dũng", "Hàng đợi Redis, worker pool, REPL, mở rộng"],
@@ -437,23 +453,15 @@ def build():
                                ["Mekdala Nounou", "Dataset, chia tập, data card"]], [4.4, 7.7], size=20)
 
     # appendix
-    s = d.new("Phụ lục P1 · RQ2: thử 3 lần đạt 65,1%, gấp đôi baseline",
-              notes="Cột xanh là biên dịch, cột cam là thành công đã kiểm toán. k = 3 thêm 11 điểm % so với k = 1; "
-                    "82,7% thành công đến ngay lần thử đầu, 12,4% ở lần 2.")
+    s = d.new("Phụ lục P1 · Ablation: biên dịch và thành công đã kiểm toán",
+              notes="Cột xanh là biên dịch, cột cam là thành công đã kiểm toán; khoảng cách giữa hai cột là phần kiểm toán chặn. "
+                    "k = 3 thêm 11 điểm % so với k = 1; 82,7% thành công đến ngay lần thử đầu, 12,4% ở lần 2.")
     image(s, FIG / "fig_ablation_slide.png", 0.55, 1.75, w=12.2)
 
-    s = d.new("Phụ lục P2 · Chẩn đoán nằm trên biên Pareto chi phí và chất lượng",
-              notes="Trục x là chi phí LLM cho 1.000 mẫu, trục y là tỷ lệ thành công. Blind và mô hình 3.6 Flash nằm dưới biên.")
-    image(s, FIG / "fig_cost_quality_slide.png", 0.6, 1.75, h=5.25)
-    card(s, 10.0, 1.9, 2.7, 4.6, "Đọc biểu đồ", ["$0: luật 23,9%", "$1,13: 53,9%", "$2,45: 65,1%", "Blind $2,05: 31,7%"], fill=TINT2, size=20)
-
-    s = d.new("Phụ lục P3 · RQ3: REPL nhanh 3–4 bậc, 4 worker chỉ 1,88× vì nghẽn CPU",
-              notes="REPL khớp 74/74 với chạy nguội. 3 mức x 3 mức worker x 3 lần lặp, chênh lệch dưới 4%. "
-                    "USS 12,6 → 21,1 GB. Mở rộng tiếp cần nhiều máy.")
-    image(s, FIG / "fig_scale_speedup_slide.png", 0.5, 1.8, w=6.3)
-    stat(s, 7.0, 1.85, 5.6, "3 ms · 23 ms", "P50 · P95 với REPL, nguội 63–107 s", color=BLUE_DARK)
-    stat(s, 7.0, 3.5, 5.6, "1,52 → 2,86", "mẫu/s ở 10K, từ 1 lên 4 worker")
-    stat(s, 7.0, 5.15, 5.6, "3,1 → 6,5 s", "P95 thời gian phục vụ, 1 lên 4 worker", color=BLUE_DARK)
+    s = d.new("Phụ lục P2 · Độ trễ phục vụ P50 và P95 ở 3 mức dữ liệu",
+              notes="P50 và P95 thời gian phục vụ mỗi mẫu ở 100, 1K, 10K với 1, 2, 4 worker, trung vị và min–max của 3 lần lặp. "
+                    "Ở mức 100 P95 cao vì mẫu ít, đuôi do vài định lý nặng chi phối.")
+    image(s, FIG / "fig_scale_latency_slide.png", 1.4, 1.75, h=5.2)
 
     d.save()
     return d.n

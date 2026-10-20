@@ -9,7 +9,7 @@ Hệ thống nhận các tệp Lean 4 không biên dịch được, phân loại
 | Tài liệu | Tệp |
 |---|---|
 | Báo cáo, 19 trang | [PDF](reports/report.pdf) · [DOCX](reports/report.docx) · [nguồn Markdown](reports/report.md) |
-| Slide thuyết trình, 13 trang và 3 trang phụ lục | [PDF](slides/Slides_Nhom6_VerifierRepair.pdf) · [PPTX](slides/Slides_Nhom6_VerifierRepair.pptx) |
+| Slide thuyết trình, 15 trang và 2 trang phụ lục | [PDF](slides/Slides_Nhom6_VerifierRepair.pdf) · [PPTX](slides/Slides_Nhom6_VerifierRepair.pptx) |
 | Kịch bản demo | [slides/demo_script.md](slides/demo_script.md) |
 | Bộ câu hỏi vấn đáp | [slides/defense_qa.md](slides/defense_qa.md) |
 | Phân công và đóng góp | [contributions.md](contributions.md) |

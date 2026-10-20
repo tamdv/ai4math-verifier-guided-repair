@@ -7,45 +7,46 @@
 
 ## 1. Bảng số liệu định lượng tổng hợp (Quantitative Summary)
 
-* **Tổng số phiên/hạng mục AI hỗ trợ:** `35`
-* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~10130` dòng
+* **Tổng số phiên/hạng mục AI hỗ trợ:** `36`
+* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~10220` dòng
 * **Cơ chế kiểm chứng bắt buộc:** 100% mã nguồn được xác minh qua unit test tự động và trình kiểm chứng Lean 4; không chấp nhận mã chưa kiểm chứng.
 
 ### Phân bổ theo loại tác vụ:
 | Loại tác vụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Code | 7 | 20.0% |
-| Code Generation | 2 | 5.7% |
-| Docs | 2 | 5.7% |
-| Experiment | 2 | 5.7% |
-| Documentation | 2 | 5.7% |
-| Workspace Setup | 1 | 2.9% |
-| Governance & Harness | 1 | 2.9% |
-| Academic Proposal | 1 | 2.9% |
-| Taxonomy Design | 1 | 2.9% |
-| Dataset Curation | 1 | 2.9% |
-| Baseline Implementation | 1 | 2.9% |
-| Testing & QA | 1 | 2.9% |
-| Team Roster & Governance | 1 | 2.9% |
-| Team Role Adjustment | 1 | 2.9% |
-| Environment & Tooling | 1 | 2.9% |
-| Lean 4 Interactive Verification | 1 | 2.9% |
-| Data Contract & Replayable Store | 1 | 2.9% |
-| System Architecture Documentation | 1 | 2.9% |
-| Architecture Refinement | 1 | 2.9% |
-| Docs+Code | 1 | 2.9% |
-| Code+Debug | 1 | 2.9% |
-| Analysis+Docs | 1 | 2.9% |
-| CodeGeneration | 1 | 2.9% |
-| Infrastructure | 1 | 2.9% |
-| Refactoring | 1 | 2.9% |
+| Code | 7 | 19.4% |
+| Code Generation | 2 | 5.6% |
+| Docs | 2 | 5.6% |
+| Experiment | 2 | 5.6% |
+| Documentation | 2 | 5.6% |
+| Workspace Setup | 1 | 2.8% |
+| Governance & Harness | 1 | 2.8% |
+| Academic Proposal | 1 | 2.8% |
+| Taxonomy Design | 1 | 2.8% |
+| Dataset Curation | 1 | 2.8% |
+| Baseline Implementation | 1 | 2.8% |
+| Testing & QA | 1 | 2.8% |
+| Team Roster & Governance | 1 | 2.8% |
+| Team Role Adjustment | 1 | 2.8% |
+| Environment & Tooling | 1 | 2.8% |
+| Lean 4 Interactive Verification | 1 | 2.8% |
+| Data Contract & Replayable Store | 1 | 2.8% |
+| System Architecture Documentation | 1 | 2.8% |
+| Architecture Refinement | 1 | 2.8% |
+| Docs+Code | 1 | 2.8% |
+| Code+Debug | 1 | 2.8% |
+| Analysis+Docs | 1 | 2.8% |
+| CodeGeneration | 1 | 2.8% |
+| Infrastructure | 1 | 2.8% |
+| Refactoring | 1 | 2.8% |
+| Visualization | 1 | 2.8% |
 
 ### Phân bổ theo mô hình / công cụ AI:
 | Mô hình / Công cụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Claude Code / Antigravity | 26 | 74.3% |
-| Claude Opus 5.5 | 8 | 22.9% |
-| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 2.9% |
+| Claude Code / Antigravity | 27 | 75.0% |
+| Claude Opus 5.5 | 8 | 22.2% |
+| GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 2.8% |
 
 ---
 
@@ -88,6 +89,7 @@
 | 2026-10-19 05:31 | Integration | Claude Code / Antigravity | Refactoring | Integrate PR #6 worker queue: conflict resolution, simulated verifier renamed, simulated results isolated, Redis compose profile, requirements | pytest 121 passed including 14 queue tests; analysis scripts glob only results/raw/run_exp-*.json | Nhóm 6 Lead | ✅ VERIFIED |
 | 2026-10-19 09:09 | Defense | Claude Code / Antigravity | Documentation | Defense Q&A: model choice and model-swap answers (Flash-Lite rationale, Gemini 3.6 Flash result, DeepSeek-Prover estimate), refreshed test count and Group 5 status | Numbers cross-checked against report.md tables 4, 5, 8 and run records | Nhóm 6 Lead | ✅ VERIFIED |
 | 2026-10-20 03:12 | Defense | Claude Code / Antigravity | Documentation | Restructure slide deck: goal slide, highlights with 6/6 acceptance criteria, demo after architecture, one results slide for RQ1-RQ3, rule and parser ablation, conclusion with delivery, roles merged into Q&A, charts moved to appendix P1-P3 | Deck rebuilt and exported with PowerPoint; every slide rendered and checked for overflow; numbers cross-checked with report.md | Nhóm 6 Lead | ✅ VERIFIED |
+| 2026-10-20 03:22 | Defense | Claude Code / Antigravity | Visualization | One slide per RQ with its chart; new RQ1 figure fig_rq1_category (blind vs diagnostics by error category, k=1) generated from run records; appendix now ablation and P50/P95 latency | Figure regenerated from results/raw; existing tables and PNGs unchanged; deck exported with PowerPoint and every slide rendered | Nhóm 6 Lead | ✅ VERIFIED |
 
 ---
 

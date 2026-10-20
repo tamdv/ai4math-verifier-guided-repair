@@ -342,6 +342,39 @@ def fig_quality(runs: list[dict[str, Any]], out: Path) -> list[Path]:
         fig.colorbar(im, ax=ax, fraction=0.03, pad=0.02)
         made += save(fig, out, "fig_category_heatmap")
 
+    # RQ1: blind retry vs diagnostics at k=1, per error category (categories with >= 5 hold-out samples)
+    pair = [k for k in (("blind", 1, "gemini-3.5-flash-lite"), ("llm_only", 1, "gemini-3.5-flash-lite")) if k in groups]
+    if len(pair) == 2 and cats:
+        def cat_rate(k: tuple[str, int, str], c: str) -> float:
+            rates = [g["success_by_category"][c]["rate"] * 100 for g in groups[k]
+                     if c in g.get("success_by_category", {})]
+            return statistics.median(rates) if rates else 0.0
+
+        def cat_n(c: str) -> int:
+            ns = [g["success_by_category"][c].get("n", 0) for g in groups[pair[1]]
+                  if c in g.get("success_by_category", {})]
+            return int(statistics.median(ns)) if ns else 0
+
+        shown = [c for c in cats if cat_n(c) >= 5]
+        fig, ax = subplots(figsize=(max(4.5, 0.9 * len(shown) + 1.5), 3.2))
+        width = 0.38
+        for j, (k, name) in enumerate(zip(pair, ["Blind retry (baseline)", "LLM + diagnostics"])):
+            vals = [cat_rate(k, c) for c in shown]
+            bars = ax.bar([i + (j - 0.5) * (width + 0.02) for i in range(len(shown))], vals, width,
+                          color=SERIES[j], label=name)
+            for b, v in zip(bars, vals):
+                ax.annotate(f"{v:.0f}", (b.get_x() + b.get_width() / 2, b.get_height()), xytext=(0, 3),
+                            textcoords="offset points", ha="center",
+                            fontsize=plt.rcParams["font.size"] * 0.78, color=INK)
+        ax.set_xticks(range(len(shown)), [f"{c}\nn={cat_n(c)}" for c in shown],
+                      fontsize=plt.rcParams["font.size"] * 0.78)
+        ax.set_ylabel("Repair success (%)")
+        ax.set_ylim(0, 100)
+        ax.grid(axis="x", visible=False)
+        ax.set_title("Diagnostics vs blind retry by error category, k=1", loc="left")
+        ax.legend(loc="upper right")
+        made += save(fig, out, "fig_rq1_category")
+
     rows = []
     for k in keys:
         def cell(key: str, scale: float = 1.0, fmt: str = "{:.1f}") -> str:
