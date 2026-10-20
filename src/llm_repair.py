@@ -10,8 +10,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import yaml
-
 from src.error_parser import LeanErrorParser
 from src.llm_client import LLMClient
 
@@ -37,6 +35,8 @@ class RepairAttempt:
 
 def load_prompts(version: str = "repair_v1") -> dict[str, Any]:
     """Loads a prompt template file from configs/prompts/."""
+    import yaml  # only needed for live LLM calls; replay demo runs on the standard library
+
     with open(PROMPT_DIR / f"{version}.yaml", encoding="utf-8") as f:
         return yaml.safe_load(f)
 

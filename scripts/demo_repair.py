@@ -24,6 +24,9 @@ from src.llm_repair import strip_comments  # noqa: E402
 from src.mutations import theorem_statement  # noqa: E402
 
 RULE = "─" * 72
+ROOT = Path(__file__).resolve().parent.parent
+# Full dataset if downloaded, else the three demo samples shipped in git.
+DATA_CANDIDATES = [ROOT / "data" / "errors" / "errors_1k.jsonl", ROOT / "data_sample" / "demo_samples.jsonl"]
 
 
 def banner(title: str) -> None:
@@ -90,9 +93,12 @@ def replay(args: argparse.Namespace) -> None:
     if entry is None:
         sys.exit("No matching entry in the log")
     sample = None
-    if args.data:
-        with open(args.data, encoding="utf-8") as f:
+    data = Path(args.data) if args.data else next((p for p in DATA_CANDIDATES if p.exists()), None)
+    if data and data.exists():
+        with open(data, encoding="utf-8") as f:
             sample = next((json.loads(x) for x in f if f'"{entry["error_id"]}"' in x), None)
+    if sample is None:
+        print(f"[!] {entry['error_id']} not found in {data or 'any data file'}: showing the attempts without the original code")
     banner(f"REPLAY {entry['error_id']}  ·  strategy={entry['strategy']}  ·  category={entry.get('category')}")
     start = strip_comments(sample["code"]) if sample else ""
     if sample:
@@ -114,10 +120,13 @@ def live(args: argparse.Namespace) -> None:
         code = Path(args.file).read_text(encoding="utf-8")
         sample = {"error_id": Path(args.file).stem, "code": code, "statement": theorem_statement(code)}
     else:
-        with open(args.data, encoding="utf-8") as f:
+        data = Path(args.data) if args.data else next((p for p in DATA_CANDIDATES if p.exists()), None)
+        if data is None or not data.exists():
+            sys.exit("No error dataset found: pass --data or run scripts/download_data.sh")
+        with open(data, encoding="utf-8") as f:
             sample = next((json.loads(x) for x in f if f'"{args.error_id}"' in x), None)
         if sample is None:
-            sys.exit(f"{args.error_id} not found in {args.data}")
+            sys.exit(f"{args.error_id} not found in {data}")
 
     banner(f"Broken input: {sample['error_id']}")
     show_code(strip_comments(sample["code"]))
@@ -153,7 +162,8 @@ def main() -> None:
     src.add_argument("--file", help="Broken .lean file")
     src.add_argument("--error-id", help="Sample id from --data (live) or the log (replay)")
     src.add_argument("--pick", choices=["success", "failure"], help="Replay: first such sample")
-    parser.add_argument("--data", default="data/errors/errors_1k.jsonl")
+    parser.add_argument("--data", default=None,
+                        help="Error dataset; default: data/errors/errors_1k.jsonl, else data_sample/demo_samples.jsonl")
     parser.add_argument("--replay", help="Run log (.jsonl.gz) to replay instead of running")
     parser.add_argument("--strategy", default="hybrid")
     parser.add_argument("--budget", type=int, default=3)

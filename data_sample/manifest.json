@@ -65,6 +65,11 @@
     "data_sample/error_dataset_50_lean.json": {
       "rows": 1236,
       "sha256": "55c0876b1cc83923128e7d65a4ba363f6cf4719b7b9ca209f8a44e517b4b3b65"
+    },
+    "data_sample/demo_samples.jsonl": {
+      "rows": 3,
+      "sha256": "4cae257f79ea62e26a5f7ba5585e42bc6d1aa1ede5e565a2944b7502769cd36e",
+      "note": "E000880, E000003, E000197 from errors_1k.jsonl, used by scripts/demo_repair.py --replay"
     }
   }
 }
