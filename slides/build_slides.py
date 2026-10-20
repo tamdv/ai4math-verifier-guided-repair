@@ -14,6 +14,7 @@ Run:  python slides/build_slides.py   then   ./slides/to_pdf.sh   (PowerPoint ex
 import copy
 import json
 import statistics
+import sys
 from pathlib import Path
 
 from lxml import etree
@@ -25,6 +26,8 @@ from pptx.util import Emu, Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "slides" / "Slides_Nhom6_VerifierRepair.pptx"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from talk_script_content import SLIDES as TALK  # noqa: E402  speaker notes come from the talk script
 FIG = ROOT / "results" / "figures"
 RES = ROOT / "results"
 
@@ -219,6 +222,8 @@ class Deck:
         if not cover:
             text(s, 0.6, 0.38, 11.4, 1.25, title, size=title_size, bold=True, color=NAVY, anchor=MSO_ANCHOR.MIDDLE, name="!!title")
             text(s, 11.9, 6.82, 1.0, 0.5, str(i + 1), size=20, color=MUTED, align=PP_ALIGN.RIGHT, name="!!num")
+        if i < len(TALK):  # talk script is the single source of speaker notes
+            notes = f"{TALK[i]['speaker']}: {TALK[i]['notes']}"
         if notes:
             s.notes_slide.notes_text_frame.text = notes
         self.n += 1
