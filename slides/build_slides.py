@@ -276,41 +276,66 @@ def build():
                                   "Đào Văn Tâm · Trần Quang Đức Dũng · Lâm Thành Trung",
                                   "Nguyễn Xuân Tùng · Khamsing OUTHAIHUENG · Mekdala Nounou"], size=20, color=MUTED)
 
-    # 2 problem
-    s = d.new("Hàng nghìn chứng minh Lean 4 lỗi cần được sửa tự động và đáng tin",
-              notes="Tâm: vị trí Nhóm 6 trong chuỗi AI4Math, nhận ứng viên lỗi từ Nhóm 5, trả chứng minh đã kiểm chứng cho Nhóm 7/8. "
-                    "Thử lại nguyên prompt bỏ qua thông tin quý nhất: thông báo lỗi của Lean.")
-    flow(s, 2.0, ["Nhóm 5\nứng viên Lean", "Nhóm 6\nphân loại + sửa", "Lean\nkiểm chứng", "Nhóm 7 / 8\nchứng minh đúng"],
+    # 2 problem + goal
+    s = d.new("Nhóm 6 nhận chứng minh lỗi từ Nhóm 5, trả chứng minh đã kiểm chứng cho Nhóm 7/8",
+              notes="Tâm: vị trí Nhóm 6 trong chuỗi AI4Math. Mục tiêu bài tập: sửa tự động nhưng đáng tin, nghĩa là chỉ nhận bản sửa "
+                    "Lean chấp nhận và giữ nguyên đề, trong giới hạn chi phí token và độ trễ, tái lập và bàn giao được. Ba câu hỏi nghiên cứu.")
+    flow(s, 1.95, ["Nhóm 5\nứng viên Lean", "Nhóm 6\nphân loại + sửa", "Lean\nkiểm chứng", "Nhóm 7 / 8\nchứng minh đúng"],
          w=2.55, gap=0.55, fills={1: TINT2})
-    card(s, 0.6, 3.75, 12.1, 2.7, "Ba câu hỏi nghiên cứu", [
-        [("RQ1 ", {"bold": True}), ("Thông báo lỗi có cấu trúc có tốt hơn thử lại nguyên prompt?", {})],
-        [("RQ2 ", {"bold": True}), ("Luật hay LLM, thử bao nhiêu lần, dưới ngân sách token và thời gian?", {})],
-        [("RQ3 ", {"bold": True}), ("Mở rộng thế nào theo 100 → 1K → 10K ứng viên và 1/2/4 worker?", {})]])
+    card(s, 0.6, 3.55, 4.6, 3.05, "Mục tiêu", [
+        "Chỉ nhận bản sửa Lean chấp nhận, giữ nguyên đề",
+        "Có trần chi phí token, đo được P95",
+        "Tái lập và bàn giao được"])
+    card(s, 5.45, 3.55, 7.25, 3.05, "Ba câu hỏi nghiên cứu", [
+        [("RQ1 ", {"bold": True}), ("Thông báo lỗi Lean có giúp sửa tốt hơn?", {})],
+        [("RQ2 ", {"bold": True}), ("Luật hay LLM, thử mấy lần, tốn bao nhiêu?", {})],
+        [("RQ3 ", {"bold": True}), ("Mở rộng ra sao khi tăng dữ liệu, worker?", {})]], fill=TINT2)
 
-    # 3 big data
+    # 3 highlights
+    s = d.new("Điểm nổi bật: hệ thống chạy trọn vòng, đạt 6/6 tiêu chí nghiệm thu",
+              notes="Tâm: trước khi vào chi tiết, đây là những gì nhóm xây dựng và đối chiếu với 6 tiêu chí nghiệm thu tối thiểu "
+                    "trong hướng dẫn bài tập lớn. Toàn bộ thực nghiệm tốn 2,97 USD, 121 test tự động.")
+    card(s, 0.6, 1.9, 5.9, 4.15, "Nhóm đã xây dựng", [
+        "Dataset 17.031 lỗi, nhãn từ Lean thật",
+        "Lean REPL thường trú + worker pool",
+        "Vòng sửa: luật, LLM, kiểm toán",
+        "Cổng Nhóm 5, đầu ra cho Nhóm 7/8"])
+    card(s, 6.75, 1.9, 5.95, 4.15, "Tiêu chí nghiệm thu: 6/6", [
+        "Hold-out tách theo định lý gốc",
+        "So sánh với retry baseline",
+        "Vòng lặp có giới hạn rõ",
+        "Đo biên dịch, kiểm toán, chi phí",
+        "Log phát lại được",
+        "Không lặp vô hạn"], fill=TINT2)
+    text(s, 0.6, 6.2, 12.1, 0.6, [[("Toàn bộ thực nghiệm: ", {"bold": True, "color": BLUE_DARK}),
+                                   ("2,97 USD · 121 test tự động · 67 run record", {"bold": True})]], size=22)
+
+    # 4 big data
     s = d.new("Nút thắt nằm ở quy mô, lập lịch và chi phí, không ở một phép tính",
-              notes="Tâm: bốn con số làm nên bài toán Big Data. Kiểm chứng nguội nạp Mathlib ~6 GB mỗi tệp; số ứng viên 10^4; "
+              notes="Tâm: bốn con số làm nên bài toán Big Data. Kiểm chứng nguội nạp Mathlib mỗi tệp; số ứng viên 10^4; "
                     "mỗi lần gọi LLM tốn token; log phải phát lại được để kiểm toán.")
     stat(s, 0.8, 2.0, 3.0, "63–107 s", "kiểm chứng nguội 1 tệp, nạp Mathlib")
     stat(s, 3.95, 2.0, 2.9, "10.000", "ứng viên ở mức lớn nhất")
     stat(s, 7.0, 2.0, 2.8, "~1.000", "token mỗi lần LLM sửa")
-    stat(s, 10.0, 2.0, 2.9, "48", "run record + log phát lại", color=BLUE_DARK)
+    stat(s, 10.0, 2.0, 2.9, "67", "run record + log phát lại", color=BLUE_DARK)
     card(s, 0.8, 4.4, 11.9, 2.05, "Mục tiêu hệ thống", [
         "Thông lượng cao, độ trễ đuôi P95 thấp trên vài worker CPU",
         "Chi phí token có trần cứng; kết quả tái lập được từ dữ liệu thô"])
 
-    # 4 data
+    # 5 data + provenance
     s = d.new("Dataset 17.031 lỗi có nhãn lấy từ chính Lean, không viết tay",
-              notes="Nounou: 5.000 chứng minh Lean Workbook, MIT kiểm chứng lại với Lean 4.35 → 3.666 seed; 1.110 chứng minh cũ hỏng do "
-                    "Mathlib đổi tên = lỗi tự nhiên; 9 toán tử gây lỗi; nhãn từ thông báo Lean thật; chia train/hold-out theo định lý gốc.")
+              notes="Nounou: chứng minh Goedel-Prover trên Lean Workbook, giấy phép MIT, kiểm chứng lại với Lean 4.35 còn 3.666 seed; "
+                    "1.110 chứng minh cũ hỏng do Mathlib đổi tên là lỗi tự nhiên; 9 toán tử gây lỗi; nhãn từ thông báo Lean thật; "
+                    "chia theo định lý gốc; checksum SHA-256 trong manifest; mỗi lần chạy ghi run record.")
     stat(s, 0.8, 1.95, 2.9, "17.031", "mẫu lỗi, dataset v1.0")
     stat(s, 3.85, 1.95, 2.9, "3.666", "định lý gốc đã kiểm chứng")
     stat(s, 6.9, 1.95, 2.9, "1.110", "lỗi tự nhiên do Mathlib đổi")
     stat(s, 9.95, 1.95, 2.9, "94,4%", "nhãn khớp loại lỗi dự kiến", color=BLUE_DARK)
-    card(s, 0.8, 4.35, 5.8, 2.15, "Chống rò rỉ", ["Chia 70/30 theo định lý gốc", "0 định lý ở cả hai phía, 0 bản trùng"])
-    card(s, 6.85, 4.35, 5.85, 2.15, "Ba mức quy mô", ["100 ⊂ 1.000 ⊂ 10.000 mẫu", "Hold-out 1K: 284 · 10K: 2.907"], fill=TINT2)
+    card(s, 0.6, 4.3, 3.9, 2.3, "Chống rò rỉ", ["Chia theo định lý gốc", "0 trùng giữa hai phía"])
+    card(s, 4.75, 4.3, 3.9, 2.3, "Ba mức quy mô", ["100 ⊂ 1K ⊂ 10K mẫu", "Hold-out: 284 · 2.907"], fill=TINT2)
+    card(s, 8.9, 4.3, 3.8, 2.3, "Provenance", ["Nguồn MIT, checksum", "Run record mỗi lần"])
 
-    # 5 pipeline
+    # 6 pipeline
     s = d.new("Mỗi bản sửa phải qua Lean và kiểm toán trước khi được chấp nhận",
               notes="Khamsing + Trung + Tùng: parser lấy lỗi gốc từ thông báo Lean, taxonomy 7 nhóm, thêm TAC_07; router gửi lỗi đơn giản "
                     "cho luật 0 token, còn lại cho LLM có chẩn đoán; Lean REPL kiểm chứng; kiểm toán chặn sorry/axiom/đổi đề; "
@@ -321,17 +346,15 @@ def build():
     card(s, 4.75, 3.75, 3.9, 2.75, "Vòng lặp có giới hạn", ["Tối đa k = 1 hoặc 3 lần", "300 s mỗi mẫu", "Dừng nếu ứng viên lặp"])
     card(s, 8.9, 3.75, 3.8, 2.75, "Kiểm toán", ["Lean chấp nhận", "Không sorry / axiom", "Giữ nguyên phát biểu"], fill=TINT2)
 
-    # 6 REPL
-    s = d.new("Giữ Lean chạy thường trú: nhanh hơn 3–4 bậc độ lớn",
-              notes="Dũng: mỗi worker nạp Mathlib một lần rồi kiểm từng định lý trong môi trường gốc, cô lập; khớp 74/74 với chạy nguội. "
-                    "Bài học vận hành: lake sinh tiến trình repl con, huỷ lake khi timeout làm rò repl 100% CPU; sửa bằng process group.")
-    stat(s, 0.8, 2.0, 3.8, "63–107 s", "mỗi tệp, chạy lean nguội")
-    stat(s, 4.8, 2.0, 3.8, "3 ms", "P50 mỗi định lý với REPL", color=BLUE_DARK)
-    stat(s, 8.8, 2.0, 3.8, "23 ms", "P95 mỗi định lý với REPL", color=BLUE_DARK)
-    card(s, 0.8, 4.35, 5.8, 2.15, "Đúng như chạy nguội", ["Khớp 74/74 lần kiểm", "Mỗi lần kiểm cô lập trạng thái"])
-    card(s, 6.85, 4.35, 5.85, 2.15, "Bài học vận hành", ["Rò tiến trình repl khi timeout", "Sửa: huỷ cả process group"], fill=TINT2)
+    # 7 demo
+    s = d.new("Demo: lỗi → phân loại → sửa → Lean kiểm tra → kiểm toán",
+              notes="Trung/Tùng/Khamsing: chạy slides/demo_script.md, phát lại log, $0. E000880: luật R0, 0 token. "
+                    "E000003: cùng loại lỗi, chỉ LLM, lần 1 lách bằng sorry bị chặn, lần 3 đúng, 4.583 token. E000197: đúng ở lần 2.")
+    card(s, 0.6, 1.9, 3.9, 4.6, "E000880 · luật", ["Thiếu import Mathlib", "R0 sửa, Lean OK", "0 token · 73 ms"])
+    card(s, 4.75, 1.9, 3.9, 4.6, "E000003 · LLM", ["Lần 1: dùng sorry → bị chặn", "Lần 2: không biên dịch", "Lần 3: đúng · 4.583 token"], fill=TINT2)
+    card(s, 8.9, 1.9, 3.9, 4.6, "E000197 · vòng lặp", ["Chứng minh là sorry", "Lần 1 sai, lần 2 đúng", "779 token"])
 
-    # 7 setup
+    # 8 setup
     s = d.new("Cùng dữ liệu, phần cứng và seed, chỉ đổi chiến lược",
               notes="Tâm: Kaggle CPU 4 vCPU / 31 GB; Gemini 3.5 Flash-Lite nhiệt độ 0; baseline bắt buộc = thử lại nguyên prompt đúng 1 lần; "
                     "3 lần lặp, báo trung vị và min–max; trần chi phí $8/tháng, tổng chi thực tế $2,97.")
@@ -340,39 +363,40 @@ def build():
     card(s, 8.9, 1.9, 3.9, 3.5, "Môi trường", ["Kaggle 4 vCPU, 31 GB", "Lean 4.35 + Mathlib", "Gemini Flash-Lite"], fill=TINT2)
     text(s, 0.6, 5.7, 12.1, 0.8, [[("Tổng chi phí API cho toàn bộ thực nghiệm: ", {"bold": True, "color": BLUE_DARK}), ("$2,97", {"bold": True})]], size=22)
 
-    # 8 RQ1
-    s = d.new("RQ1: thông báo lỗi tăng 22 điểm % và còn rẻ hơn 45%",
-              notes="Tùng: cùng 284 mẫu hold-out, k = 1. Không có chẩn đoán, mô hình viết lại cả tệp, 783 token ra/lần nên đắt hơn; "
-                    "có chẩn đoán, mô hình sửa cục bộ, 389 token. Lợi ích lớn nhất ở SYN_01 47 → 85%, TMO_05 10 → 69%.")
-    stat(s, 0.8, 2.0, 3.6, "31,7%", "baseline thử lại nguyên prompt", color=MUTED)
-    stat(s, 4.6, 2.0, 3.6, "53,9%", "LLM + chẩn đoán Lean", color=BLUE_DARK)
-    stat(s, 8.4, 2.0, 4.3, "$1,13", "chi phí/1.000 mẫu, baseline $2,05")
-    card(s, 0.8, 4.35, 11.9, 2.15, "Vì sao rẻ hơn", [
-        "Prompt dài hơn 68% nhưng câu trả lời ngắn bằng một nửa",
-        "Token ra đắt gấp 8,3 lần token vào → tổng chi phí giảm"])
+    # 9 results RQ1-RQ3
+    s = d.new("Kết quả: chẩn đoán vừa tốt hơn vừa rẻ hơn, REPL gỡ nút thắt kiểm chứng",
+              notes="Tâm/Tùng/Dũng: RQ1 cùng 284 mẫu hold-out, k = 1: không có chẩn đoán mô hình viết lại cả tệp, 783 token ra, có chẩn đoán "
+                    "chỉ 389. RQ2: k = 3 thêm 11 điểm, Pareto đi từ chỉ luật $0 tới LLM k=3. RQ3: 3 mức x 3 mức worker x 3 lần lặp; "
+                    "từ 2 lên 4 worker chỉ thêm 7–11% thông lượng vì 4 REPL tranh 4 vCPU. Biểu đồ chi tiết ở phụ lục P1–P3.")
+    cols = [("RQ1 · Thông báo lỗi", "53,9%", "thành công đã kiểm toán",
+             ["Baseline 31,7%, cùng k=1", "Rẻ hơn 45%: $1,13 / 1K mẫu"], TINT),
+            ("RQ2 · Chiến lược", "65,1%", "LLM + chẩn đoán, k=3",
+             ["$2,45 / 1K mẫu", "Lai k=3: 59,5%", "Chỉ luật: 23,9%, $0"], TINT2),
+            ("RQ3 · Mở rộng", "3 ms", "P50 mỗi định lý với REPL",
+             ["Chạy nguội: 63–107 s", "10K: 1,52 → 2,86 mẫu/s", "P95 3,1 → 6,5 s, nghẽn CPU"], TINT)]
+    for i, (head, value, label, items, fill) in enumerate(cols):
+        x = 0.6 + i * 4.1
+        shape(s, MSO_SHAPE.ROUNDED_RECTANGLE, x, 1.85, 3.9, 4.75, fill)
+        text(s, x + 0.25, 2.0, 3.4, 0.5, head, size=22, bold=True, color=BLUE_DARK)
+        text(s, x + 0.25, 2.55, 3.5, 0.85, value, size=40, bold=True, color=BLUE)
+        text(s, x + 0.25, 3.4, 3.4, 0.5, label, size=20, color=MUTED)
+        bullets(s, x + 0.25, 4.15, 3.45, 2.4, items, size=20, gap=4)
+    text(s, 0.6, 6.68, 11.0, 0.45, "Biểu đồ chi tiết: phụ lục P1–P3", size=20, color=MUTED)
 
-    # 9 RQ2 ablation
-    s = d.new("RQ2: thử 3 lần đạt 65,1%, gấp đôi baseline",
-              notes="Tùng/Tâm: cột xanh là biên dịch, cột cam là thành công đã kiểm toán. k = 3 thêm 11 điểm % so với k = 1; "
-                    "82,7% thành công đến ngay lần thử đầu, 12,4% ở lần 2. Hybrid kém LLM thuần ở cùng k, xem slide sau.")
-    image(s, FIG / "fig_ablation_slide.png", 0.55, 1.75, w=12.2)
-
-    # 9b RQ2 Pareto
-    s = d.new("Chẩn đoán vừa tốt hơn vừa rẻ hơn, nằm trên biên Pareto",
-              notes="Tâm: trục x là chi phí LLM cho 1.000 mẫu, trục y là tỷ lệ thành công. Biên đi từ chỉ luật $0 qua hybrid k=1, LLM k=1, hybrid k=3 tới LLM k=3. "
-                    "Blind và mô hình 3.6 Flash nằm dưới biên: đắt hơn mà kém hơn.")
-    image(s, FIG / "fig_cost_quality_slide.png", 0.6, 1.75, w=7.6)
-    card(s, 8.5, 1.9, 4.2, 4.6, "Đọc biểu đồ", ["$0: chỉ luật, 23,9%", "$1,13: LLM k=1, 53,9%", "$2,45: LLM k=3, 65,1%", "Blind: $2,05, 31,7%"], fill=TINT2)
-
-    # 10 rules
-    s = d.new("Luật đúng thì gần hoàn hảo, luật sai kéo hybrid xuống",
-              notes="Trung: luật được thử trước trên 203/284 mẫu nhưng chỉ đúng 33%; với k = 1 luật sai là hết lượt. "
-                    "R0, khôi phục import 97%, R7, heartbeat 100%; R2–R6 0% trên tệp hoàn chỉnh. Cải tiến: chỉ dùng luật chính xác, đo trên train.")
-    table(s, 0.6, 1.95, 7.4, [["Luật", "Áp dụng", "Chính xác"],
+    # 10 analysis: rules + parser ablation
+    s = d.new("Phân tích: luật đúng gần hoàn hảo, luật sai kéo chiến lược lai xuống",
+              notes="Trung + Khamsing: luật được thử trước trên 203/284 mẫu nhưng chỉ đúng 33%; với k = 1 luật sai là hết lượt. "
+                    "R0 97%, R7 100%; R2–R6 0% trên tệp hoàn chỉnh. Ablation bộ phân loại phát lại log, không gọi thêm LLM: "
+                    "phân loại đúng hơn giảm 31% token nhưng gửi nhiều mẫu hơn sang luật kém. Cải tiến: chỉ dùng luật chính xác, đo trên train.")
+    table(s, 0.6, 1.95, 6.9, [["Luật", "Áp dụng", "Chính xác"],
                               ["R0 khôi phục import", "99", "97%"], ["R7 ngân sách heartbeat", "81", "100%"],
                               ["R1 cân bằng ngoặc", "99", "27%"], ["R3 bảng import", "253", "0%"],
-                              ["R2 chèn từ khoá", "126", "0%"]], [3.8, 1.6, 2.0], size=20)
-    card(s, 8.3, 1.95, 4.4, 4.55, "Hệ quả", ["Hybrid k=1: 30,3%", "LLM k=1: 53,9%", "Router chỉ nên dùng luật chính xác cao"], fill=TINT2)
+                              ["R2 chèn từ khoá", "126", "0%"]], [3.5, 1.5, 1.9], size=20)
+    card(s, 7.8, 1.95, 4.9, 4.6, "Ablation bộ phân loại", [
+        "Khớp nhãn 72,3% → 96,3%",
+        "Token giảm 31%",
+        "Lai k=1 lại giảm 34,9% → 30,3%",
+        "Nút thắt: độ chính xác của luật"], fill=TINT2)
 
     # 11 audit
     s = d.new("Không có kiểm toán, tỷ lệ thành công bị thổi phồng",
@@ -383,50 +407,53 @@ def build():
     stat(s, 8.8, 2.0, 3.9, "17–26%", "bản sửa lỗi đã đổi đề")
     card(s, 0.8, 4.35, 11.9, 2.15, "Kiểm toán chặn", ["sorry, admit, axiom, native_decide", "Thay đổi tên, giả thiết hoặc kết luận của định lý"])
 
-    # 12 scale
-    s = d.new("RQ3: 2 worker nhanh 1,76×, 4 worker chỉ 1,88× vì nghẽn CPU",
-              notes="Dũng: 3 mức × 3 mức worker × 3 lần lặp, spread ≤ 4%. Từ 2 lên 4 worker chỉ thêm 7–11% thông lượng, P95 phục vụ "
-                    "tăng gấp đôi, 3,1 → 6,5 s ở 10K: 4 REPL tranh 4 vCPU. Bộ nhớ USS 12,6 → 21,1 GB. Mở rộng tiếp cần nhiều máy.")
-    image(s, FIG / "fig_scale_speedup_slide.png", 0.5, 1.8, w=6.3)
-    stat(s, 7.0, 2.0, 5.6, "1,52 → 2,86", "mẫu/s ở 10K, từ 1 lên 4 worker")
-    stat(s, 7.0, 3.8, 5.6, "3,1 → 6,5 s", "P95 thời gian phục vụ, từ 1 lên 4 worker", color=BLUE_DARK)
+    # 12 conclusion + delivery
+    s = d.new("Kết luận: chẩn đoán, kiểm toán, REPL thường trú; sẵn sàng bàn giao",
+              notes="Tâm: ba bài học; phần bàn giao và tái lập: scripts/repair_batch.py nhận file của Nhóm 5 theo data contract, "
+                    "đầu ra repaired-v1 cho Nhóm 7/8, Docker, 121 test, notebook Kaggle, run record và log phát lại; hướng phát triển.")
+    card(s, 0.6, 1.9, 3.9, 4.75, "Bài học", [
+        "Lỗi của Lean là tín hiệu rẻ và giá trị nhất",
+        "Kiểm toán ngữ nghĩa là bắt buộc",
+        "Verifier là tài nguyên cần lập lịch"])
+    card(s, 4.75, 1.9, 3.9, 4.75, "Bàn giao, tái lập", [
+        "Cổng Nhóm 5, repaired-v1 cho Nhóm 7/8",
+        "Docker · 121 test · notebook",
+        "Log phát lại, $0"], fill=TINT2)
+    card(s, 8.9, 1.9, 3.8, 4.75, "Hướng phát triển", [
+        "Dữ liệu thật của Nhóm 5",
+        "Model chuyên Lean trên GPU",
+        "Worker phân tán, hàng đợi Redis"])
 
-    # 13 demo
-    s = d.new("Demo: lỗi → phân loại → sửa → Lean kiểm tra → kiểm toán",
-              notes="Trung/Tùng/Khamsing: chạy slides/demo_script.md, phát lại log, $0. E000880: luật R0, 0 token. "
-                    "E000003: cùng loại lỗi, chỉ LLM, lần 1 lách bằng sorry bị chặn, lần 3 đúng, 4.583 token. E000197: đúng ở lần 2.")
-    card(s, 0.6, 1.9, 3.9, 4.6, "E000880 · luật", ["Thiếu import Mathlib", "R0 sửa, Lean OK", "0 token · 73 ms"])
-    card(s, 4.75, 1.9, 3.9, 4.6, "E000003 · LLM", ["Lần 1: dùng sorry → bị chặn", "Lần 2: không biên dịch", "Lần 3: đúng · 4.583 token"], fill=TINT2)
-    card(s, 8.9, 1.9, 3.9, 4.6, "E000197 · vòng lặp", ["Chứng minh là sorry", "Lần 1 sai, lần 2 đúng", "779 token"])
-
-    # 14 conclusion
-    s = d.new("Kết luận: chẩn đoán + kiểm toán + REPL thường trú",
-              notes="Tâm: trả lời RQ1–RQ3 bằng số; hạn chế trung thực; hướng phát triển.")
-    card(s, 0.6, 1.9, 6.0, 4.6, "Kết luận", [
-        "RQ1: 31,7% → 53,9%, rẻ hơn 45%",
-        "RQ2: k=3 đạt 65,1%; luật cần chọn lọc",
-        "RQ3: REPL nhanh 3–4 bậc; bão hoà CPU ở 2 worker"])
-    card(s, 6.85, 1.9, 5.85, 4.6, "Hạn chế → hướng phát triển", [
-        "Lỗi tổng hợp → dữ liệu thật Nhóm 5",
-        "Một họ LLM → mô hình chuyên Lean",
-        "Một máy → worker phân tán"], fill=TINT2)
-
-    # 15 roles
-    s = d.new("Phân công bảo vệ: mỗi người một mảng, ai cũng nắm toàn pipeline",
-              notes="Tâm: giới thiệu người trả lời từng mảng khi hỏi đáp, contributions.md, slides/defense_qa.md.")
-    table(s, 0.6, 1.95, 12.1, [["Thành viên", "Mảng trình bày và trả lời"],
+    # 13 roles + Q&A
+    s = d.new("Cảm ơn cô và các bạn · Hỏi đáp",
+              notes="Cả nhóm: cảm ơn, mời hỏi đáp; Tâm điều phối người trả lời theo bảng; bộ câu hỏi trong slides/defense_qa.md. "
+                    "Phụ lục P1–P3 sau slide này, chỉ mở khi được hỏi về biểu đồ.")
+    table(s, 0.6, 1.95, 12.1, [["Thành viên", "Mảng trả lời chính"],
                                ["Đào Văn Tâm", "Câu hỏi nghiên cứu, đánh giá, chi phí"],
-                               ["Trần Quang Đức Dũng", "Worker pool, REPL, khả năng mở rộng"],
+                               ["Trần Quang Đức Dũng", "Hàng đợi Redis, worker pool, REPL, mở rộng"],
                                ["Lâm Thành Trung", "Luật sửa, độ chính xác từng luật"],
-                               ["Nguyễn Xuân Tùng", "LLM: blind vs chẩn đoán, prompt"],
+                               ["Nguyễn Xuân Tùng", "LLM: blind vs chẩn đoán, prompt, chọn model"],
                                ["Khamsing OUTHAIHUENG", "Parser, taxonomy, kiểm toán"],
                                ["Mekdala Nounou", "Dataset, chia tập, data card"]], [4.4, 7.7], size=20)
 
-    # 16 thanks
-    s = d.new("", notes="Cả nhóm: cảm ơn, mời hỏi đáp; Tâm điều phối người trả lời theo bảng phân công.", cover=True)
-    text(s, 0.8, 2.2, 10.5, 1.0, "Cảm ơn cô và các bạn", size=44, bold=True, name="!!title")
-    text(s, 0.8, 3.4, 10.5, 0.8, "Hỏi đáp", size=28, color=BLUE)
-    text(s, 11.9, 6.82, 1.0, 0.5, str(d.n), size=20, color=MUTED, align=PP_ALIGN.RIGHT, name="!!num")
+    # appendix
+    s = d.new("Phụ lục P1 · RQ2: thử 3 lần đạt 65,1%, gấp đôi baseline",
+              notes="Cột xanh là biên dịch, cột cam là thành công đã kiểm toán. k = 3 thêm 11 điểm % so với k = 1; "
+                    "82,7% thành công đến ngay lần thử đầu, 12,4% ở lần 2.")
+    image(s, FIG / "fig_ablation_slide.png", 0.55, 1.75, w=12.2)
+
+    s = d.new("Phụ lục P2 · Chẩn đoán nằm trên biên Pareto chi phí và chất lượng",
+              notes="Trục x là chi phí LLM cho 1.000 mẫu, trục y là tỷ lệ thành công. Blind và mô hình 3.6 Flash nằm dưới biên.")
+    image(s, FIG / "fig_cost_quality_slide.png", 0.6, 1.75, h=5.25)
+    card(s, 10.0, 1.9, 2.7, 4.6, "Đọc biểu đồ", ["$0: luật 23,9%", "$1,13: 53,9%", "$2,45: 65,1%", "Blind $2,05: 31,7%"], fill=TINT2, size=20)
+
+    s = d.new("Phụ lục P3 · RQ3: REPL nhanh 3–4 bậc, 4 worker chỉ 1,88× vì nghẽn CPU",
+              notes="REPL khớp 74/74 với chạy nguội. 3 mức x 3 mức worker x 3 lần lặp, chênh lệch dưới 4%. "
+                    "USS 12,6 → 21,1 GB. Mở rộng tiếp cần nhiều máy.")
+    image(s, FIG / "fig_scale_speedup_slide.png", 0.5, 1.8, w=6.3)
+    stat(s, 7.0, 1.85, 5.6, "3 ms · 23 ms", "P50 · P95 với REPL, nguội 63–107 s", color=BLUE_DARK)
+    stat(s, 7.0, 3.5, 5.6, "1,52 → 2,86", "mẫu/s ở 10K, từ 1 lên 4 worker")
+    stat(s, 7.0, 5.15, 5.6, "3,1 → 6,5 s", "P95 thời gian phục vụ, 1 lên 4 worker", color=BLUE_DARK)
 
     d.save()
     return d.n

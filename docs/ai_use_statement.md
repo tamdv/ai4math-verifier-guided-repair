@@ -7,17 +7,18 @@
 
 ## 1. Bảng số liệu định lượng tổng hợp (Quantitative Summary)
 
-* **Tổng số phiên/hạng mục AI hỗ trợ:** `34`
-* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~9970` dòng
+* **Tổng số phiên/hạng mục AI hỗ trợ:** `35`
+* **Ước tính số dòng mã & tài liệu AI đồng hành:** `~10130` dòng
 * **Cơ chế kiểm chứng bắt buộc:** 100% mã nguồn được xác minh qua unit test tự động và trình kiểm chứng Lean 4; không chấp nhận mã chưa kiểm chứng.
 
 ### Phân bổ theo loại tác vụ:
 | Loại tác vụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Code | 7 | 20.6% |
-| Code Generation | 2 | 5.9% |
-| Docs | 2 | 5.9% |
-| Experiment | 2 | 5.9% |
+| Code | 7 | 20.0% |
+| Code Generation | 2 | 5.7% |
+| Docs | 2 | 5.7% |
+| Experiment | 2 | 5.7% |
+| Documentation | 2 | 5.7% |
 | Workspace Setup | 1 | 2.9% |
 | Governance & Harness | 1 | 2.9% |
 | Academic Proposal | 1 | 2.9% |
@@ -38,13 +39,12 @@
 | CodeGeneration | 1 | 2.9% |
 | Infrastructure | 1 | 2.9% |
 | Refactoring | 1 | 2.9% |
-| Documentation | 1 | 2.9% |
 
 ### Phân bổ theo mô hình / công cụ AI:
 | Mô hình / Công cụ | Số lần ghi nhận | Tỷ trọng (%) |
 |:---|:---:|:---:|
-| Claude Code / Antigravity | 25 | 73.5% |
-| Claude Opus 5.5 | 8 | 23.5% |
+| Claude Code / Antigravity | 26 | 74.3% |
+| Claude Opus 5.5 | 8 | 22.9% |
 | GitHub Copilot (MAI-Code-1.1-Flash) | 1 | 2.9% |
 
 ---
@@ -87,6 +87,7 @@
 | 2026-10-10 17:30 | Week 6 | Claude Code / Antigravity | Code | Setup Redis Queue, Verifier Worker Pool, Bounded Controller, and Scalability Benchmark | 14 unit tests pass, 3-tier queue benchmark pass | Trần Quang Đức Dũng | ✅ VERIFIED |
 | 2026-10-19 05:31 | Integration | Claude Code / Antigravity | Refactoring | Integrate PR #6 worker queue: conflict resolution, simulated verifier renamed, simulated results isolated, Redis compose profile, requirements | pytest 121 passed including 14 queue tests; analysis scripts glob only results/raw/run_exp-*.json | Nhóm 6 Lead | ✅ VERIFIED |
 | 2026-10-19 09:09 | Defense | Claude Code / Antigravity | Documentation | Defense Q&A: model choice and model-swap answers (Flash-Lite rationale, Gemini 3.6 Flash result, DeepSeek-Prover estimate), refreshed test count and Group 5 status | Numbers cross-checked against report.md tables 4, 5, 8 and run records | Nhóm 6 Lead | ✅ VERIFIED |
+| 2026-10-20 03:12 | Defense | Claude Code / Antigravity | Documentation | Restructure slide deck: goal slide, highlights with 6/6 acceptance criteria, demo after architecture, one results slide for RQ1-RQ3, rule and parser ablation, conclusion with delivery, roles merged into Q&A, charts moved to appendix P1-P3 | Deck rebuilt and exported with PowerPoint; every slide rendered and checked for overflow; numbers cross-checked with report.md | Nhóm 6 Lead | ✅ VERIFIED |
 
 ---
 
