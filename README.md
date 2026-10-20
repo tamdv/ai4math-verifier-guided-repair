@@ -4,6 +4,20 @@ Bài tập lớn môn **INT4418 Dữ liệu lớn**, chương trình Thạc sĩ,
 
 Hệ thống nhận các tệp Lean 4 không biên dịch được, phân loại lỗi từ thông báo thật của Lean, sửa bằng luật không tốn token hoặc bằng LLM có kèm thông báo lỗi, rồi chỉ chấp nhận bản sửa khi Lean biên dịch được và bộ kiểm toán xác nhận đề bài không bị thay đổi. Toàn bộ chạy trong một vòng lặp có giới hạn số lần thử, thời gian và chi phí, trên một pool worker Lean REPL thường trú.
 
+## Tóm tắt dễ hiểu
+
+### Đề tài nói về điều gì
+
+Lean là ngôn ngữ để viết chứng minh toán học sao cho máy tính kiểm tra được từng bước. Một chương trình gọi là trình kiểm chứng sẽ đọc chứng minh và chỉ chấp nhận khi mọi bước đều đúng. Hiện nay các mô hình ngôn ngữ lớn được dùng để viết hàng loạt chứng minh như vậy, nhưng phần lớn chứng minh chúng viết ra bị trình kiểm chứng từ chối. Ví dụ, một chứng minh rằng bình phương của mọi số thực đều không âm có thể bị từ chối chỉ vì thiếu một dòng khai báo thư viện ở đầu tệp. Đề tài xây dựng hệ thống tự động sửa các chứng minh bị từ chối, với điều kiện chỉ nhận bản sửa mà trình kiểm chứng chấp nhận và đề bài không bị thay đổi, đồng thời giữ chi phí và thời gian chờ trong giới hạn.
+
+### Nhóm đã làm gì
+
+Nhóm tạo một tập dữ liệu gồm 17.031 chứng minh bị lỗi, mỗi lỗi được gắn nhãn từ chính thông báo của trình kiểm chứng. Hệ thống đọc thông báo lỗi, xếp lỗi vào một trong bảy nhóm, rồi sửa bằng luật viết sẵn, không tốn chi phí, hoặc nhờ mô hình ngôn ngữ lớn sửa và gửi kèm thông báo lỗi. Mỗi bản sửa được trình kiểm chứng kiểm tra lại và được một bộ kiểm toán xác nhận đề bài giữ nguyên. Để kiểm tra nhanh, nhóm giữ trình kiểm chứng chạy liên tục thay vì khởi động lại cho từng chứng minh, và chạy nhiều bản song song. Nhóm đo chất lượng và chi phí ở ba quy mô dữ liệu: 100, 1.000 và 10.000 chứng minh.
+
+### Kết quả
+
+Gửi kèm thông báo lỗi cho mô hình nâng tỷ lệ sửa thành công từ 31,7% lên 53,9% và giảm 45% chi phí so với cách chỉ yêu cầu mô hình thử lại. Cho phép thử tối đa ba lần, tỷ lệ thành công đạt 65,1%. Giữ trình kiểm chứng chạy liên tục làm thời gian kiểm tra một chứng minh giảm từ 63 đến 107 giây xuống còn khoảng 3 mili giây. Trong các chứng minh sửa thất bại, 17% đến 26% bản sửa cuối của mô hình đã tự ý thay đổi đề bài và bị bộ kiểm toán chặn. Toàn bộ thực nghiệm tốn 2,97 USD phí gọi mô hình.
+
 ## Tài liệu nộp
 
 | Tài liệu | Tệp |
