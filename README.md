@@ -1,6 +1,6 @@
 # Nhóm 6: Verifier-Guided Repair, sửa chứng minh Lean 4 có kiểm chứng
 
-Bài tập lớn môn **INT4418 Dữ liệu lớn**, chương trình Thạc sĩ, Học viện Công nghệ Bưu chính Viễn thông. Giảng viên hướng dẫn: **TS. Nguyễn Kiều Linh**. Phiên bản nộp bài: tag [`v1.0`](https://github.com/tamdv/ai4math-verifier-guided-repair/tree/v1.0).
+Bài tập lớn môn **INT4418 Dữ liệu lớn**, chương trình Thạc sĩ, Học viện Công nghệ Bưu chính Viễn thông. Giảng viên hướng dẫn: **TS. Nguyễn Kiều Linh**. Phiên bản nộp bài: tag [`v1.1`](https://github.com/tamdv/ai4math-verifier-guided-repair/tree/v1.1).
 
 Hệ thống nhận các tệp Lean 4 không biên dịch được, phân loại lỗi từ thông báo thật của Lean, sửa bằng luật không tốn token hoặc bằng LLM có kèm thông báo lỗi, rồi chỉ chấp nhận bản sửa khi Lean biên dịch được và bộ kiểm toán xác nhận đề bài không bị thay đổi. Toàn bộ chạy trong một vòng lặp có giới hạn số lần thử, thời gian và chi phí, trên một pool worker Lean REPL thường trú.
 
