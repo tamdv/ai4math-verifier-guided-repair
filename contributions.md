@@ -35,11 +35,14 @@ Ghi chú: luật R1–R4 của Trung là nền của module luật hiện tại;
 | #3 | Khamsing OUTHAIHUENG | feature/error-router | Bỏ phụ thuộc numpy của baseline | Đóng, commit đã có trong main |
 | #4 | Đào Văn Tâm | tamdv | Tài liệu Chương 2 MapReduce và Hadoop | Đã merge |
 | #5 | Đào Văn Tâm | feat/verifier-guided-pipeline | Toàn bộ pipeline, thực nghiệm, báo cáo, tag v1.0 | Đã merge |
-| #6 | Trần Quang Đức Dũng | feature/worker-queue | Hàng đợi Redis, verifier giả lập, bộ điều khiển có giới hạn | Tích hợp bằng cherry-pick giữ tác giả, nhánh feat/integrate-worker-queue; verifier giả lập đổi tên thành src/sim_verifier.py, kết quả chuyển sang results/raw/simulated/ và không đưa vào báo cáo |
+| #6 | Trần Quang Đức Dũng | feature/worker-queue | Hàng đợi Redis, verifier giả lập, bộ điều khiển có giới hạn | Đóng; commit được tích hợp qua PR #10, giữ Dũng là tác giả; verifier giả lập đổi tên thành src/sim_verifier.py, kết quả chuyển sang results/raw/simulated/ và không đưa vào báo cáo |
 | #7, #9 | Đào Văn Tâm | chore/notebooks-track-main | Notebook Kaggle clone main sau v1.0 | Đã merge |
 | #8 | Đào Văn Tâm | docs/readme-final | README cuối kèm kết quả, báo cáo, slide | Đã merge |
-| mới | Đào Văn Tâm | feat/group5-gateway | Cổng nhận dữ liệu Nhóm 5, file mẫu, hướng dẫn bàn giao | Chờ review |
-| mới | Đào Văn Tâm | feat/final-gaps | Ablation bộ phân loại, trường gpu, ghi chú rò rỉ R5, rút còn 8 trích dẫn | Chờ review |
+| #10 | Đào Văn Tâm, Trần Quang Đức Dũng | feat/integrate-worker-queue | Cổng nhận dữ liệu Nhóm 5, ablation bộ phân loại, trường gpu, ghi chú rò rỉ R5, 8 trích dẫn, kiểm thử Docker, tích hợp hàng đợi Redis từ PR #6 | Đã merge |
+| #11 | Đào Văn Tâm | docs/defense-model-choice | Câu hỏi vấn đáp về chọn và đổi mô hình LLM | Đã merge |
+| #12 | Đào Văn Tâm | docs/talk-script | Tái cấu trúc slide, mỗi RQ một slide kèm biểu đồ, kịch bản thuyết trình đồng bộ Notes | Đã merge |
+| #13 | Đào Văn Tâm | docs/report-final-sync | Báo cáo cập nhật phần bàn giao, Docker, hàng đợi Redis | Đã merge |
+| #14 | Đào Văn Tâm | fix/demo-standalone | Demo phát lại chạy được ngay sau git clone, không cài thư viện | Đã merge |
 
 ## 3. Phần bảo vệ của từng thành viên
 
@@ -58,13 +61,13 @@ Mỗi người trình bày mảng của mình **và phải trả lời được 
 
 | Việc | Người nhận | Trạng thái |
 |---|---|---|
-| Chạy lại `pytest` + demo replay trên máy cá nhân, báo lỗi nếu có | Mỗi thành viên | ☐ |
+| Chạy lại `pytest` + demo replay trên máy cá nhân sau `git clone`, cần Python 3.10 trở lên; báo lỗi nếu có | Mỗi thành viên | ☐ |
 | Đối chiếu số liệu trong báo cáo với `results/figures/*.md` | Khamsing, Nounou | ☐ |
 | Kiểm tra lại 8 trích dẫn của báo cáo | Tùng | ☐ |
-| Slide phần mình phụ trách (theo mục 3) | Mỗi thành viên | ☐ |
+| Tập phần nói của mình theo `slides/KichBan_ThuyetTrinh_Nhom6.pdf`, kiểm tra cách đọc thuật ngữ ở Phụ lục B | Mỗi thành viên | ☐ |
 | Đọc code mảng mình + trả lời bộ câu hỏi vấn đáp | Mỗi thành viên | ☐ |
-| Review PR `feat/group5-gateway` và `feat/final-gaps` | Dũng, Trung | ☐ |
-| Review tích hợp PR #6 trên nhánh `feat/integrate-worker-queue`, chạy `docker compose --profile queue` | Dũng | ☐ |
+| Đọc lại thay đổi của PR #10 đến #14 trước buổi bảo vệ; các PR này đã merge khi chưa có review của hai bạn | Dũng, Trung | ☐ |
+| Chạy `docker compose --profile queue` và xác nhận phần tích hợp hàng đợi Redis từ PR #6 | Dũng | ☐ |
 | Tuỳ chọn: nối `WorkerQueue` vào `VerifierPool` thật, so FIFO với ưu tiên trên Kaggle | Dũng | ☐ |
 
 ## 5. Nhật ký tiến độ
@@ -79,5 +82,5 @@ Mỗi người trình bày mảng của mình **và phải trả lời được 
 | W6 | Vòng lặp có giới hạn, timeout, dedup, worker queue | ✅ |
 | W7 | Scale 100/1K/10K × 1/2/4 worker × 3 lần; RQ1/RQ2 | ✅ |
 | W8 | Ablation, phân tích lỗi, kiểm toán ngữ nghĩa | ✅ (bảng trong `results/figures/`) |
-| W9 | Release candidate, README, báo cáo | ✅ merge vào `main`, tag `v1.0` |
-| W10 | Demo, bảo vệ, bàn giao | ⏳ |
+| W9 | Release candidate, README, báo cáo | ✅ merge vào `main`, tag `v1.0`; bản nộp cuối tag `v1.1` |
+| W10 | Demo, bảo vệ, bàn giao | ⏳ slide, kịch bản thuyết trình, demo chạy sau git clone và hướng dẫn bàn giao Nhóm 5 đã sẵn sàng; còn buổi bảo vệ |
