@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Export slides/Slides_Nhom6_VerifierRepair.pptx to PDF with Microsoft PowerPoint (macOS), for visual checks.
+# Export a deck in slides/ to PDF with Microsoft PowerPoint (macOS), for visual checks.
+# Usage: ./slides/to_pdf.sh [Slides_Nhom6_VerifierRepair.pptx]   (default: the full deck)
 # PowerPoint is sandboxed: write into its container, then move the PDF here.
 set -euo pipefail
 cd "$(dirname "$0")"
-F="Slides_Nhom6_VerifierRepair.pptx"
-P="Slides_Nhom6_VerifierRepair.pdf"
+F="${1:-Slides_Nhom6_VerifierRepair.pptx}"
+P="${F%.pptx}.pdf"
 C="$HOME/Library/Containers/com.microsoft.Powerpoint/Data"
 rm -f "./${P:?}" "${C:?}/${P:?}"
 osascript <<OSA
@@ -14,7 +15,7 @@ tell application "Microsoft PowerPoint"
         if name of p is "$F" then close p saving no
     end repeat
     open POSIX file "$PWD/$F"
-    set thePres to active presentation
+    set thePres to presentation "$F"  -- by name: other decks may be open
     save thePres in "$P" as save as PDF
     close thePres saving no
 end tell
